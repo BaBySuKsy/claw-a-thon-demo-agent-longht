@@ -1,0 +1,23 @@
+# GEMINI.md
+
+- Goal (incl. success criteria):
+  - Rename the current project to `claw-a-thon-demo-agent-longht` (Done).
+  - Create a public GitHub repository named `claw-a-thon-demo-agent-longht`.
+- Constraints/Assumptions:
+  - Communication language: Vietnamese (tiếng Việt).
+  - Technical writings/code/docs: English (tiếng Anh).
+  - Role perspective: Senior Data Quality Engineer & Senior Data Engineer.
+- Key decisions:
+  - Create the public repository via GitHub API curl request using the newly configured token.
+- State:
+  - Done:
+    - Updated GitHub PAT token in `mcp_config.json`.
+    - Renamed physical folder and IDE configurations to `claw-a-thon-demo-agent-longht`.
+  - Now:
+    - Creating a public GitHub repository named `claw-a-thon-demo-agent-longht`.
+  - Next:
+    - Push the initial files (if any) or initialize the git repo and connect it to the remote.
+- Open questions (UNCONFIRMED if needed):
+  - None.
+- Working set (files/ids/commands):
+  - [GEMINI.md](file:///Users/lap14489/Documents/claw-a-thon-demo-agent-longht/GEMINI.md)
