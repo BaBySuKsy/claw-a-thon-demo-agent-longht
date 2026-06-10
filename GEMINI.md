@@ -7,14 +7,18 @@
   - Test and verify pull connectivity from the remote repository (Done).
   - Translate and standardize the Claw-a-thon User Guide to Technical English at `docx/Claw-a-thon_User_Guide.md` (Done).
   - Evaluate if `docx/Claw-a-thon_User_Guide.md` is complete compared to the original `.docx` file (Done).
+  - Customize `docx/Claw-a-thon_User_Guide.md` specifically for macOS development, utilizing Gemini models and the Antigravity (Agy) IDE/extension instead of Claude/Codex (In Progress).
 - Constraints/Assumptions:
   - Communication language: Vietnamese (tiếng Việt).
   - Technical writings/code/docs: English (tiếng Anh).
   - Role perspective: Senior Data Quality Engineer & Senior Data Engineer.
+  - OS: macOS (Mac).
+  - AI Tooling: Gemini & Antigravity (Agy) IDE/extension.
 - Key decisions:
   - Extracted text from `[Official] Claw-a-thon User Guide.docx` into `docx/extracted_docx_text.txt` using `textutil`.
   - Created evaluation plan in `evaluation_plan.md`.
   - Discovered and fixed gaps in the markdown conversion using a subagent.
+  - Customizing references: replacing Claude, Claude Code, Claude Cowork, Codex with Gemini, Antigravity, Agy.
 - State:
   - Done:
     - Updated GitHub PAT token in `mcp_config.json`.
@@ -26,9 +30,9 @@
     - Extracted plain text from docx to `docx/extracted_docx_text.txt`.
     - Evaluated and updated `docx/Claw-a-thon_User_Guide.md` to be 100% complete.
   - Now:
-    - Task complete.
+    - Customizing the markdown guide for macOS, Gemini, and Antigravity.
   - Next:
-    - None.
+    - Commit and push the updated guide to GitHub.
 - Open questions (UNCONFIRMED if needed):
   - None.
 - Working set (files/ids/commands):
