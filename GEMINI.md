@@ -7,7 +7,8 @@
   - Test and verify pull connectivity from the remote repository (Done).
   - Translate and standardize the Claw-a-thon User Guide to Technical English at `docx/Claw-a-thon_User_Guide.md` (Done).
   - Evaluate if `docx/Claw-a-thon_User_Guide.md` is complete compared to the original `.docx` file (Done).
-  - Customize `docx/Claw-a-thon_User_Guide.md` specifically for macOS development, utilizing Gemini models and the Antigravity (Agy) IDE/extension instead of Claude/Codex (In Progress).
+  - Customize `docx/Claw-a-thon_User_Guide.md` specifically for macOS development, utilizing Gemini models and the Antigravity (Agy) IDE/extension instead of Claude/Codex (Done).
+  - Create the GreenNode AgentBase Technical User Guide at `docx/AgentBase_User_Guide.md` (Done).
 - Constraints/Assumptions:
   - Communication language: Vietnamese (tiếng Việt).
   - Technical writings/code/docs: English (tiếng Anh).
@@ -29,10 +30,12 @@
     - Generated `docx/Claw-a-thon_User_Guide.md`.
     - Extracted plain text from docx to `docx/extracted_docx_text.txt`.
     - Evaluated and updated `docx/Claw-a-thon_User_Guide.md` to be 100% complete.
+    - Customized guide for macOS, Gemini, and Antigravity (Agy).
+    - Created `docx/AgentBase_User_Guide.md` with enterprise-grade technical documentation for GreenNode AgentBase.
   - Now:
-    - Customizing the markdown guide for macOS, Gemini, and Antigravity.
+    - Task complete.
   - Next:
-    - Commit and push the updated guide to GitHub.
+    - None.
 - Open questions (UNCONFIRMED if needed):
   - None.
 - Working set (files/ids/commands):
