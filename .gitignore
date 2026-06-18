@@ -51,3 +51,4 @@ test_jira.py
 # demo video (large, shows real names) — never publish
 *.mp4
 docs/*.mp4
+.env.deploy
