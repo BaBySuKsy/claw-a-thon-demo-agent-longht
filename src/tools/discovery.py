@@ -471,6 +471,7 @@ def _verify_and_update_entity(entity_id: str, engine: KnowledgeEngine):
 def get_entity_details(entity_id: str):
     """Get full details of a specific entity, with JIT freshness verification."""
     engine = get_engine()
+    entity_id = resolve_entity_id(entity_id)
     warning_msg = _verify_and_update_entity(entity_id, engine)
     entity = engine.get_entity(entity_id)
     if entity:
@@ -503,7 +504,7 @@ def get_related_context(entity_id: str) -> dict:
     - "If I modify this, is there a project currently building it?"
     """
     engine = get_engine()
-    return get_entity_context(entity_id, engine)
+    return get_entity_context(resolve_entity_id(entity_id), engine)
 
 
 def read_gitlab_file(project_name: str, file_path: str) -> dict:

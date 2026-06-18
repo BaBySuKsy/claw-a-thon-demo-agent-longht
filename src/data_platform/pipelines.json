@@ -1,937 +1,56 @@
 [
   {
-    "id": "urn:li:dataFlow:(airflow,data-quality-svc,PROD)",
-    "name": "data-quality-svc",
+    "id": "urn:li:dataFlow:(airflow,lending-ingest-etl,PROD)",
+    "name": "lending-ingest-etl",
     "entityType": "pipeline",
     "owner": {
       "type": "team",
-      "name": "data-engineering"
+      "name": "Lending Data",
+      "slack": "#credit-oncall"
     },
-    "domain": "acme.analytics.data_quality",
+    "domain": "acme.analytics.lending",
     "tier": "Tier2",
-    "description": "GitLab repository for data-quality-svc. Contains code for data processing and validation.",
-    "files": [],
+    "description": "Ingest raw installment-loan core tables from the lending service into HDFS (batch T-1). Airflow batch pipeline (daily T-1).",
+    "files": [
+      "dags/lending_ingest_etl.py",
+      "README.md",
+      "sql/transform.sql",
+      "config/job.yaml"
+    ],
     "lineage": {
       "upstream": [],
-      "downstream": []
+      "downstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_account,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_order,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_bill,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_statement,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_user,PROD)"
+      ]
     },
     "directory_structure": {
+      "dags": {
+        "lending_ingest_etl.py": "file"
+      },
+      "sql": {
+        "transform.sql": "file",
+        "schema_checks.sql": "file"
+      },
       "config": {
-        "staging": {
-          "log4j.properties": "file"
-        },
-        "development": {
-          "log4j.properties": "file"
-        },
-        "production": {
-          "log4j.properties": "file"
-        }
+        "job.yaml": "file"
       },
-      "Dockerfile": "file",
-      "gitlab-ci": {
-        "staging_aws.yml": "file",
-        "development.yml": "file",
-        "production_onprem.yml": "file",
-        "production_aws.yml": "file",
-        "staging_onprem.yml": "file"
+      "tests": {
+        "test_transform.py": "file"
       },
-      "pom.xml": "file",
-      ".gitmodules": "file",
       "README.md": "file",
-      ".gitignore": "file",
-      "scalastyle_config.xml": "file",
-      ".gitlab-ci.yml": "file",
-      "run_processor.sh": "file",
-      "src": {
-        "test": {
-          "resources": {
-            "test_conf.yml": "file",
-            "mockito-extensions": {
-              "org.mockito.plugins.MockMaker": "file"
-            },
-            "log4j.properties": "file",
-            "missing_key_conf.yml": "file"
-          },
-          "scala": {
-            "vn": {
-              "com": {
-                "acme": {
-                  "dataquality": {
-                    "config": {
-                      "ProjectConfigTest.scala": "file"
-                    },
-                    "validator": {
-                      "StringContainedInTest.scala": "file",
-                      "GeneralStringLengthTest.scala": "file",
-                      "DataFormatTest.scala": "file",
-                      "datainput": {
-                        "ConsistencySegmentTest": {
-                          "ConsistencySegmentTest.mongo_source.json": "file",
-                          "ConsistencySegmentTest.redshift_source.json": "file",
-                          "ConsistencySegmentTest.mongo_changed.json": "file"
-                        },
-                        "GeneralStringLengthTest": {
-                          "GeneralStringLengthTest.source.json": "file"
-                        },
-                        "ChronologicalOrderTest": {
-                          "ChronologicalOrderTest.source.json": "file"
-                        },
-                        "FieldDependencyAnomalyTest": {
-                          "FieldDependencyAnomalyTest.source.json": "file"
-                        },
-                        "ForeignKeyTest": {
-                          "ForeignKeyTest.parent_source.json": "file",
-                          "ForeignKeyTest.tpe_success.json": "file",
-                          "ForeignKeyTest.tpe_failed.json": "file",
-                          "ForeignKeyTest.child_source.json": "file",
-                          "ForeignKeyTest.orphan_source.json": "file",
-                          "ForeignKeyTest.tpe_source.json": "file"
-                        },
-                        "MetricReconciliationTest": {
-                          "MetricReconciliationTest.source.json": "file",
-                          "MetricReconciliationTest.target.json": "file"
-                        },
-                        "NotNullTest": {
-                          "NotNullTest.tpe_source.json": "file"
-                        },
-                        "NumberContainedInTest": {
-                          "NumberContainedInTest.tpe_source.json": "file"
-                        },
-                        "StatisticalOutlierAnomalyTest": {
-                          "StatisticalOutlierAnomalyTest.source.json": "file"
-                        },
-                        "ArithmeticConsistencyTest": {
-                          "ArithmeticConsistencyTest.source.json": "file"
-                        },
-                        "StringNotContainedInTest": {
-                          "StringNotContainedInTest.tpe_source.json": "file"
-                        },
-                        "SkeyMappingTest": {
-                          "SkeyMappingTest.tpe_fact_4.json": "file",
-                          "SkeyMappingTest.tpe_fact_5.json": "file",
-                          "SkeyMappingTest.tpe_fact_2.json": "file",
-                          "SkeyMappingTest.tpe_dim.json": "file",
-                          "SkeyMappingTest.tpe_fact_3.json": "file",
-                          "SkeyMappingTest.tpe_fact_1.json": "file",
-                          "SkeyMappingTest.tpe_fact_6.json": "file",
-                          "SkeyMappingTest.tpe_fact_7.json": "file"
-                        },
-                        "UniqueValueTest": {
-                          "UniqueValueTest.tpe_source.json": "file"
-                        },
-                        "NullCompareTest": {
-                          "NullCompareTest.tpe_source.json": "file",
-                          "NullCompareTest.tpe_target.json": "file"
-                        },
-                        "PrimaryKeyTest": {
-                          "PrimaryKeyTest.tpe_source.json": "file"
-                        },
-                        "ReferenceFieldContainmentTest": {
-                          "ReferenceFieldContainmentTest.source_empty.json": "file",
-                          "ReferenceFieldContainmentTest.source_fail.json": "file",
-                          "ReferenceFieldContainmentTest.source_int.json": "file",
-                          "ReferenceFieldContainmentTest.source_unsupported.json": "file",
-                          "ReferenceFieldContainmentTest.source_pass.json": "file"
-                        },
-                        "DataFormatTest": {
-                          "DataFormatTest.tpe_source.json": "file"
-                        },
-                        "DataTypeTest": {
-                          "DataTypeTest.tpe_source.json": "file"
-                        },
-                        "GeneralValueAnomalyTest": {
-                          "GeneralValueAnomalyTest.source.json": "file"
-                        },
-                        "NumberNotContainedInTest": {
-                          "NumberNotContainedInTest.tpe_source.json": "file"
-                        },
-                        "GeneralContainedInTest": {
-                          "GeneralContainedInTest.string_source.json": "file",
-                          "GeneralContainedInTest.numeric_source.json": "file",
-                          "GeneralContainedInTest.bool_source.json": "file",
-                          "GeneralContainedInTest.temporal_source.json": "file",
-                          "GeneralContainedInTest.all_types_source.json": "file"
-                        },
-                        "JsonStructureTest": {
-                          "JsonStructureTest.source.json": "file"
-                        },
-                        "StringExtractFieldTest": {
-                          "StringExtractFieldTest.empty.json": "file",
-                          "StringExtractFieldTest.string_parent.json": "file",
-                          "StringExtractFieldTest.reset_pin_action.json": "file",
-                          "StringExtractFieldTest.iso_time_event.json": "file",
-                          "StringExtractFieldTest.invalid_parent.json": "file",
-                          "StringExtractFieldTest.reset_pin_mismatch.json": "file",
-                          "StringExtractFieldTest.action_log_event.json": "file",
-                          "StringExtractFieldTest.reset_pin_action_diff.json": "file",
-                          "StringExtractFieldTest.action_log.json": "file",
-                          "StringExtractFieldTest.action_log_invalid.json": "file",
-                          "StringExtractFieldTest.reset_pin_action_invalid.json": "file"
-                        },
-                        "FieldContainmentTest": {
-                          "FieldContainmentTest.source_null.json": "file",
-                          "FieldContainmentTest.dest_single.json": "file",
-                          "FieldContainmentTest.dest_null.json": "file",
-                          "FieldContainmentTest.dest_type_mismatch.json": "file",
-                          "FieldContainmentTest.dest_single_missing.json": "file",
-                          "FieldContainmentTest.dest_multi.json": "file",
-                          "FieldContainmentTest.source_empty.json": "file",
-                          "FieldContainmentTest.dest_multi_missing.json": "file",
-                          "FieldContainmentTest.source_numeric.json": "file",
-                          "FieldContainmentTest.source_multi.json": "file",
-                          "FieldContainmentTest.source_type_mismatch.json": "file",
-                          "FieldContainmentTest.dest_empty.json": "file",
-                          "FieldContainmentTest.source_single.json": "file",
-                          "FieldContainmentTest.dest_numeric.json": "file"
-                        },
-                        "RecordCountTest": {
-                          "RecordCountTest.tpe_source.json": "file",
-                          "RecordCountTest.tpe_source_cut.json": "file",
-                          "RecordCountTest.tpe_source_clone.json": "file"
-                        },
-                        "StringLengthTest": {
-                          "StringLengthTest.tpe_source.json": "file"
-                        },
-                        "TimeGapIntegrityTest": {
-                          "TimeGapIntegrityTest.source.json": "file"
-                        },
-                        "PartitionDateCheckTest": {
-                          "PartitionDateCheckTest.source.json": "file"
-                        },
-                        "StringContainedInTest": {
-                          "StringContainedInTest.tpe_source.json": "file"
-                        },
-                        "MultiFieldConsistencyTest": {
-                          "MultiFieldConsistencyTest.source.json": "file"
-                        },
-                        "ConsistencyDataTest": {
-                          "ConsistencyDataTest.two_tpe_source.json": "file",
-                          "ConsistencyDataTest.tpe_source.json": "file",
-                          "ConsistencyDataTest.two_tpe_target.json": "file",
-                          "ConsistencyDataTest.tpe_target.json": "file",
-                          "ConsistencyDataTest.two_tpe_source_changed.json": "file",
-                          "ConsistencyDataTest.tpe_source_changed.json": "file"
-                        },
-                        "SchemaFieldCountTest": {
-                          "SchemaFieldCountTest.source.json": "file"
-                        }
-                      },
-                      "JsonStructureTest.scala": "file",
-                      "FieldDependencyAnomalyTest.scala": "file",
-                      "SkeyMappingTest.scala": "file",
-                      "StringNotContainedInTest.scala": "file",
-                      "NumberNotContainedInTest.scala": "file",
-                      "BaseValidatorTest.scala": "file",
-                      "UniqueValueTest.scala": "file",
-                      "GeneralValueAnomalyTest.scala": "file",
-                      "ArithmeticConsistencyTest.scala": "file",
-                      "NotNullTest.scala": "file",
-                      "TestSegmentValidator.scala": "file",
-                      "StatisticalOutlierAnomalyTest.scala": "file",
-                      "DataTypeTest.scala": "file",
-                      "StringExtractFieldTest.scala": "file",
-                      "ChronologicalOrderTest.scala": "file",
-                      "RecordCountTest.scala": "file",
-                      "NullCompareTest.scala": "file",
-                      "ConsistencySegmentTest.scala": "file",
-                      "SchemaFieldCountTest.scala": "file",
-                      "MultiFieldConsistencyTest.scala": "file",
-                      "NumberContainedInTest.scala": "file",
-                      "ForeignKeyTest.scala": "file",
-                      "MetricReconciliationTest.scala": "file",
-                      "FieldContainmentTest.scala": "file",
-                      "StringLengthTest.scala": "file",
-                      "ReferenceFieldContainmentTest.scala": "file",
-                      "approvals": {
-                        "DataTypeCheckTest.failed_length_fields.approve": "file",
-                        "StringExtractFieldTest.pass_event_mode_no_ymd_range.approve": "file",
-                        "DataTypeCheckTest.failed_multiple_fields.approve": "file",
-                        "UniqueValueTest.failed_single_and_multi_null.approve": "file",
-                        "MultiFieldConsistencyTest.layer2_invalid_sql.approve": "file",
-                        "DataTypeCheckTest.successful_field_string.approve": "file",
-                        "GeneralStringLengthTest.success_case.approve": "file",
-                        "PartitionDateCheckTest.fail_outside_range.approve": "file",
-                        "StringNotContainedInTest.successfully_case_1.approve": "file",
-                        "NumberContainedInTest.failed_2_seg.approve": "file",
-                        "NullCompareTest.failed_multi.approve": "file",
-                        "ChronologicalOrderTest.exec_asc.approve": "file",
-                        "GeneralContainedInTest.L3-05_range_lb_gt_ub.approve": "file",
-                        "SkeyMappingTest.case_5.approve": "file",
-                        "StringExtractFieldTest.fail_mapping_incomplete.approve": "file",
-                        "PartitionDateCheckTest.exec_date_type_support.approve": "file",
-                        "PartitionDateCheckTest.layer2_field_not_found.approve": "file",
-                        "GeneralContainedInTest.E6-12_source_list_first_element.approve": "file",
-                        "StringExtractFieldTest.pass_valid_extract_match.approve": "file",
-                        "JsonStructureTest.layer1_missing_field.approve": "file",
-                        "DataLengthCheckTest.successful.approve": "file",
-                        "GeneralContainedInTest.L1-08_elements_empty.approve": "file",
-                        "GeneralContainedInTest.L1-03_missing_source.approve": "file",
-                        "ChronologicalOrderTest.exec_none_null_false.approve": "file",
-                        "UniqueValueTest.failed_multiple_non_exist_field_1.approve": "file",
-                        "GeneralContainedInTest.L3-06_range_point.approve": "file",
-                        "FieldContainmentTest.failed_single_field_source_not_in_dest_unique.approve": "file",
-                        "FieldContainmentTest.successful_multi_field_dest_not_in_source.approve": "file",
-                        "NullCompareTest.failed_empty_source_field.approve": "file",
-                        "ConsistencyDataTest.successful_different_fields_name.approve": "file",
-                        "StringLengthTest.failed_type_long.approve": "file",
-                        "DataTypeTest.successful_field_long.approve": "file",
-                        "ForeignKeyTest.success_precheck_2_query.approve": "file",
-                        "GeneralValueAnomalyTest.layer2_unsupported_type_bool.approve": "file",
-                        "GeneralContainedInTest.L1-01_missing_metric.approve": "file",
-                        "DataFormatTest.successful_regex_1.approve": "file",
-                        "ReferenceFieldContainmentTest.fail_missing_reference_col.approve": "file",
-                        "RecordCountTest.failed_multiple_source_and_dest.approve": "file",
-                        "JsonStructureTest.exec_success.approve": "file",
-                        "DataTypeTest.successful_field_string.approve": "file",
-                        "TimeGapIntegrityTest.layer1_missing_fields.approve": "file",
-                        "StatisticalOutlierAnomalyTest.layer1_missing_source.approve": "file",
-                        "PartitionDateCheckTest.layer1_range_exceeds_14_days.approve": "file",
-                        "FieldContainmentTest.successful_numeric_smart_type_matching.approve": "file",
-                        "RangeOfValueTest.failed_none_min.approve": "file",
-                        "ConsistencySegmentTest.successful_case_-_last_all.approve": "file",
-                        "GeneralContainedInTest.L3-10_boolean_string_pass.approve": "file",
-                        "ForeignKeyTest.failed_precheck_2_query.approve": "file",
-                        "RangeOfValueTest.successful.approve": "file",
-                        "MetricReconciliationTest.layer1_empty_rules.approve": "file",
-                        "FieldDependencyAnomalyTest.exec_success.approve": "file",
-                        "ValidateStringDataInRangeValuesTest.failed_case_2.approve": "file",
-                        "GeneralValueAnomalyTest.layer2_source_not_found.approve": "file",
-                        "StringExtractFieldTest.fail_source_key_not_exist.approve": "file",
-                        "ChronologicalOrderTest.layer1_empty_rules.approve": "file",
-                        "GeneralStringLengthTest.fail_not_null.approve": "file",
-                        "PartitionDateCheckTest.case3_epoch_str.approve": "file",
-                        "PrimaryKeyTest.failed_multiple_non_exist_field_3.approve": "file",
-                        "GeneralStringLengthTest.layer2_all_nulls.approve": "file",
-                        "NumberContainedInTest.successful.approve": "file",
-                        "ArithmeticConsistencyTest.layer2_missing_col.approve": "file",
-                        "PartitionDateCheckTest.layer1_missing_source.approve": "file",
-                        "NumberContainedInTest.successful_2_seg.approve": "file",
-                        "FieldContainmentTest.failed_invalid_metric.approve": "file",
-                        "RecordCountTest.successful_multiple_source.approve": "file",
-                        "PrimaryKeyTest.failed_duplicate_fields_2.approve": "file",
-                        "MetricReconciliationTest.exec_success_with_tolerance.approve": "file",
-                        "DataLengthCheckTest.failed_case_outside_length.approve": "file",
-                        "ForeignKeyTest.success_precheck_1.approve": "file",
-                        "GeneralValueAnomalyTest.layer1_missing_field.approve": "file",
-                        "NumberContainedInTest.successful_miss_ub.approve": "file",
-                        "UniqueValueTest.successful_multiple_2.approve": "file",
-                        "GeneralValueAnomalyTest.exec_trim_numeric.approve": "file",
-                        "MetricReconciliationTest.layer2a_etl_logic_success.approve": "file",
-                        "ForeignKeyTest.failed_precheck_1_query.approve": "file",
-                        "DataLengthCheckTest.failed_not_exist_field.approve": "file",
-                        "FieldContainmentTest.successful_multi_field_source_not_in_dest.approve": "file",
-                        "NotNullTest.successful_single_field_trim.approve": "file",
-                        "DataLengthCheckTest.successful_with_trim_field.approve": "file",
-                        "TimeGapIntegrityTest.exec_fail_max.approve": "file",
-                        "NullCompareTest.successful_multi.approve": "file",
-                        "GeneralContainedInTest.E6-09_empty_dataframe_pass.approve": "file",
-                        "MetricReconciliationTest.layer1_invalid_metric.approve": "file",
-                        "FieldContainmentTest.failed_unknown_metric_single_field.approve": "file",
-                        "PrimaryKeyTest.failed_multiple_non_exist_field_2.approve": "file",
-                        "NotNullTest.failed_combined_fields.approve": "file",
-                        "ConsistencyDataTest.failed_duplicate_source_fields.approve": "file",
-                        "GeneralContainedInTest.L2-10_ranges_on_boolean.approve": "file",
-                        "FieldContainmentTest.failed_malformed_fields_mapping.approve": "file",
-                        "RecordCountTest.successful_multiple_dest.approve": "file",
-                        "FieldDependencyAnomalyTest.layer2_source_not_found.approve": "file",
-                        "FieldContainmentTest.failed_single_field_dest_not_in_source_unique.approve": "file",
-                        "GeneralStringLengthTest.layer1_empty_rules.approve": "file",
-                        "GeneralStringLengthTest.layer1_invalid_min_type.approve": "file",
-                        "MetricReconciliationTest.layer2_field_not_found.approve": "file",
-                        "PrimaryKeyTest.failed_duplicate_fields_3.approve": "file",
-                        "FieldContainmentTest.bypass_both_empty.approve": "file",
-                        "ReferenceFieldContainmentTest.pass_all_values_exist.approve": "file",
-                        "UniqueValueTest.successful_single_and_multi_null.approve": "file",
-                        "SkeyMappingTest.case_4.approve": "file",
-                        "ArithmeticConsistencyTest.layer1_empty_rules.approve": "file",
-                        "StatisticalOutlierAnomalyTest.layer1_missing_method.approve": "file",
-                        "StringExtractFieldTest.fail_mode_event_with_long_time.approve": "file",
-                        "GeneralContainedInTest.L1-09_elements_blank_item.approve": "file",
-                        "PartitionDateCheckTest.case1_numeric_prefix.approve": "file",
-                        "NotNullTest.successful_multiple_fields_trim.approve": "file",
-                        "DataTypeTest.failed_field_string.approve": "file",
-                        "GeneralContainedInTest.L1-11_elements_duplicate_string.approve": "file",
-                        "GeneralStringLengthTest.layer1_missing_field.approve": "file",
-                        "NumberContainedInTest.failed_lb_and_ub.approve": "file",
-                        "GeneralStringLengthTest.layer2_source_not_found.approve": "file",
-                        "GeneralContainedInTest.L2-11_all_rows_null.approve": "file",
-                        "GeneralContainedInTest.L1-14_ranges_empty_map.approve": "file",
-                        "PrimaryKeyTest.successful_multiple_1.approve": "file",
-                        "TimeGapIntegrityTest.exec_negative_gap.approve": "file",
-                        "StringExtractFieldTest.fail_des_key_not_exist.approve": "file",
-                        "DataLengthCheckTest.successful_without_trim_field.approve": "file",
-                        "FieldContainmentTest.successful_null_filtered.approve": "file",
-                        "UniqueValueTest.failed_single_and_a_null.approve": "file",
-                        "TimeGapIntegrityTest.layer1_empty_rules.approve": "file",
-                        "GeneralContainedInTest.S5-18_decimal_elements_match.approve": "file",
-                        "DataFormatTest.failed_avail_predefined.approve": "file",
-                        "NotNullTest.successful_multiple_fields.approve": "file",
-                        "GeneralStringLengthTest.fail_multi_rules.approve": "file",
-                        "PrimaryKeyTest.failed_single_unique.approve": "file",
-                        "FieldContainmentTest.failed_type_mismatch.approve": "file",
-                        "StringExtractFieldTest.fail_sources_less_than_2.approve": "file",
-                        "StringNotContainedInTest.failed_case_2.approve": "file",
-                        "ConsistencySegmentTest.failed_missing_metric_or_time_format.approve": "file",
-                        "ForeignKeyTest.success_composite_key.approve": "file",
-                        "ForeignKeyTest.success_precheck_1_query.approve": "file",
-                        "GeneralContainedInTest.L3-12_boolean_cast_fail.approve": "file",
-                        "GeneralContainedInTest.S5-41_NotContainedIn_fail.approve": "file",
-                        "PartitionDateCheckTest.layer1_no_date_fields.approve": "file",
-                        "ReferenceFieldContainmentTest.pass_csv_custom_delimiter.approve": "file",
-                        "NumberNotContainedInTest.failed_value.approve": "file",
-                        "GeneralContainedInTest.L2-02_field_not_exist.approve": "file",
-                        "GeneralValueAnomalyTest.layer1_missing_accepted.approve": "file",
-                        "PrimaryKeyTest.failed_single_null.approve": "file",
-                        "ValidateStringDataInRangeValuesTest.failed_case_1.approve": "file",
-                        "NotNullTest.not_existing_fields.approve": "file",
-                        "ChronologicalOrderTest.layer2_type_mismatch.approve": "file",
-                        "GeneralContainedInTest.L3-03_element_mismatch_format.approve": "file",
-                        "GeneralStringLengthTest.layer1_min_gt_max.approve": "file",
-                        "FieldContainmentTest.failed_missing_target_field.approve": "file",
-                        "FieldDependencyAnomalyTest.exec_fail_single.approve": "file",
-                        "GeneralValueAnomalyTest.layer2_unsupported_type_array.approve": "file",
-                        "GeneralContainedInTest.L3-09_ranges_non-overlap.approve": "file",
-                        "PrimaryKeyTest.failed_single_non_exist_field.approve": "file",
-                        "DataFormatTest.successful_regex_2.approve": "file",
-                        "StringExtractFieldTest.fail_des_field_not_exist.approve": "file",
-                        "PartitionDateCheckTest.layer1_ymd_from_gt_to.approve": "file",
-                        "GeneralContainedInTest.L1-18_decimal_precision_zero.approve": "file",
-                        "DataTypeTest.failed_not_available_type.approve": "file",
-                        "FieldContainmentTest.successful_single_field_dest_not_in_source.approve": "file",
-                        "ForeignKeyTest.success_precheck_2.approve": "file",
-                        "ConsistencySegmentTest.failed_first_field_not_user_id.approve": "file",
-                        "ForeignKeyTest.failed_much_fields.approve": "file",
-                        "FieldContainmentTest.failed_single_field_source_in_dest_missing.approve": "file",
-                        "ArithmeticConsistencyTest.exec_tolerance_pass.approve": "file",
-                        "StringExtractFieldTest.pass_multiple_candidates_fallback.approve": "file",
-                        "GeneralContainedInTest.S5-13_double_elements_match.approve": "file",
-                        "RecordCountTest.successful_a_query.approve": "file",
-                        "ConsistencyDataTest.failed_case.approve": "file",
-                        "JsonStructureTest.layer2_field_not_found.approve": "file",
-                        "NumberNotContainedInTest.successful_2_seg.approve": "file",
-                        "PrimaryKeyTest.failed_duplicate_fields_1.approve": "file",
-                        "DataFormatTest.failed_json.approve": "file",
-                        "MetricReconciliationTest.exec_multi_fail.approve": "file",
-                        "RecordCountTest.successful_multiple_source_and_dest.approve": "file",
-                        "StringExtractFieldTest.pass_event_mode_with_iso_time_range.approve": "file",
-                        "PrimaryKeyTest.successful_single.approve": "file",
-                        "FieldContainmentTest.successful_single_field_source_in_dest.approve": "file",
-                        "NumberNotContainedInTest.failed_elements.approve": "file",
-                        "GeneralContainedInTest.E6-01_combined_elements_ranges_pass.approve": "file",
-                        "StringNotContainedInTest.successfully_case_2.approve": "file",
-                        "StatisticalOutlierAnomalyTest.exec_iqr_outliers.approve": "file",
-                        "SkeyMappingTest.case_6.approve": "file",
-                        "GeneralStringLengthTest.layer1_negative_min.approve": "file",
-                        "FieldContainmentTest.failed_empty_target_field.approve": "file",
-                        "NumberContainedInTest.failed_none.approve": "file",
-                        "ForeignKeyTest.failed_case.approve": "file",
-                        "GeneralValueAnomalyTest.layer1_empty_field.approve": "file",
-                        "ForeignKeyTest.success_single_key.approve": "file",
-                        "GeneralStringLengthTest.fail_string_min.approve": "file",
-                        "StringLengthTest.successful_multiple.approve": "file",
-                        "GeneralContainedInTest.L1-05_metric_case-insensitive.approve": "file",
-                        "FieldContainmentTest.successful_multi_field_dest_in_source.approve": "file",
-                        "ChronologicalOrderTest.layer1_too_few_fields.approve": "file",
-                        "StatisticalOutlierAnomalyTest.exec_custom_precision.approve": "file",
-                        "UniqueValueTest.successful_single_and_a_null_not_trim.approve": "file",
-                        "GeneralContainedInTest.L3-15_range_ub_only.approve": "file",
-                        "ChronologicalOrderTest.layer1_missing_source.approve": "file",
-                        "UniqueValueTest.failed_multiple_non_exist_field_2.approve": "file",
-                        "GeneralContainedInTest.L3-08_ranges_overlap.approve": "file",
-                        "ConsistencyDataTest.successful_case.approve": "file",
-                        "GeneralValueAnomalyTest.layer2_all_nulls.approve": "file",
-                        "ArithmeticConsistencyTest.layer1_invalid_tolerance_string.approve": "file",
-                        "SchemaFieldCountTest.layer1_negative_count.approve": "file",
-                        "GeneralContainedInTest.L3-13_float_number_rounding.approve": "file",
-                        "GeneralValueAnomalyTest.exec_trim_false.approve": "file",
-                        "GeneralContainedInTest.L2-09_ranges_on_string.approve": "file",
-                        "RecordCountTest.exception_source_query.approve": "file",
-                        "MultiFieldConsistencyTest.exec_fail_multi.approve": "file",
-                        "GeneralContainedInTest.S5-14_double_noise_fail.approve": "file",
-                        "GeneralContainedInTest.L1-06_metric_notcontainedin.approve": "file",
-                        "DataTypeCheckTest.failed_not_available_types.approve": "file",
-                        "GeneralValueAnomalyTest.layer2_field_not_found.approve": "file",
-                        "PrimaryKeyTest.successful_multiple_2.approve": "file",
-                        "TimeGapIntegrityTest.layer1_invalid_unit.approve": "file",
-                        "StringExtractFieldTest.fail_mismatch_value.approve": "file",
-                        "JsonStructureTest.exec_array_success.approve": "file",
-                        "GeneralStringLengthTest.array_check.approve": "file",
-                        "NumberNotContainedInTest.failed_lb_and_ub.approve": "file",
-                        "StringExtractFieldTest.fail_fields_empty.approve": "file",
-                        "FieldContainmentTest.failed_unknown_metric_multi_field.approve": "file",
-                        "GeneralContainedInTest.L2-07_format_on_string.approve": "file",
-                        "ValidateStringDataInRangeValuesTest.failed_case_type.approve": "file",
-                        "DataFormatTest.failed_timestamp_1.approve": "file",
-                        "ConsistencyDataTest.failed_duplicate_fields.approve": "file",
-                        "SkeyMappingTest.case_7.approve": "file",
-                        "ForeignKeyTest.failed_much_fields_query.approve": "file",
-                        "UniqueValueTest.failed_multiple_non_exist_field_3.approve": "file",
-                        "SchemaFieldCountTest.exec_nonstrict_pass.approve": "file",
-                        "DataTypeCheckTest.successful_multiple_fields.approve": "file",
-                        "DataFormatTest.failed_timestamp.approve": "file",
-                        "RecordCountTest.successful_self.approve": "file",
-                        "ConsistencyDataTest.successful_case_two_fields.approve": "file",
-                        "RangeOfValueTest.failed_string.approve": "file",
-                        "TimeGapIntegrityTest.layer1_min_gt_max.approve": "file",
-                        "PrimaryKeyTest.failed_multiple_all.approve": "file",
-                        "StringNotContainedInTest.failed_case_1.approve": "file",
-                        "ConsistencySegmentTest.failed_invalid_metric.approve": "file",
-                        "FieldContainmentTest.successful_single_field_source_not_in_dest.approve": "file",
-                        "GeneralValueAnomalyTest.layer1_missing_source.approve": "file",
-                        "DataTypeTest.failed_field_timestamp.approve": "file",
-                        "NullCompareTest.failed_case.approve": "file",
-                        "ForeignKeyTest.build_query_test.approve": "file",
-                        "PartitionDateCheckTest.layer1_missing_formatter.approve": "file",
-                        "StringExtractFieldTest.pass_both_empty.approve": "file",
-                        "RangeOfValueTest.successful_none_min.approve": "file",
-                        "FieldDependencyAnomalyTest.layer1_empty_rules.approve": "file",
-                        "GeneralContainedInTest.L1-13_ranges_empty.approve": "file",
-                        "StatisticalOutlierAnomalyTest.exec_factor_exclude.approve": "file",
-                        "GeneralContainedInTest.L2-12_unsupported_type.approve": "file",
-                        "ValidateStringDataInRangeValuesTest.successfully_case_2.approve": "file",
-                        "DataTypeTest.successful_field_timestamp.approve": "file",
-                        "ArithmeticConsistencyTest.exec_success.approve": "file",
-                        "NumberNotContainedInTest.successful_ranges_elements.approve": "file",
-                        "PartitionDateCheckTest.layer2_source_not_found.approve": "file",
-                        "GeneralContainedInTest.L1-15_ranges_missing_bounds.approve": "file",
-                        "NullCompareTest.successful_case_1.approve": "file",
-                        "MetricReconciliationTest.layer2a_etl_logic_fail.approve": "file",
-                        "StringExtractFieldTest.fail_source_field_not_exist.approve": "file",
-                        "GeneralContainedInTest.L1-02_missing_field.approve": "file",
-                        "GeneralValueAnomalyTest.exec_multi_fail.approve": "file",
-                        "DataLengthCheckTest.failed_type_long.approve": "file",
-                        "NumberNotContainedInTest.failed_string.approve": "file",
-                        "GeneralContainedInTest.E6-06_range_boundary_fail.approve": "file",
-                        "UniqueValueTest.successful_multiple_1.approve": "file",
-                        "ReferenceFieldContainmentTest.fail_missing_reference_format.approve": "file",
-                        "GeneralValueAnomalyTest.exec_values_with_null.approve": "file",
-                        "GeneralContainedInTest.S5-11_byte_elements_match.approve": "file",
-                        "GeneralStringLengthTest.map_check.approve": "file",
-                        "PrimaryKeyTest.successful_single_and_a_null_not_trim.approve": "file",
-                        "TimeGapIntegrityTest.exec_multi_fail.approve": "file",
-                        "GeneralContainedInTest.S5-02_long_elements_mismatch.approve": "file",
-                        "GeneralContainedInTest.L3-14_range_lb_only.approve": "file",
-                        "SchemaFieldCountTest.exec_nonstrict_fail_count.approve": "file",
-                        "RangeOfValueTest.failed_invalid_input.approve": "file",
-                        "JsonStructureTest.layer1_missing_source.approve": "file",
-                        "ReferenceFieldContainmentTest.fail_unsupported_type.approve": "file",
-                        "NumberContainedInTest.successful_miss_lb.approve": "file",
-                        "PartitionDateCheckTest.layer1_range_exceeds_90_days.approve": "file",
-                        "FieldContainmentTest.failed_multi_field_source_in_dest_missing.approve": "file",
-                        "DataFormatTest.failed_miss_predefined_regex.approve": "file",
-                        "PrimaryKeyTest.failed_multiple_non_exist_field_1.approve": "file",
-                        "GeneralValueAnomalyTest.exec_combined.approve": "file",
-                        "ArithmeticConsistencyTest.layer1_missing_source.approve": "file",
-                        "ForeignKeyTest.failed_case_query.approve": "file",
-                        "ConsistencySegmentTest.failed_inconsistency_data.approve": "file",
-                        "FieldContainmentTest.failed_invalid_source_length.approve": "file",
-                        "StringExtractFieldTest.fail_time_field_incomplete.approve": "file",
-                        "ReferenceFieldContainmentTest.pass_source_empty.approve": "file",
-                        "GeneralStringLengthTest.layer1_missing_bounds.approve": "file",
-                        "ReferenceFieldContainmentTest.fail_missing_reference_path.approve": "file",
-                        "NumberContainedInTest.successful_elements.approve": "file",
-                        "StringExtractFieldTest.fail_some_target_values_not_found.approve": "file",
-                        "StringExtractFieldTest.fail_unsupported_parent_type.approve": "file",
-                        "NumberNotContainedInTest.successful_miss_lb.approve": "file",
-                        "StringContainedInTest.failed_case_1.approve": "file",
-                        "RecordCountTest.successful_2_queries.approve": "file",
-                        "ChronologicalOrderTest.exec_desc.approve": "file",
-                        "ForeignKeyTest.failed_precheck_1.approve": "file",
-                        "StatisticalOutlierAnomalyTest.layer1_empty_rules.approve": "file",
-                        "StringContainedInTest.failed_case_none.approve": "file",
-                        "MultiFieldConsistencyTest.exec_fail_logic.approve": "file",
-                        "GeneralContainedInTest.S5-15_double_noise_pass_with_precision.approve": "file",
-                        "DataTypeCheckTest.failed_field_timestamp.approve": "file",
-                        "GeneralContainedInTest.L3-04_timestamp_unparseable.approve": "file",
-                        "FieldContainmentTest.successful_multi_field_source_in_dest.approve": "file",
-                        "FieldDependencyAnomalyTest.exec_null_logic.approve": "file",
-                        "StringLengthTest.successful.approve": "file",
-                        "ConsistencyDataTest.failed_case_two_fields.approve": "file",
-                        "GeneralContainedInTest.L2-03_precision_on_integer.approve": "file",
-                        "FieldContainmentTest.successful_single_field_dest_in_source.approve": "file",
-                        "ConsistencySegmentTest.failed_missing_user_prefix.approve": "file",
-                        "ReferenceFieldContainmentTest.fail_source_col_not_exist.approve": "file",
-                        "PrimaryKeyTest.failed_multiple_little_1.approve": "file",
-                        "MultiFieldConsistencyTest.layer1_empty_rules.approve": "file",
-                        "DataFormatTest.success_json.approve": "file",
-                        "FieldDependencyAnomalyTest.layer1_missing_source.approve": "file",
-                        "DataFormatTest.failed_time_format.approve": "file",
-                        "StringExtractFieldTest.pass_unknown_mode_fallback.approve": "file",
-                        "MetricReconciliationTest.layer1_negative_tolerance.approve": "file",
-                        "MetricReconciliationTest.layer1_missing_target.approve": "file",
-                        "UniqueValueTest.successful_single_and_a_null_trim.approve": "file",
-                        "SchemaFieldCountTest.exec_strict_fail_extra.approve": "file",
-                        "PartitionDateCheckTest.layer1_invalid_formatter.approve": "file",
-                        "ConsistencyDataTest.failed_not_exist_dest_field_2_fields.approve": "file",
-                        "JsonStructureTest.layer2_incompatible_type.approve": "file",
-                        "FieldDependencyAnomalyTest.exec_fail_multi.approve": "file",
-                        "NumberContainedInTest.failed_elements.approve": "file",
-                        "ArithmeticConsistencyTest.exec_breakdown.approve": "file",
-                        "NotNullTest.failed_single_field.approve": "file",
-                        "FieldContainmentTest.successful_different_field_names.approve": "file",
-                        "RangeOfValueTest.failed_value.approve": "file",
-                        "GeneralContainedInTest.S5-05_long_range_match.approve": "file",
-                        "NullCompareTest.failed_not_exist_field_source.approve": "file",
-                        "StatisticalOutlierAnomalyTest.exec_factor_outliers.approve": "file",
-                        "RangeOfValueTest.successful_none_max.approve": "file",
-                        "ConsistencyDataTest.failed_not_exist_source_field_2_fields.approve": "file",
-                        "DataFormatTest.successful_simple.approve": "file",
-                        "GeneralContainedInTest.L3-02_week-year_typo.approve": "file",
-                        "SchemaFieldCountTest.exec_strict_fail_count.approve": "file",
-                        "GeneralContainedInTest.L1-04_invalid_metric.approve": "file",
-                        "GeneralContainedInTest.S5-37_timestamp_range.approve": "file",
-                        "StatisticalOutlierAnomalyTest.exec_success.approve": "file",
-                        "UniqueValueTest.failed_duplicate_fields_1.approve": "file",
-                        "SchemaFieldCountTest.layer2_source_not_found.approve": "file",
-                        "StringExtractFieldTest.fail_key_length_mismatch.approve": "file",
-                        "TimeGapIntegrityTest.exec_unit_hour.approve": "file",
-                        "DataFormatTest.failed_missing_name.approve": "file",
-                        "ForeignKeyTest.failed_empty_field_query.approve": "file",
-                        "GeneralValueAnomalyTest.layer1_lb_gt_ub.approve": "file",
-                        "SkeyMappingTest.case_2.approve": "file",
-                        "ArithmeticConsistencyTest.layer2_invalid_sql.approve": "file",
-                        "StringLengthTest.successful_without_trim_field.approve": "file",
-                        "DataFormatTest.failed_both_predefined_regex.approve": "file",
-                        "DataTransformationCheckTest.successful_case_1.approve": "file",
-                        "TimeGapIntegrityTest.layer1_missing_gaps.approve": "file",
-                        "DataTypeCheckTest.failed_duplicate_fields.approve": "file",
-                        "StringExtractFieldTest.fail_destination_null.approve": "file",
-                        "NullCompareTest.failed_not_exist_field_target.approve": "file",
-                        "ConsistencySegmentTest.failed_invalid_time_field_length.approve": "file",
-                        "TimeGapIntegrityTest.exec_fail_null.approve": "file",
-                        "StringExtractFieldTest.pass_empty_source.approve": "file",
-                        "FieldContainmentTest.failed_missing_source_field.approve": "file",
-                        "StatisticalOutlierAnomalyTest.layer2_incompatible_iqr.approve": "file",
-                        "PartitionDateCheckTest.success_case.approve": "file",
-                        "DataFormatTest.failed_not_string.approve": "file",
-                        "GeneralValueAnomalyTest.layer1_invalid_regex.approve": "file",
-                        "NumberNotContainedInTest.failed_none.approve": "file",
-                        "ChronologicalOrderTest.exec_none_null_true.approve": "file",
-                        "GeneralValueAnomalyTest.exec_range_lb.approve": "file",
-                        "RecordCountTest.failed_etl_logic_not_found.approve": "file",
-                        "GeneralStringLengthTest.layer2_unsupported_type.approve": "file",
-                        "MetricReconciliationTest.layer1_missing_source.approve": "file",
-                        "UniqueValueTest.failed_multiple_all_2.approve": "file",
-                        "NumberNotContainedInTest.successful.approve": "file",
-                        "PartitionDateCheckTest.layer2_all_nulls.approve": "file",
-                        "ConsistencySegmentTest.successful_case_-_first_ymd.approve": "file",
-                        "NotNullTest.successful_single_field.approve": "file",
-                        "UniqueValueTest.failed_single_non_exist_field.approve": "file",
-                        "ArithmeticConsistencyTest.layer2_source_not_found.approve": "file",
-                        "DataTypeCheckTest.failed_field_string.approve": "file",
-                        "GeneralStringLengthTest.layer1_missing_source.approve": "file",
-                        "PartitionDateCheckTest.layer1_missing_field.approve": "file",
-                        "PartitionDateCheckTest.layer2_incompatible_type_ms.approve": "file",
-                        "UniqueValueTest.failed_multiple_little_2.approve": "file",
-                        "TimeGapIntegrityTest.exec_success.approve": "file",
-                        "DataTypeCheckTest.successful_field_long.approve": "file",
-                        "RecordCountTest.successful_etl_logic.approve": "file",
-                        "SkeyMappingTest.case_3.approve": "file",
-                        "PartitionDateCheckTest.layer1_empty_rules.approve": "file",
-                        "StringNotContainedInTest.failed_case_none.approve": "file",
-                        "GeneralStringLengthTest.numeric_check.approve": "file",
-                        "NumberNotContainedInTest.failed_invalid_range.approve": "file",
-                        "StatisticalOutlierAnomalyTest.exec_multi_fail.approve": "file",
-                        "ChronologicalOrderTest.exec_source_list.approve": "file",
-                        "StatisticalOutlierAnomalyTest.exec_iqr_all_null.approve": "file",
-                        "StatisticalOutlierAnomalyTest.layer2_source_not_found.approve": "file",
-                        "GeneralValueAnomalyTest.exec_success.approve": "file",
-                        "StringExtractFieldTest.pass_string_parent.approve": "file",
-                        "NumberNotContainedInTest.successful_elements.approve": "file",
-                        "MultiFieldConsistencyTest.layer1_missing_formula.approve": "file",
-                        "JsonStructureTest.exec_fail_malformed.approve": "file",
-                        "GeneralContainedInTest.S5-27_boolean_match.approve": "file",
-                        "FieldContainmentTest.failed_empty_source_field.approve": "file",
-                        "MetricReconciliationTest.exec_count_all_no_distinct.approve": "file",
-                        "StatisticalOutlierAnomalyTest.layer2_field_not_found.approve": "file",
-                        "GeneralValueAnomalyTest.exec_ignore_null_false.approve": "file",
-                        "ForeignKeyTest.success_dual_key.approve": "file",
-                        "GeneralContainedInTest.L2-01_source_not_found.approve": "file",
-                        "PartitionDateCheckTest.exec_ts_type_support.approve": "file",
-                        "DataLengthCheckTest.failed_type_double.approve": "file",
-                        "GeneralValueAnomalyTest.layer1_empty_rules.approve": "file",
-                        "RecordCountTest.exception_dest_query.approve": "file",
-                        "StringContainedInTest.successfully_case_2.approve": "file",
-                        "SchemaFieldCountTest.layer1_empty_fields.approve": "file",
-                        "GeneralStringLengthTest.binary_check.approve": "file",
-                        "FieldContainmentTest.failed_empty_metric.approve": "file",
-                        "StringLengthTest.failed_type_double.approve": "file",
-                        "StringExtractFieldTest.fail_missing_time_field.approve": "file",
-                        "PartitionDateCheckTest.case3_epoch_ms.approve": "file",
-                        "MetricReconciliationTest.layer2_source_not_found.approve": "file",
-                        "GeneralContainedInTest.L3-01_invalid_time_format.approve": "file",
-                        "ConsistencySegmentTest.failed_invalid_time_format.approve": "file",
-                        "RecordCountTest.successful_clone.approve": "file",
-                        "SchemaFieldCountTest.layer1_missing_source.approve": "file",
-                        "NumberContainedInTest.failed_value.approve": "file",
-                        "TimeGapIntegrityTest.layer1_missing_source.approve": "file",
-                        "RecordCountTest.successful_empty_source.approve": "file",
-                        "ChronologicalOrderTest.exec_strict_asc.approve": "file",
-                        "DataTransformationCheckTest.failed_case.approve": "file",
-                        "GeneralContainedInTest.L3-11_boolean_string_fail.approve": "file",
-                        "MetricReconciliationTest.layer2_target_not_found.approve": "file",
-                        "GeneralContainedInTest.L2-06_precision_on_string.approve": "file",
-                        "PrimaryKeyTest.failed_single_null_and_unique.approve": "file",
-                        "ConsistencyDataTest.failed_duplicate_dest_fields.approve": "file",
-                        "FieldContainmentTest.failed_multi_field_dest_in_source_missing.approve": "file",
-                        "SkeyMappingTest.case_1.approve": "file",
-                        "ArithmeticConsistencyTest.exec_fail_multi.approve": "file",
-                        "ForeignKeyTest.failed_orphans.approve": "file",
-                        "StringLengthTest.successful_with_trim_field.approve": "file",
-                        "DataFormatTest.failed_json_1.approve": "file",
-                        "FieldContainmentTest.failed_multi_field_dest_not_in_source_unique.approve": "file",
-                        "ArithmeticConsistencyTest.layer1_missing_field.approve": "file",
-                        "PartitionDateCheckTest.layer2_incompatible_type_prefix.approve": "file",
-                        "PartitionDateCheckTest.case1_short_date.approve": "file",
-                        "FieldContainmentTest.bypass_single_field_both_empty.approve": "file",
-                        "UniqueValueTest.failed_duplicate_fields_2.approve": "file",
-                        "UniqueValueTest.failed_single_and_not_null.approve": "file",
-                        "ArithmeticConsistencyTest.layer1_negative_tolerance.approve": "file",
-                        "TimeGapIntegrityTest.layer2_source_not_found.approve": "file",
-                        "DataTypeTest.failed_field_long.approve": "file",
-                        "StringNotContainedInTest.failed_case_type.approve": "file",
-                        "GeneralValueAnomalyTest.exec_pattern.approve": "file",
-                        "DataFormatTest.failed_all_digit.approve": "file",
-                        "ChronologicalOrderTest.layer2_source_not_found.approve": "file",
-                        "JsonStructureTest.exec_fail_type_mismatch.approve": "file",
-                        "NotNullTest.duplicate_fields.approve": "file",
-                        "MultiFieldConsistencyTest.layer2_source_not_found.approve": "file",
-                        "StringContainedInTest.failed_case_2.approve": "file",
-                        "ForeignKeyTest.failed_precheck_2.approve": "file",
-                        "TimeGapIntegrityTest.exec_unit_minute.approve": "file",
-                        "DataFormatTest.failed_missing_fields.approve": "file",
-                        "FieldContainmentTest.failed_missing_metric.approve": "file",
-                        "GeneralContainedInTest.S5-22_string_elements_match.approve": "file",
-                        "StatisticalOutlierAnomalyTest.layer1_missing_field.approve": "file",
-                        "SchemaFieldCountTest.exec_strict_pass.approve": "file",
-                        "GeneralContainedInTest.S5-33_date_custom_format.approve": "file",
-                        "PrimaryKeyTest.failed_multiple_little_2.approve": "file",
-                        "TimeGapIntegrityTest.exec_date_type_seconds.approve": "file",
-                        "NullCompareTest.failed_empty_fields.approve": "file",
-                        "JsonStructureTest.layer1_empty_rules.approve": "file",
-                        "GeneralContainedInTest.S5-01_long_elements_match.approve": "file",
-                        "DataFormatTest.failed_timestamp_format.approve": "file",
-                        "TimeGapIntegrityTest.exec_fail_min.approve": "file",
-                        "NumberNotContainedInTest.successful_miss_ub.approve": "file",
-                        "ConsistencyDataTest.failed_not_exist_source_field.approve": "file",
-                        "FieldDependencyAnomalyTest.layer1_missing_if_cond.approve": "file",
-                        "ConsistencySegmentTest.failed_empty_fields.approve": "file",
-                        "ChronologicalOrderTest.layer1_invalid_order.approve": "file",
-                        "GeneralContainedInTest.S5-31_date_match.approve": "file",
-                        "ForeignKeyTest.failed_empty_field.approve": "file",
-                        "GeneralContainedInTest.E6-08_null_value_handling.approve": "file",
-                        "RangeOfValueTest.failed_none_max.approve": "file",
-                        "GeneralContainedInTest.L1-16_decimal_precision_negative.approve": "file",
-                        "NotNullTest.failed_multiple_fields.approve": "file",
-                        "SchemaFieldCountTest.exec_strict_fail_missing.approve": "file",
-                        "DataTypeCheckTest.successful_field_timestamp.approve": "file",
-                        "PrimaryKeyTest.successful_single_and_a_null_trim.approve": "file",
-                        "GeneralValueAnomalyTest.exec_trim_true.approve": "file",
-                        "ReferenceFieldContainmentTest.pass_type_alignment_int_to_string.approve": "file",
-                        "DataTypeCheckTest.failed_field_long.approve": "file",
-                        "SchemaFieldCountTest.exec_nonstrict_fail_missing.approve": "file",
-                        "DataTypeTest.failed_multiple_fields.approve": "file",
-                        "RecordCountTest.failed_cut_a_query.approve": "file",
-                        "GeneralContainedInTest.E6-04_range_boundary_inclusive.approve": "file",
-                        "GeneralStringLengthTest.layer2_field_not_found.approve": "file",
-                        "DataFormatTest.failed_regex_1.approve": "file",
-                        "MultiFieldConsistencyTest.exec_pass.approve": "file",
-                        "FieldContainmentTest.failed_multi_field_source_not_in_dest_unique.approve": "file",
-                        "NumberContainedInTest.failed_string.approve": "file",
-                        "JsonStructureTest.exec_array_fail.approve": "file",
-                        "StringExtractFieldTest.fail_mode_action_with_string_time.approve": "file",
-                        "StringContainedInTest.failed_case_type.approve": "file",
-                        "ChronologicalOrderTest.layer2_field_not_found.approve": "file",
-                        "NullCompareTest.failed_empty_target_field.approve": "file",
-                        "MetricReconciliationTest.layer1_missing_field.approve": "file",
-                        "GeneralContainedInTest.S5-40_NotContainedIn_pass.approve": "file",
-                        "StringContainedInTest.successfully_case_1.approve": "file",
-                        "ReferenceFieldContainmentTest.fail_some_values_missing.approve": "file",
-                        "ConsistencyDataTest.failed_invalid_length.approve": "file",
-                        "DataTypeCheckTest.failed_not_available_type.approve": "file",
-                        "NullCompareTest.successful_case.approve": "file",
-                        "GeneralContainedInTest.L1-19_decimal_precision_max.approve": "file",
-                        "DataFormatTest.success_avail_predefined_1.approve": "file",
-                        "DataTypeTest.failed_not_available_types.approve": "file",
-                        "RangeOfValueTest.failed_none_input.approve": "file",
-                        "GeneralValueAnomalyTest.exec_range_ub.approve": "file",
-                        "FieldContainmentTest.failed_single_field_dest_in_source_missing.approve": "file",
-                        "StatisticalOutlierAnomalyTest.exec_iqr_exclude.approve": "file",
-                        "MultiFieldConsistencyTest.layer1_missing_source.approve": "file",
-                        "DataTransformationCheckTest.successful_case_2.approve": "file",
-                        "DataFormatTest.successful_time_format.approve": "file",
-                        "StatisticalOutlierAnomalyTest.layer2_incompatible_factor.approve": "file",
-                        "FieldDependencyAnomalyTest.layer1_missing_then_cond.approve": "file",
-                        "StringLengthTest.failed_not_exist_field.approve": "file",
-                        "ChronologicalOrderTest.exec_success.approve": "file",
-                        "NumberContainedInTest.failed_invalid_range.approve": "file",
-                        "ReferenceFieldContainmentTest.fail_missing_source_col.approve": "file",
-                        "PartitionDateCheckTest.case2_timestamp_str.approve": "file",
-                        "UniqueValueTest.failed_duplicate_fields_3.approve": "file",
-                        "FieldContainmentTest.failed_empty_fields_mapping.approve": "file",
-                        "RecordCountTest.failed_cut.approve": "file",
-                        "GeneralContainedInTest.L3-16_timestamp_format_match.approve": "file",
-                        "JsonStructureTest.layer2_source_not_found.approve": "file",
-                        "DataTypeTest.successful_multiple_fields.approve": "file",
-                        "FieldContainmentTest.bypass_multi_field_both_empty.approve": "file",
-                        "UniqueValueTest.failed_multiple_little_1.approve": "file",
-                        "ChronologicalOrderTest.exec_strict_desc.approve": "file",
-                        "GeneralContainedInTest.L1-07_missing_both_elements_and_ranges.approve": "file",
-                        "DataFormatTest.failed_not_found_field.approve": "file",
-                        "NumberContainedInTest.successful_ranges_elements.approve": "file",
-                        "SchemaFieldCountTest.layer1_missing_targets.approve": "file",
-                        "StringLengthTest.failed_case_outside_length.approve": "file",
-                        "StatisticalOutlierAnomalyTest.layer1_invalid_method.approve": "file",
-                        "JsonStructureTest.exec_fail_missing_keys.approve": "file",
-                        "FieldDependencyAnomalyTest.layer2_invalid_sql.approve": "file",
-                        "NumberNotContainedInTest.failed_2_seg.approve": "file",
-                        "GeneralContainedInTest.S5-26_string_trim_match.approve": "file",
-                        "UniqueValueTest.failed_multiple_all_1.approve": "file",
-                        "UniqueValueTest.successful_single_and_not_null.approve": "file"
-                      },
-                      "TimeGapIntegrityTest.scala": "file",
-                      "PrimaryKeyTest.scala": "file",
-                      "ConsistencyDataTest.scala": "file",
-                      "GeneralContainedInTest.scala": "file",
-                      "PartitionDateCheckTest.scala": "file"
-                    },
-                    "runner": {
-                      "QualityRunnerTest.scala": "file"
-                    },
-                    "processor": {
-                      "TestProcessor.scala": "file",
-                      "datainput": {
-                        "GeneralQualityProcessorTest.conf.yml": "file",
-                        "GeneralQualityProcessorTest.tpe_staging.json": "file"
-                      },
-                      "BaseProcessorTest.scala": "file",
-                      "GeneralQualityProcessorTest.scala": "file",
-                      "approvals": {
-                        "GeneralQualityProcessorTest.run.approve": "file",
-                        "GeneralQualityProcessorTest.runWithTag.approve": "file",
-                        "GeneralQualityProcessorTest.write.approve": "file",
-                        "GeneralQualityProcessorTest.setInactiveOldMetric.approve": "file"
-                      }
-                    },
-                    "utils": {
-                      "io": {
-                        "SparkIOUtilTest.scala": "file"
-                      },
-                      "ValidatorHelperTest.scala": "file",
-                      "DataQualityMetricUtilsTest.scala": "file",
-                      "approvals": {
-                        "DataQualityMetricUtilsTest.getMetric_success.approve": "file"
-                      },
-                      "transform": {
-                        "BaseTransformerTest.scala": "file",
-                        "LendingDimTransformerTest.scala": "file",
-                        "LendingFactTransformerTest.scala": "file"
-                      }
-                    },
-                    "constant": {
-                      "TestConstant.scala": "file"
-                    }
-                  },
-                  "spark": {
-                    "SparkSuite.scala": "file"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "main": {
-          "resources": {
-            "secret.properties": "file",
-            "template_config.yml": "file",
-            "log4j.properties": "file"
-          },
-          "scala": {
-            "vn": {
-              "com": {
-                "acme": {
-                  "dataquality": {
-                    "config": {
-                      "ProjectConfig.scala": "file",
-                      "ParamConfig.scala": "file"
-                    },
-                    "validator": {
-                      "JsonStructure.scala": "file",
-                      "FieldContainment.scala": "file",
-                      "ReferenceFieldContainment.scala": "file",
-                      "MetricReconciliation.scala": "file",
-                      "RecordCount.scala": "file",
-                      "MultiFieldConsistency.scala": "file",
-                      "StringLength.scala": "file",
-                      "StringExtractField.scala": "file",
-                      "UniqueValue.scala": "file",
-                      "TimeGapIntegrity.scala": "file",
-                      "DataType.scala": "file",
-                      "StringNotContainedIn.scala": "file",
-                      "ForeignKey.scala": "file",
-                      "NumberContainedIn.scala": "file",
-                      "BaseValidator.scala": "file",
-                      "PartitionDateCheck.scala": "file",
-                      "StringContainedIn.scala": "file",
-                      "ArithmeticConsistency.scala": "file",
-                      "PrimaryKey.scala": "file",
-                      "GeneralStringLength.scala": "file",
-                      "StatisticalOutlierAnomaly.scala": "file",
-                      "DataFormat.scala": "file",
-                      "ChronologicalOrder.scala": "file",
-                      "NumberNotContainedIn.scala": "file",
-                      "ConsistencySegment.scala": "file",
-                      "NotNull.scala": "file",
-                      "FieldDependencyAnomaly.scala": "file",
-                      "SkeyMapping.scala": "file",
-                      "GeneralContainedIn.scala": "file",
-                      "ConsistencyData.scala": "file",
-                      "GeneralValueAnomaly.scala": "file",
-                      "NullCompare.scala": "file",
-                      "SchemaFieldCount.scala": "file"
-                    },
-                    "entity": {
-                      "DataQuality.scala": "file",
-                      "QualityCheckStatus.scala": "file"
-                    },
-                    "runner": {
-                      "QualityRunner.scala": "file"
-                    },
-                    "processor": {
-                      "BaseProcessor.scala": "file",
-                      "GeneralQualityProcessor.scala": "file"
-                    },
-                    "utils": {
-                      "DataQualityMetricUtils.scala": "file",
-                      "io": {
-                        "SparkIOUtil.scala": "file"
-                      },
-                      "ValidateUtil.scala": "file",
-                      "transform": {
-                        "BaseTransformer.scala": "file",
-                        "CreditStatementFactTransformer.scala": "file",
-                        "CreditUpdateNFCTransformer.scala": "file",
-                        "CreditAccountDimTransformer.scala": "file",
-                        "SampleETLTransform.scala": "file",
-                        "CLOnboardingFactTransformer.scala": "file",
-                        "CreditRepaymentFactTransformer.scala": "file",
-                        "CLLoanApplicationDimTransformer.scala": "file",
-                        "CLDisbursementFactTransformer.scala": "file",
-                        "CreditFeeFactTransformer.scala": "file",
-                        "CreditPaymentFactTransformer.scala": "file",
-                        "CreditBindingFactTransformer.scala": "file",
-                        "CreditRenewalFactTransformer.scala": "file",
-                        "CreditRefundFactTransformer.scala": "file"
-                      },
-                      "ProjectUtils.scala": "file",
-                      "ValidatorHelper.scala": "file"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+      ".gitlab-ci.yml": "file"
+    },
+    "metadata": {
+      "branch_tracked": "main",
+      "schedule": {
+        "type": "batch",
+        "frequency": "daily",
+        "trigger_time": "02:30 ICT",
+        "lag": "T-1"
       }
     }
   },
@@ -941,1274 +60,522 @@
     "entityType": "pipeline",
     "owner": {
       "type": "team",
-      "name": "data-engineering"
+      "name": "Data Platform Core",
+      "slack": "#data-eng-oncall"
     },
-    "domain": "acme.analytics.curated.lending",
+    "domain": "acme.analytics.lending",
     "tier": "Tier1",
-    "description": "GitLab repository for credit-curated-etl. Contains code for data processing and validation.",
-    "files": [],
+    "description": "Build the curated credit zone (staging + facts + daily risk mart) from the loan core tables. Airflow batch pipeline (daily T-1).",
+    "files": [
+      "dags/credit_curated_etl.py",
+      "README.md",
+      "sql/transform.sql",
+      "config/job.yaml"
+    ],
     "lineage": {
       "upstream": [
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_account,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_order,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_bill,PROD)",
         "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_statement,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_bill,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_account,PROD)",
         "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_user,PROD)"
       ],
       "downstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.staging.credit.stg_loan_statement,PROD)",
         "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_payment_fact,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_repayment_fact,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_fee_fact,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_disbursement_fact,PROD)",
         "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_account_dim,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.user_profile_dim,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.product_code_dim,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.bank_code_dim,PROD)"
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_payment_fact,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.credit_risk_daily_mart,PROD)"
       ]
     },
     "directory_structure": {
-      "gitlab-ci": {
-        "airflow_production.yml": "file",
-        "src_production.yml": "file",
-        "sync_testsuites.yml": "file",
-        "deploy_metadata.yml": "file"
+      "dags": {
+        "credit_curated_etl.py": "file"
       },
-      "setup": "file",
-      "testsuites": {
-        "lending_fact": {
-          "credit_refund_fact_testsuites.yaml": "file",
-          "test.yaml": "file",
-          "loan_repayment_fact_testsuites.yaml": "file",
-          "credit_update_nfc_fact_testsuites.yaml": "file",
-          "loan_payment_fact_testsuites.yaml": "file",
-          "cl_onboarding_fact_testsuites.yaml": "file",
-          "loan_disbursement_fact_testsuites.yaml": "file",
-          "loan_fee_fact_testsuites.yaml": "file",
-          "credit_renewal_fact_testsuites.yaml": "file",
-          "loan_statement_fact_testsuites.yaml": "file",
-          "credit_binding_fact_testsuites.yaml": "file"
-        },
-        "lending_dim": {
-          "bank_code_dim.yaml": "file",
-          "app_dim.yaml": "file",
-          "loan_account_dim.yaml": "file",
-          "user_demographic_dim.yaml": "file",
-          "product_code_dim.yaml": "file",
-          "lending_partner_dim.yaml": "file",
-          "trans_status_dim.yaml": "file",
-          "pmc_dim.yaml": "file",
-          "campaign_dim.yaml": "file",
-          "cl_loan_application_dim.yaml": "file",
-          "trans_type_dim.yaml": "file",
-          "user_profile_dim.yaml": "file"
-        }
+      "sql": {
+        "transform.sql": "file",
+        "schema_checks.sql": "file"
       },
-      "README.md": "file",
-      "airflow": {
-        "mmf_curated.py": "file",
-        "dq_trigger_one_v2.py": "file",
-        "dq_trigger_daily.py": "file",
-        "dq_trigger_one.py": "file",
-        "lending_curated.py": "file",
-        "general_curated.py": "file",
-        "example.py": "file"
-      },
-      ".gitignore": "file",
-      "scripts": {
-        "check_notebook.py": "file"
-      },
-      ".gitlab-ci.yml": "file",
-      "scripts-ci": {
-        "sync_zlp_package.sh": "file",
-        "HA_airflow_sync_code.py": "file",
-        "render_dags.py": "file",
-        "requirements.txt": "file",
-        "render_all.py": "file",
-        "rsync_dags.sh": "file",
-        "push_to_catalog.py": "file",
-        "metadata_requirements.txt": "file"
-      },
-      "metadata": {
-        "dim": {
-          "loan_account_dim.avsc": "file",
-          "app_dim.avsc": "file",
-          "user_demographic_dim.avsc": "file",
-          "bank_code_dim.avsc": "file",
-          "trans_type_dim.avsc": "file",
-          "user_profile_dim.avsc": "file",
-          "product_code_dim.avsc": "file",
-          "trans_status_dim.avsc": "file",
-          "lending_partner_dim.avsc": "file",
-          "cl_loan_application_dim.avsc": "file",
-          "campaign_dim.avsc": "file",
-          "pmc_dim.avsc": "file"
-        },
-        "_combined_metadata.avsc": "file",
-        "fact": {
-          "cl_onboarding_fact.avsc": "file",
-          "loan_statement_fact.avsc": "file",
-          "loan_fee_fact.avsc": "file",
-          "loan_repayment_fact.avsc": "file",
-          "loan_disbursement_fact.avsc": "file",
-          "credit_update_nfc_fact.avsc": "file",
-          "credit_renewal_fact.avsc": "file",
-          "loan_payment_fact.avsc": "file",
-          "credit_refund_fact.avsc": "file",
-          "credit_binding_fact.avsc": "file"
-        }
-      },
-      "src": {
-        "dim": {
-          "campaign_dim.ipynb": "file",
-          "bank_code_dim.ipynb": "file",
-          "trans_status_dim.ipynb": "file",
-          "loan_account_dim.ipynb": "file",
-          "cl_loan_application_dim.ipynb": "file",
-          "trans_type_dim.ipynb": "file",
-          "app_dim.ipynb": "file",
-          "user_demographic_dim.ipynb": "file",
-          "lending_partner_dim.ipynb": "file",
-          "product_code_dim.ipynb": "file",
-          "pmc_dim.ipynb": "file",
-          "user_profile_dim.ipynb": "file"
-        },
-        "others": {
-          "eidentity_source_list.ipynb": "file",
-          "um_userprofile_flow_list.ipynb": "file"
-        },
-        "example.ipynb": "file",
-        "fact": {
-          "loan_fee_fact.ipynb": "file",
-          "credit_renewal_fact.ipynb": "file",
-          "loan_statement_fact.ipynb": "file",
-          "loan_payment_fact.ipynb": "file",
-          "credit_refund_fact.ipynb": "file",
-          "loan_repayment_fact.ipynb": "file",
-          "credit_binding_fact.ipynb": "file",
-          "loan_disbursement_fact.ipynb": "file",
-          "cl_onboarding_fact.ipynb": "file",
-          "credit_update_nfc_fact.ipynb": "file"
-        },
-        "mart": {
-          "npu_mart.ipynb": "file",
-          "mmf_cimb_topup_mart.ipynb": "file"
-        },
-        "helper": {
-          "io": {
-            "__init__.py": "file",
-            "reader.py": "file",
-            "writer.py": "file"
-          },
-          "__init__.py": "file",
-          "maintenance": {
-            "__init__.py": "file",
-            "delta_maintenance.py": "file"
-          },
-          "transform": {
-            "__init__.py": "file",
-            "data_transformer.py": "file"
-          }
-        },
-        "etl_planning": {
-          "dim": {
-            "cl_loan_application_dim_ETL_PLAN.md": "file"
-          },
-          "README.md": "file"
-        }
-      }
-    }
-  },
-  {
-    "id": "urn:li:dataFlow:(airflow,fund-mapping-etl,PROD)",
-    "name": "fund-mapping-etl",
-    "entityType": "pipeline",
-    "owner": {
-      "type": "team",
-      "name": "data-engineering"
-    },
-    "domain": "acme.analytics.curated.fund_mapping",
-    "tier": "Tier2",
-    "description": "GitLab repository for fund-mapping-etl. Contains code for data processing and validation.",
-    "files": [],
-    "lineage": {
-      "upstream": [],
-      "downstream": []
-    },
-    "directory_structure": {
       "config": {
-        "qrpay_flow.yaml": "file"
+        "job.yaml": "file"
       },
-      "gitlab-ci": {
-        "airflow_production.yml": "file",
-        "src_production.yml": "file"
-      },
-      "setup": "file",
-      "docs": {
-        "delta_lake_stale_dataframe_case_study.md": "file"
+      "tests": {
+        "test_transform.py": "file"
       },
       "README.md": "file",
-      "airflow": {
-        "disbursement": {
-          "disbursement_to_wallet": {
-            "disbursement_to_wallet.py": "file",
-            "disbursement_to_wallet_quality.py": "file"
-          },
-          "disbursement_to_bank": {
-            "disbursement_to_bank.py": "file",
-            "disbursement_to_bank_quality.py": "file"
-          }
-        },
-        "topup": {
-          "topup_from_bank_side": {
-            "topup_from_bank_side_quality.py": "file",
-            "topup_from_bank_side.py": "file"
-          },
-          "topup_from_zlp_app": {
-            "topup_from_zlp_app_quality.py": "file",
-            "topup_from_zlp_app.py": "file"
-          }
-        },
-        "payment": {
-          "payment_with_installment": {
-            "payment_with_installment.py": "file",
-            "payment_with_installment_quality.py": "file"
-          },
-          "payment_with_mmf": {
-            "payment_with_mmf.py": "file",
-            "payment_with_mmf_quality.py": "file"
-          },
-          "payment_with_cof_credit": {
-            "payment_with_cof_credit_quality.py": "file",
-            "payment_with_cof_credit.py": "file"
-          },
-          "payment_with_bank_link": {
-            "payment_with_bank_link_quality.py": "file",
-            "payment_with_bank_link.py": "file"
-          },
-          "payment_with_wallet": {
-            "payment_with_wallet.py": "file",
-            "payment_with_wallet_quality.py": "file"
-          },
-          "payment_with_apple_pay": {
-            "payment_with_apple_pay.py": "file",
-            "payment_with_apple_pay_quality.py": "file"
-          },
-          "payment_with_cof_napas": {
-            "payment_with_cof_napas.py": "file",
-            "payment_with_cof_napas_quality.py": "file"
-          },
-          "payment_with_cof_debit": {
-            "payment_with_cof_debit.py": "file",
-            "payment_with_cof_debit_quality.py": "file"
-          },
-          "payment_with_credit": {
-            "payment_with_credit_quality.py": "file",
-            "payment_with_credit.py": "file"
-          },
-          "payment_with_google_pay": {
-            "payment_with_google_pay.py": "file",
-            "payment_with_google_pay_quality.py": "file"
-          }
-        },
-        "transfer": {
-          "transfer_ibft_legacy": {
-            "transfer_ibft_legacy_flow.py": "file",
-            "transfer_ibft_legacy_flow_quality.py": "file"
-          },
-          "lixi": {
-            "transfer_lixi_quality.py": "file",
-            "transfer_lixi.py": "file"
-          },
-          "transfer_p2p_wallet_sof": {
-            "transfer_p2p_wallet_sof.py": "file",
-            "transfer_p2p_wallet_sof_quality.py": "file"
-          },
-          "transfer_ibft": {
-            "transfer_ibft.py": "file",
-            "transfer_ibft_quality.py": "file"
-          },
-          "transfer_p2p_mmf_sof": {
-            "transfer_p2p_mmf_sof.py": "file",
-            "transfer_p2p_mmf_sof_quality.py": "file"
-          }
-        },
-        "qrpay": {
-          "qrpay.py": "file",
-          "qrpay_quality.py": "file"
-        },
-        "withdraw": {
-          "withdraw_ibft": {
-            "withdraw_via_ibft.py": "file",
-            "withdraw_via_ibft_quality.py": "file"
-          },
-          "withdraw_ibft_legacy": {
-            "withdraw_via_ibft_legacy_flow_quality.py": "file",
-            "withdraw_via_ibft_legacy_flow.py": "file"
-          }
-        },
-        "metadata": {
-          "realtime_settle": {
-            "realtime_settle_metadata_quality.py": "file",
-            "realtime_settle_metadata.py": "file"
-          },
-          "refund": {
-            "refund_metadata_quality.py": "file",
-            "refund_metadata.py": "file"
-          }
-        }
-      },
-      ".gitignore": "file",
-      "scripts": {
-        "check_notebook.py": "file"
-      },
-      "doc": {
-        "data_flow_guide.md": "file",
-        "data_quality_check.md": "file",
-        "guideline": {
-          "3.airflow_template.md": "file",
-          "2.quality_template.md": "file",
-          "1.mapping_template.md": "file"
-        },
-        "generalized_architecture.md": "file",
-        "fund-data-mapping-requirements.md": "file",
-        "fund-data-mapping-requirements-summary.md": "file",
-        "implementation_strategy.md": "file"
-      },
-      ".gitlab-ci.yml": "file",
-      "scripts-ci": {
-        "HA_airflow_sync_code.py": "file",
-        "render_dags.py": "file",
-        "requirements.txt": "file",
-        "render_all.py": "file",
-        "rsync_dags.sh": "file"
-      },
-      "src": {
-        "disbursement": {
-          "disbursement_to_wallet": {
-            "disbursement_to_wallet_quality.ipynb": "file",
-            "disbursement_to_wallet_mapping.ipynb": "file",
-            "disbursement_to_wallet.avsc": "file"
-          },
-          "disbursement_to_bank": {
-            "disbursement_to_bank_quality.ipynb": "file",
-            "disbursement_to_bank_mapping.ipynb": "file"
-          }
-        },
-        "topup": {
-          "topup_from_bank_side": {
-            "topup_from_bank_side_quality.ipynb": "file",
-            "topup_from_bank_side_mapping.ipynb": "file",
-            "topup_from_bank_side.avsc": "file"
-          },
-          "topup_from_zlp_app": {
-            "topup_from_zlp_app.avsc": "file",
-            "topup_from_zlp_app_mapping.ipynb": "file",
-            "topup_from_zlp_app_quality.ipynb": "file"
-          }
-        },
-        "payment": {
-          "payment_with_installment": {
-            "payment_with_installment_quality.ipynb": "file",
-            "payment_with_installment_mapping.ipynb": "file",
-            "payment_with_installment.avsc": "file"
-          },
-          "payment_with_mmf": {
-            "payment_with_mmf_mapping.ipynb": "file",
-            "payment_with_mmf_quality.ipynb": "file",
-            "payment_with_mmf.avsc": "file"
-          },
-          "payment_with_cof_credit": {
-            "payment_with_cof_credit_mapping.ipynb": "file",
-            "payment_with_cof_credit_quality.ipynb": "file"
-          },
-          "payment_with_bank_link": {
-            "payment_with_bank_link.avsc": "file",
-            "payment_with_bank_link_quality.ipynb": "file",
-            "payment_with_bank_link_mapping.ipynb": "file"
-          },
-          "payment_with_wallet": {
-            "payment_with_wallet_quality.ipynb": "file",
-            "payment_with_wallet.avsc": "file",
-            "payment_with_wallet_mapping.ipynb": "file"
-          },
-          "payment_with_apple_pay": {
-            "payment_with_apple_pay_quality.ipynb": "file",
-            "payment_with_apple_pay_mapping.ipynb": "file"
-          },
-          "payment_with_cof_napas": {
-            "payment_with_cof_napas_quality.ipynb": "file",
-            "payment_with_cof_napas_mapping.ipynb": "file"
-          },
-          "payment_with_cof_debit": {
-            "payment_with_cof_debit_quality.ipynb": "file",
-            "payment_with_cof_debit_mapping.ipynb": "file"
-          },
-          "payment_with_credit": {
-            "payment_with_credit.avsc": "file",
-            "payment_with_credit_mapping.ipynb": "file",
-            "payment_with_credit_quality.ipynb": "file"
-          },
-          "payment_with_google_pay": {
-            "payment_with_google_pay_mapping.ipynb": "file",
-            "payment_with_google_pay.avsc": "file",
-            "payment_with_google_pay_quality.ipynb": "file"
-          }
-        },
-        "schema_metadata": {
-          "add_schema.ipynb": "file"
-        },
-        "transfer": {
-          "transfer_ibft_legacy": {
-            "transfer_ibft_legacy_flow.avsc": "file",
-            "transfer_ibft_legacy_flow_mapping.ipynb": "file",
-            "transfer_ibft_legacy_flow_quality.ipynb": "file"
-          },
-          "lixi": {
-            "transfer_lixi.avsc": "file",
-            "transfer_lixi_mapping.ipynb": "file",
-            "transfer_lixi_quality.ipynb": "file"
-          },
-          "transfer_p2p_wallet_sof": {
-            "transfer_p2p_wallet_sof_mapping.ipynb": "file",
-            "transfer_p2p_wallet_sof_quality.ipynb": "file",
-            "transfer_p2p_wallet_sof.avsc": "file"
-          },
-          "transfer_ibft": {
-            "transfer_ibft_quality.ipynb": "file",
-            "transfer_ibft.avsc": "file",
-            "transfer_ibft_mapping.ipynb": "file"
-          },
-          "transfer_p2p_mmf_sof": {
-            "transfer_p2p_mmf_sof_quality.ipynb": "file",
-            "transfer_p2p_mmf_sof.avsc": "file",
-            "transfer_p2p_mmf_sof_mapping.ipynb": "file"
-          }
-        },
-        "qrpay": {
-          "qrpay_quality.ipynb": "file",
-          "qrpay.avsc": "file",
-          "qrpay_mapping.ipynb": "file"
-        },
-        "withdraw": {
-          "withdraw_ibft": {
-            "withdraw_via_ibft_quality.ipynb": "file",
-            "withdraw_via_ibft_mapping.ipynb": "file"
-          },
-          "withdraw_ibft_legacy": {
-            "withdraw_via_ibft_legacy_flow_mapping.ipynb": "file",
-            "withdraw_via_ibft_legacy_flow_quality.ipynb": "file"
-          }
-        },
-        "metadata": {
-          "realtime_settle": {
-            "realtime_settle_metadata.ipynb": "file",
-            "realtime_settle_metadata.avsc": "file",
-            "realtime_settle_metadata_quality.ipynb": "file"
-          },
-          "refund": {
-            "refund_metadata_quality.ipynb": "file",
-            "refund_metadata.avsc": "file",
-            "refund_metadata.ipynb": "file"
-          }
-        },
-        "helpers": {
-          "source_readers.py": "file",
-          "orphaned_handling.py": "file",
-          "orphan_config.py": "file",
-          "__init__.py": "file",
-          "etl_helpers.py": "file",
-          "quality_helpers.py": "file",
-          "schema_helpers.py": "file",
-          "avro_schema_builder.py": "file",
-          "read_data_helper.py": "file"
-        }
-      }
-    }
-  },
-  {
-    "id": "urn:li:dataFlow:(airflow,airflow-onprem,PROD)",
-    "name": "airflow-onprem",
-    "entityType": "pipeline",
-    "owner": {
-      "type": "team",
-      "name": "data-engineering"
-    },
-    "domain": "acme.analytics.airflow",
-    "tier": "Tier2",
-    "description": "This project aims to establish a Git repository for managing and versioning Apache Airflow DAG (Directed Acyclic Graph) files written in Python. The repository will serve as a central hub for organizing, sharing, and collaborating on Airflow DAGs",
-    "files": [],
-    "lineage": {
-      "upstream": [],
-      "downstream": []
-    },
-    "directory_structure": {
-      "dags": {
-        "data_consistency": {
-          "dp_consistency_recovery_s3_python_job.py": "file",
-          "dp_consistency_checksum_hdfs_job.py": "file",
-          "dp_consistency_delay_data_alert_job.py": "file",
-          "dp_consistency_recovery_s3_job.py": "file",
-          "dp_consistency_checksum_s3_python_job.py": "file",
-          "dp_consistency_recovery_es_job.py": "file",
-          "dp_consistency_checksum_hdfs_python_job.py": "file",
-          "dp_consistency_spark_missinglog_alert_job.py": "file",
-          "dp_consistency_checksum_es_job.py": "file",
-          "dp_consistency_recovery_hdfs_job.py": "file",
-          "dp_consistency_checksum_s3_job.py": "file",
-          "dp_consistency_missinglog_alert_job.py": "file",
-          "dp_consistency_comparedate_alert_job.py": "file",
-          "dp_consistency_recovery_hdfs_python_job.py": "file"
-        },
-        "reconcile": {
-          "bank_free_trigger.py": "file"
-        },
-        "audit_sensitive_data": {
-          "dp_audit_sensitive_data_redshift.py": "file",
-          "dp_audit_sensitive_data_trigger.py": "file",
-          "dp_audit_sensitive_data_redshift_dynamic.py": "file",
-          "dp_audit_sensitive_data.py": "file"
-        },
-        "data_infra": {
-          "dwh_lineage.py": "file",
-          "combine_log_new_hdfs_cluster.py": "file",
-          "dwh_mismatch_lineage_history.py": "file"
-        },
-        "data_freshness": {
-          "check_hdfs_data_freshness.py": "file"
-        },
-        ".airflowignore": "file",
-        "data_science": {
-          "recommendation": {
-            "extract_data_transaction.py": "file"
-          },
-          "task_personalization": {
-            "ds_task_personalization_service.py": "file"
-          },
-          "etl": {
-            "ds_support_appid_mapping.py": "file",
-            "ds_support_appid_mapping_dwh.py": "file",
-            "ds_support_fpu.py": "file",
-            "ds_etl_services.py": "file",
-            "ds_ft_homescreen_clicked.py": "file",
-            "ds_etl_tpe.py": "file",
-            "ds_support_abuser.py": "file",
-            "ds_support_npu.py": "file",
-            "ds_etl_userinfo_snapshot.py": "file",
-            "ds_etl_voucher.py": "file"
-          },
-          "quick_action": {
-            "ds_quick_action_service.py": "file",
-            "ds_quick_action_model.py": "file",
-            "ds_quick_action_abtest.py": "file"
-          },
-          "xsell": {
-            "ds_xsell_service.py": "file"
-          },
-          "home_suggestion": {
-            "home_decision_engine.py": "file",
-            "dp_home_suggestion.py": "file",
-            "ds_home_suggestion_service.py": "file",
-            "ds_home_suggestion_abtest.py": "file"
-          },
-          "clv": {
-            "ds_clv_service.py": "file"
-          },
-          "user_location": {
-            "ds_user_location_etl.py": "file",
-            "ds_user_location_service.py": "file"
-          }
-        },
-        "data_segment": {
-          "cache_segment_service.py": "file",
-          "event_session_stats_backfill.py": "file",
-          "user_location_risk.py": "file",
-          "platform_sync_log.py": "file",
-          "segment_warehouse_daily_prod.py": "file",
-          "cdp": {
-            "promotion": {
-              "notification.py": "file",
-              "notification_stg.py": "file"
-            },
-            "segment_mmf": {
-              "directly_order.py": "file",
-              "segment_mmf_stg.py": "file",
-              "segment_mmf.py": "file"
-            },
-            "monitor_streaming_jobs": {
-              "monitor_streaming_jobs.py": "file",
-              "monitor_nb_streaming_jobs.py": "file",
-              "monitor_streaming_jobs_stg.py": "file"
-            },
-            "segment_event_tracking": {
-              "segment_home_activity.py": "file",
-              "segment_visit_campaign.py": "file",
-              "segment_tnc.py": "file",
-              "segment_visit_product_page.py": "file",
-              "segment_click_on_loyalty.py": "file"
-            },
-            "segment_installment": {
-              "segment_installment.py": "file",
-              "segment_installment_stg.py": "file"
-            },
-            "segment_fc": {
-              "segment_fc_stg.py": "file",
-              "segment_fc.py": "file",
-              "user_properties_fc_profile_stg.py": "file",
-              "user_action_fc_trading_stg.py": "file"
-            },
-            "investment": {
-              "package.py": "file",
-              "product_package.py": "file"
-            },
-            "core": {
-              "trans_type.py": "file",
-              "register_auto_debit.py": "file",
-              "input_bill.py": "file",
-              "core_trans_primary.py": "file",
-              "bank_balance.py": "file",
-              "user_consent.py": "file",
-              "core_turn_off_noti.py": "file",
-              "core_npu.py": "file",
-              "merchant_binding.py": "file",
-              "trans_type_stg.py": "file",
-              "user_properties_um_profile_zds.py": "file",
-              "core_eidentity.py": "file",
-              "core_toro.py": "file",
-              "core_trans_primary_stg.py": "file",
-              "count_bill.py": "file",
-              "core_fpu.py": "file",
-              "failed_trans.py": "file",
-              "core_user_churn.py": "file",
-              "user_device.py": "file"
-            },
-            "bill": {
-              "telco": {
-                "telco.py": "file"
-              }
-            },
-            "segment_funding": {
-              "segment_map_bank_stg.py": "file",
-              "segment_map_bank.py": "file",
-              "segment_oao.py": "file"
-            },
-            "prediction": {
-              "churn_prediction.py": "file"
-            },
-            "segment_location": {
-              "segment_location.py": "file"
-            },
-            "segment_has_access_acme": {
-              "segment_has_access_acme.py": "file"
-            },
-            "segment_stock": {
-              "stock_profile.py": "file",
-              "segment_stock.py": "file",
-              "segment_stock_stg.py": "file"
-            },
-            "segment_follow_oa": {
-              "segment_follow_oa.py": "file",
-              "segment_follow_oa_stg.py": "file"
-            },
-            "segment_cashloan": {
-              "segment_cashloan_stg.py": "file",
-              "segment_cashloan.py": "file"
-            },
-            "segment_loyalty": {
-              "loyalty_merchant_member.py": "file"
-            },
-            "segment_fixed_deposit": {
-              "user_action_fd_stg.py": "file",
-              "user_action_fd.py": "file"
-            },
-            "risk": {
-              "segment_risk.py": "file",
-              "css_lending_whitelist.py": "file",
-              "css_lending_whitelist_stg.py": "file"
-            },
-            "logging": {
-              "test_logging.py": "file",
-              "spark_streaming_job_logging.py": "file"
-            },
-            "segment_online_media": {
-              "segment_clicked_ad_campaign.py": "file"
-            }
-          },
-          "clv_score_load.py": "file",
-          "click_home_icon.py": "file",
-          "notify_click_noti_id.py": "file",
-          "user_journey": {
-            "user_journey_details.py": "file",
-            "user_traffic_allocation.py": "file"
-          },
-          "click_app_profile.py": "file",
-          "notify_promotion_count.py": "file",
-          "segment_upload_user_file_stg.py": "file",
-          "segment_realtime_and_warehouse_stg.py": "file",
-          "crm_segment_service_monitor.py": "file",
-          "segment_zds_trans_type_stg.py": "file",
-          "search_keyword.py": "file",
-          "segment_sync_zds_um_daily_trigger_one.py": "file",
-          "segment_realtime_receiver.py": "file",
-          "test_dag_47.py": "file",
-          "user_location_centralization_monthly.py": "file",
-          "event_session_stats.py": "file",
-          "segment_sync_zds_api_starter.py": "file",
-          "segment_sync_zds_um_daily.py": "file",
-          "segment_zds_trans_type_monthly_update.py": "file",
-          "segment_centralize.py": "file",
-          "segment_user_has_access_acme.py": "file",
-          "segment_sync_zds_um_daily_stg.py": "file",
-          "last_n_ui_event_backfill.py": "file",
-          "recall_prevent_churn_daily.py": "file",
-          "staging_user_profile.py": "file",
-          "last_n_ui_event.py": "file",
-          "segment_upload_user_file.py": "file",
-          "segment_sync_zds_api_trigger_once_stg.py": "file",
-          "segment_sync_zds_api.py": "file",
-          "last_n_ui_event_backfill_2.py": "file",
-          "segment_zds_trans_type_monthly_update_stg.py": "file",
-          "segment_sync_zds_api_blacklist.py": "file",
-          "segment_sync_zds_api_starter_stg.py": "file",
-          "segment_sync_user_nfc_um_daily.py": "file",
-          "segment_warehouse_run_once_stg.py": "file",
-          "segment_promotion_receive_reward.py": "file",
-          "test_read_new_secure_onprem.py": "file",
-          "segment_upload_user_file_mongo_daily.py": "file",
-          "segment_realtime_migration.py": "file",
-          "segment_upload_user_file_stg_v2.py": "file",
-          "segment_sync_zds_api_blacklist_stg.py": "file",
-          "segment_promotion_receive_reward_stg.py": "file",
-          "npu_mart.py": "file",
-          "segment_upload_user_file_mongo_daily_stg.py": "file",
-          "crm_segment_service_monitor_stg.py": "file",
-          "segment_centralize_sync.py": "file",
-          "segment_zds_trans_type.py": "file",
-          "user_location_centralization_daily.py": "file",
-          "qrpay_phone_number.py": "file",
-          "qrpay_trans_log.py": "file",
-          "segment_user_activity_npu.py": "file",
-          "user_remind_nfc.py": "file",
-          "segment_sync_zds_api_stg.py": "file",
-          "segment_upload_user_file_v2.py": "file"
-        },
-        "migration_PEM": {
-          "migration_job_titan.py": "file",
-          "migration_job_partner_store_info.py": "file",
-          "tracking_job.py": "file",
-          "migration_job_ads_selling_submit_info.py": "file",
-          "migration_job_merchant_config_info.py": "file",
-          "migration_job_friend_list.py": "file",
-          "migration_job_partner_acquiring_billingevn_trackingoa.py": "file",
-          "migration_job_qrpay_mega_campaign.py": "file",
-          "migration_job_register_promotion.py": "file",
-          "migration_job.py": "file",
-          "migration_job_partner_acquiring_billingevn_trackingoa_3.py": "file",
-          "migration_job_app_integration_method_info.py": "file",
-          "migration_job_bctranslog.py": "file",
-          "migration_job_partner_acquiring_billingevn_trackingoa_1.py": "file",
-          "migration_job_engine_agreement_log.py": "file",
-          "migration_job_mmf_recurring_deposit_plans.py": "file",
-          "migration_job_umreferenceprofile.py": "file",
-          "migration_job_partner_ztebackenddatalog.py": "file",
-          "migration_job_prod_osctrans.py": "file",
-          "create_migration.py": "file",
-          "migration_job_issue_promotion.py": "file",
-          "migration_job_update_promotiontrans.py": "file",
-          "migration_genarate_dag.py": "file",
-          "migration_job_repartition_app_log.py": "file"
-        },
-        "libs": {
-          "env.py": "file",
-          "operators": {
-            "NbExternalJobOperator.py": "file",
-            "NbBashOperator.py": "file",
-            "NbJobMCPFOperator.py": "file",
-            "NbStreamOperator.py": "file"
-          },
-          "utils.py": "file",
-          "external": {
-            "utils.py": "file"
-          },
-          "spark": {
-            "spark_app.py": "file"
-          }
-        },
-        "partner": {
-          "partner_copy_data.py": "file",
-          "partner_noti.py": "file"
-        },
-        "common": {
-          "env.py": "file",
-          ".airflowignore": "file"
-        },
-        "audit": {
-          "audit_hdfs_usage_log4j.py": "file"
-        },
-        "support": {
-          "force_refund_alert": {
-            "force_refund_alert.py": "file"
-          }
-        },
-        "maintenance": {
-          "airflow-sla-miss-report.py": "file",
-          "run_command.py": "file",
-          "check_job_duration_yarn.sh": "file",
-          "alert_job_duration.py": "file",
-          "airflow-log-cleanup-pwdless-ssh.py": "file"
-        },
-        "support_nba": {
-          "nba_voucher_remind_v2_2.py": "file",
-          "nba_voucher_remind_billing_daily.py": "file",
-          "nba_convert_npu_to_rpu.py": "file",
-          "nba_voucher_remind_billing_kafka.py": "file",
-          "nba_voucher_remind_v2.py": "file",
-          "nba_remind_loyalty_point.py": "file",
-          "nba_electric_billing_order.py": "file",
-          "nba_k0_k1_inactive.py": "file",
-          "nba_user_access_zpi.py": "file"
-        },
-        "support_mcpf": {
-          "mcpf_etl_jobs": {
-            "dp_template_dag.py": "file"
-          },
-          "fact": {
-            "mcpf_daily_incremental_fact_dag.py": "file",
-            "mcpf_daily_incremental_srv4_fact_dag.py": "file",
-            "mcpf_daily_incremental_translog_dag.py": "file"
-          },
-          "reconcilation": {
-            "mcpf_srv3_reconcile_report.py": "file"
-          },
-          "dimension": {
-            "mcpf_daily_incremental_dag.py": "file"
-          }
-        },
-        "data_cleaning": {
-          "partner": {
-            "mcpf_snapshot.py": "file"
-          }
-        },
-        "dwh_usecase": {
-          "event_segment_follow_oa_dag.py": "file",
-          "dp-sync_identity_mart.py": "file",
-          "installment_change_phone_dag.py": "file",
-          "create_hive_table.py": "file",
-          "toro_project": {
-            "user_consent_fact.py": "file"
-          },
-          "dp-sync_campaign_scd1_dim.py": "file",
-          "create_hive_table_for_ant.py": "file"
-        }
-      },
-      "gitlab-ci": {
-        "staging.yml": "file",
-        "production.yml": "file",
-        "development.yml": "file"
-      },
-      ".claude": {
-        "commands": {
-          "create-cdp-dag.md": "file"
-        }
-      },
-      "README.md": "file",
-      ".gitignore": "file",
-      "scripts": {
-        "render_dags.py": "file",
-        "requirements.txt": "file",
-        "render_all.py": "file",
-        "migration_python_venv.sh": "file",
-        "remove_dags.sh": "file",
-        "render_changed.py": "file",
-        "rsync_dags.sh": "file",
-        "migratuon_python_venv.py": "file"
-      },
-      ".gitlab-ci.yml": "file",
-      "CLAUDE.md": "file",
-      ".idea": {
-        "inspectionProfiles": {
-          "Project_Default.xml": "file"
-        },
-        "airflow-onprem.iml": "file",
-        "vcs.xml": "file",
-        ".gitignore": "file",
-        "modules.xml": "file",
-        "misc.xml": "file"
-      }
-    }
-  },
-  {
-    "id": "urn:li:dataFlow:(airflow,airflow-cloud,PROD)",
-    "name": "airflow-cloud",
-    "entityType": "pipeline",
-    "owner": {
-      "type": "team",
-      "name": "data-engineering"
-    },
-    "domain": "acme.analytics.airflow",
-    "tier": "Tier2",
-    "description": "GitLab repository for airflow-cloud. Contains code for data processing and validation.",
-    "files": [],
-    "lineage": {
-      "upstream": [],
-      "downstream": []
-    },
-    "directory_structure": {
-      ".pylintrc": "file",
-      "dags": {
-        "dp-segment-dataquality_daily.py": "file",
-        "dp-datawarehouse_monitor_highload.py": "file",
-        "dp-datawarehouse_recovery.py": "file",
-        "airflow-log-cleanup.py": "file",
-        "dp-datawarehouse_triger_one_3_5.py": "file",
-        "__init__.py": "file",
-        "dp-datawarehouse_daily.py": "file",
-        "dp-segment-dataquality_sgm_core_count_bill.py": "file",
-        "dp-dataquality_trigger_one.py": "file",
-        "dp-di-audit_sensitive_data_daily.py": "file",
-        "dwh_fact_check_invalid_trigger_thongphn.py": "file",
-        "dp-datawarehouse_staging_daily.py": "file",
-        "dp-catalog_ingest_daily.py": "file",
-        "dp-dataquality_daily.py": "file",
-        "dp-datawarehouse_triger_one.py": "file",
-        "dp-datawarehouse_usage_daily.py": "file"
-      },
-      "gitlab-ci": {
-        "staging.yml": "file",
-        "production.yml": "file",
-        "development.yml": "file"
-      },
-      "README.md": "file",
-      "common": {
-        "configs.py": "file",
-        "tests": {
-          "test_configs.py": "file",
-          "test_common.py": "file",
-          "__init__.py": "file"
-        },
-        "__init__.py": "file",
-        "common.py": "file"
-      },
-      ".gitignore": "file",
-      "scripts": {
-        "render_dags.py": "file",
-        "requirements.txt": "file",
-        "render_all.py": "file",
-        "render_changed.py": "file",
-        "__init__.py": "file",
-        ".gitignore": "file",
-        ".gitlab-ci.yml": "file",
-        "convention_checking.sh": "file"
-      },
-      "setup.cfg": "file",
       ".gitlab-ci.yml": "file"
+    },
+    "metadata": {
+      "branch_tracked": "main",
+      "schedule": {
+        "type": "batch",
+        "frequency": "daily",
+        "trigger_time": "02:30 ICT",
+        "lag": "T-1"
+      }
     }
   },
   {
-    "id": "urn:li:dataFlow:(airflow,etl-lib,PROD)",
-    "name": "etl-lib",
+    "id": "urn:li:dataFlow:(airflow,qrpay-streaming-svc,PROD)",
+    "name": "qrpay-streaming-svc",
     "entityType": "pipeline",
     "owner": {
       "type": "team",
-      "name": "data-engineering"
+      "name": "Payments Data",
+      "slack": "#payments-data"
     },
-    "domain": "acme.analytics.etl_lib",
+    "domain": "acme.analytics.payment",
     "tier": "Tier2",
-    "description": "GitLab repository for etl-lib. Contains code for data processing and validation.",
-    "files": [],
+    "description": "Spark Structured Streaming jobs that ingest and enrich QR-pay transaction events in near real-time. Spark Structured Streaming service.",
+    "files": [
+      "dags/qrpay_streaming_svc.py",
+      "README.md",
+      "sql/transform.sql",
+      "config/job.yaml"
+    ],
     "lineage": {
-      "upstream": [],
-      "downstream": []
+      "upstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.bank_code_mapping,PROD)"
+      ],
+      "downstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.raw.qrpay_txn_stream,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.rt.qrpay_txn_enriched,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.raw.qrpay_refund_stream,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.curated.qrpay_merchant_settlement,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.curated.qrpay_daily_volume_mart,PROD)"
+      ]
     },
     "directory_structure": {
-      "settings.xml": "file",
-      "Dockerfile": "file",
-      "pom.xml": "file",
-      "run.sh": "file",
+      "dags": {
+        "qrpay_streaming_svc.py": "file"
+      },
+      "sql": {
+        "transform.sql": "file",
+        "schema_checks.sql": "file"
+      },
+      "config": {
+        "job.yaml": "file"
+      },
+      "tests": {
+        "test_transform.py": "file"
+      },
       "README.md": "file",
-      ".gitignore": "file",
-      ".scalafmt.conf": "file",
-      "scalastyle_config.xml": "file",
-      ".gitlab-ci.yml": "file",
-      "src": {
-        "test": {
-          "resources": {
-            "config": {
-              "sample_config.yaml": "file",
-              "read_mix_encyption_AesCfb_ParquetSecureion.yaml": "file"
-            },
-            "mockito-extensions": {
-              "org.mockito.plugins.MockMaker": "file"
-            },
-            "mix_secureion_AesCfb_ParquetModular": {
-              "translog": {
-                "202208": {
-                  "20220810": {
-                    "2023_09_19_10_07_14_2023_09_19_10_06_42_translog.parquet": "file"
-                  },
-                  "20220811": {
-                    "part-00000-54a64ceb-16c2-4ff3-a780-a414cfcd8bbd-c000.snappy.parquet": "file"
-                  }
-                }
-              }
-            }
-          },
-          "scala": {
-            "CommonTest.scala": "file",
-            "vn": {
-              "com": {
-                "acme": {
-                  "config": {
-                    "YAMLConfTest.scala": "file"
-                  },
-                  "utils": {
-                    "DateUtilTest.scala": "file",
-                    "CommonTestUtil.scala": "file",
-                    "HmacUtilTest.scala": "file",
-                    "DbConnectorUtilTest.scala": "file",
-                    "CipherUtilTest.scala": "file",
-                    "AWSUtilTest.scala": "file",
-                    "EmailUtilTest.scala": "file",
-                    "approvals": {
-                      "CipherUtilTest.testColumnSecureDecrypt.approve": "file"
-                    },
-                    "HdfsUtilTest.scala": "file"
-                  },
-                  "dbconnector": {
-                    "MySQLConnectorTest.scala": "file"
-                  },
-                  "spark": {
-                    "SparkSuite.scala": "file",
-                    "datainput": {
-                      "query_db_tracking_2.json": "file",
-                      "SparkUtilTest.testExtractSkey.df.json": "file",
-                      "query_db_tracking_1_1.json": "file",
-                      "SparkUtilTest.testExtractSkey.conf.yaml": "file",
-                      "SparkUtilTest.testExtractSkey.user_dim.json": "file",
-                      "SparkUtilTest.testReadDataFrame.conf.yaml": "file",
-                      "SparkUtilTest.testApplyMapping.df.json": "file",
-                      "SparkUtilTest.testApplyMapping.conf.yaml": "file",
-                      "ymd=20230910": {
-                        "data_1.json": "file",
-                        "data_2.json": "file"
-                      },
-                      "SparkUtilTest.testWriteDataFrame.conf.yaml": "file",
-                      "SparkUtilTest.testCastFieldToType.conf.yaml": "file",
-                      "SparkUtilTest.testReadDataFrameHandleLateRecord.conf.yaml": "file",
-                      "SparkUtilTest.testCastFieldToType.df.json": "file",
-                      "query_db_tracking_1_2.json": "file",
-                      "SparkUtilTest.testExtractSkey.device_dim.json": "file",
-                      "query_db_tracking_1.json": "file"
-                    },
-                    "SparkUtilTest.scala": "file",
-                    "approvals": {
-                      "UDFSparkTest.testExecuteWithUDF.approve": "file",
-                      "SparkUtilTest.testExtractSkey.approve": "file",
-                      "SparkUtilTest.testApplyMapping.approve": "file",
-                      "SparkUtilTest.testBuildRedshiftConnection.approve": "file",
-                      "SparkUtilTest.testReadDataFrame.approve": "file",
-                      "SparkUtilTest.testWriteDataFrame.approve": "file",
-                      "SparkUtilTest.testCastFieldToType.approve": "file"
-                    },
-                    "operator": {
-                      "CastColumnToTypeTest.scala": "file",
-                      "JoinTest.scala": "file",
-                      "FilterTest.scala": "file",
-                      "ReadTest.scala": "file",
-                      "ReadHandleLateRecordTest.scala": "file",
-                      "datainput": {
-                        "JoinRedshiftTableTest.device_dim.json": "file",
-                        "GroupByTest.pivot.conf.yaml": "file",
-                        "ReadTest.conf.yaml": "file",
-                        "CastColumnToTypeTest.df.json": "file",
-                        "GroupByTest.conf.yaml": "file",
-                        "JoinRedshiftTableTest.user_dim.json": "file",
-                        "JoinRedshiftTableTest.conf.yaml": "file",
-                        "GroupByTest.df.json": "file",
-                        "ApplyMappingTest.conf.yaml": "file",
-                        "JoinRedshiftTableTest.df.json": "file",
-                        "WriteTest.conf.yaml": "file",
-                        "ReadHandleLateRecordTest.conf.yaml": "file",
-                        "CastColumnToTypeTest.conf.yaml": "file",
-                        "WriteSegmentTest.conf.yaml": "file",
-                        "WriteSegmentTest.df.json": "file",
-                        "ExtractSkeyTest.conf.yaml": "file"
-                      },
-                      "SelectColumnTest.scala": "file",
-                      "WrapInStructTest.scala": "file",
-                      "ShowTest.scala": "file",
-                      "SparkOperatorTest.scala": "file",
-                      "SecureDecryptColumnTest.scala": "file",
-                      "RegexpReplaceTest.scala": "file",
-                      "RepartitionTest.scala": "file",
-                      "JoinRedshiftTableTest.scala": "file",
-                      "ApplyMappingTest.scala": "file",
-                      "ExecuteSQLTest.scala": "file",
-                      "PersistTest.scala": "file",
-                      "ExtractSkeyTest.scala": "file",
-                      "ReplaceTest.scala": "file",
-                      "WriteSegmentTest.scala": "file",
-                      "CountTest.scala": "file",
-                      "WithColumnExprTest.scala": "file",
-                      "GroupByTest.scala": "file",
-                      "LoadUDFTest.scala": "file",
-                      "DistinctTest.scala": "file",
-                      "CoalesceTest.scala": "file",
-                      "UnionTest.scala": "file",
-                      "WriteTest.scala": "file",
-                      "ExceptTest.scala": "file",
-                      "DropColumnTest.scala": "file",
-                      "approvals": {
-                        "DropColumnTest.execute.approve": "file",
-                        "ExtractSkeyTest.execute.approve": "file",
-                        "ExecuteSQLTest.execute2.approve": "file",
-                        "ExecuteSQLTest.partitionMappingFunc02.approve": "file",
-                        "ShowTest.execute.approve": "file",
-                        "GroupByTest.execute.approve": "file",
-                        "ReadHandleLateRecordTest.execute.approve": "file",
-                        "LoadUDFTest.testExecuteWithUDF.approve": "file",
-                        "ExecuteSQLTest.execute.approve": "file",
-                        "FilterTest.execute.approve": "file",
-                        "ExecuteSQLTest.partitionMappingFunc01.approve": "file",
-                        "ApplyMappingTest.execute.approve": "file",
-                        "ExceptTest.executeMultiExc.approve": "file",
-                        "CastColumnToTypeTest.execute.approve": "file",
-                        "GroupByTest.executePivot.approve": "file",
-                        "DistinctTest.execute.approve": "file",
-                        "ReplaceTest.execute.approve": "file",
-                        "ExceptTest.execute.approve": "file",
-                        "WithColumnExprTest.execute.approve": "file",
-                        "ExcuteSQLTest.partitionMappingFunc02.approve": "file",
-                        "SelectColumnTest.execute.approve": "file",
-                        "RegexpReplaceTest.execute.approve": "file",
-                        "UnionTest.execute.approve": "file",
-                        "ExecuteSQLTest.buildStatementFromSingleParam.approve": "file",
-                        "ExcuteSQLTest.buildStatementFromSingleParam.approve": "file",
-                        "JoinRedshiftTableTest.execute.approve": "file",
-                        "WriteSegmentTest.execute.approve": "file",
-                        "WrapInStructTest.execute.approve": "file",
-                        "WriteTest.execute.approve": "file",
-                        "JoinTest.execute.approve": "file",
-                        "ExcuteSQLTest.partitionMappingFunc01.approve": "file",
-                        "ReadTest.execute.approve": "file"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "org": {
-              "apache": {
-                "parquet": {
-                  "acme": {
-                    "dp_etl_lib": {
-                      "crypto": {
-                        "keytools": {
-                          "mocks": {
-                            "InMemoryKMS.java": "file"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "main": {
-          "resources": {
-            "sandbox.yml": "file",
-            "log4j.properties": "file"
-          },
-          "scala": {
-            "vn": {
-              "com": {
-                "acme": {
-                  "config": {
-                    "YAMLConf.scala": "file"
-                  },
-                  "utils": {
-                    "AWSUtil.scala": "file",
-                    "DbConnectorUtil.scala": "file",
-                    "HdfsUtil.scala": "file",
-                    "DateUtil.scala": "file",
-                    "PathUtil.scala": "file",
-                    "CipherUtil.scala": "file",
-                    "DriverManagerWrapper.scala": "file",
-                    "CommonUtil.scala": "file",
-                    "HmacUtil.scala": "file",
-                    "EmailUtil.scala": "file"
-                  },
-                  "dbconnector": {
-                    "MySQLConnector.scala": "file"
-                  },
-                  "exception": {
-                    "InvalidInputException.scala": "file",
-                    "InvalidConfigException.scala": "file"
-                  },
-                  "spark": {
-                    "SparkUtil.scala": "file",
-                    "UDFSpark": {
-                      "UserAgentParserUtils.scala": "file",
-                      "UDFSpark.scala": "file"
-                    },
-                    "operator": {
-                      "Coalesce.scala": "file",
-                      "SparkOperator.scala": "file",
-                      "Persist.scala": "file",
-                      "GroupBy.scala": "file",
-                      "Join.scala": "file",
-                      "WriteSegment.scala": "file",
-                      "SelectColumn.scala": "file",
-                      "Except.scala": "file",
-                      "ExecuteSQL.scala": "file",
-                      "ExtractSkey.scala": "file",
-                      "Distinct.scala": "file",
-                      "ApplyMapping.scala": "file",
-                      "Write.scala": "file",
-                      "Read.scala": "file",
-                      "RegexpReplace.scala": "file",
-                      "LoadUDF.scala": "file",
-                      "Union.scala": "file",
-                      "ReadHandleLateRecord.scala": "file",
-                      "Show.scala": "file",
-                      "Filter.scala": "file",
-                      "Count.scala": "file",
-                      "CastColumnToType.scala": "file",
-                      "WithColumnExpr.scala": "file",
-                      "Replace.scala": "file",
-                      "DropColumn.scala": "file",
-                      "Repartition.scala": "file",
-                      "JoinRedshiftTable.scala": "file",
-                      "SecureColumn.scala": "file",
-                      "DecryptColumn.scala": "file",
-                      "WrapInStruct.scala": "file"
-                    },
-                    "TransformUtils.scala": "file"
-                  }
-                }
-              }
-            },
-            "org": {
-              "apche": {
-                "parquet": {
-                  "aws": {
-                    "AwsKmsClient.java": "file",
-                    "ZlpKeyToolkit.java": "file"
-                  }
-                }
-              },
-              "apache": {
-                "spark": {
-                  "sql": {
-                    "SparkHelper.scala": "file"
-                  }
-                }
-              }
-            }
-          }
-        }
+      ".gitlab-ci.yml": "file"
+    },
+    "metadata": {
+      "branch_tracked": "main",
+      "schedule": {
+        "type": "streaming",
+        "frequency": "continuous",
+        "trigger_time": null,
+        "sla_minutes": 5
+      }
+    }
+  },
+  {
+    "id": "urn:li:dataFlow:(airflow,merchant-mart-etl,PROD)",
+    "name": "merchant-mart-etl",
+    "entityType": "pipeline",
+    "owner": {
+      "type": "team",
+      "name": "Payments Data",
+      "slack": "#payments-data"
+    },
+    "domain": "acme.analytics.merchant",
+    "tier": "Tier2",
+    "description": "Daily merchant dimension + revenue marts joining merchant profile with QR-pay settlement. Airflow batch pipeline (daily T-1).",
+    "files": [
+      "dags/merchant_mart_etl.py",
+      "README.md",
+      "sql/transform.sql",
+      "config/job.yaml"
+    ],
+    "lineage": {
+      "upstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.bank_code_mapping,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.curated.qrpay_merchant_settlement,PROD)"
+      ],
+      "downstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.staging.stg_merchant_profile,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.staging.stg_merchant_kyc_status,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.curated.merchant_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.curated.merchant_revenue_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.curated.merchant_active_daily_mart,PROD)"
+      ]
+    },
+    "directory_structure": {
+      "dags": {
+        "merchant_mart_etl.py": "file"
+      },
+      "sql": {
+        "transform.sql": "file",
+        "schema_checks.sql": "file"
+      },
+      "config": {
+        "job.yaml": "file"
+      },
+      "tests": {
+        "test_transform.py": "file"
+      },
+      "README.md": "file",
+      ".gitlab-ci.yml": "file"
+    },
+    "metadata": {
+      "branch_tracked": "main",
+      "schedule": {
+        "type": "batch",
+        "frequency": "daily",
+        "trigger_time": "02:30 ICT",
+        "lag": "T-1"
+      }
+    }
+  },
+  {
+    "id": "urn:li:dataFlow:(airflow,identity-resolution-etl,PROD)",
+    "name": "identity-resolution-etl",
+    "entityType": "pipeline",
+    "owner": {
+      "type": "team",
+      "name": "Identity Platform",
+      "slack": "#identity-oncall"
+    },
+    "domain": "acme.analytics.identity",
+    "tier": "Tier2",
+    "description": "Resolve device/identity graph and publish the identity mart + bank-code reference (batch T-1). Airflow batch pipeline (daily T-1).",
+    "files": [
+      "dags/identity_resolution_etl.py",
+      "README.md",
+      "sql/transform.sql",
+      "config/job.yaml"
+    ],
+    "lineage": {
+      "upstream": [],
+      "downstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.identity.staging.stg_identity_events,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.identity.curated.identity_graph,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.identity_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.bank_code_mapping,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.identity.curated.identity_device_dim,PROD)"
+      ]
+    },
+    "directory_structure": {
+      "dags": {
+        "identity_resolution_etl.py": "file"
+      },
+      "sql": {
+        "transform.sql": "file",
+        "schema_checks.sql": "file"
+      },
+      "config": {
+        "job.yaml": "file"
+      },
+      "tests": {
+        "test_transform.py": "file"
+      },
+      "README.md": "file",
+      ".gitlab-ci.yml": "file"
+    },
+    "metadata": {
+      "branch_tracked": "main",
+      "schedule": {
+        "type": "batch",
+        "frequency": "daily",
+        "trigger_time": "02:30 ICT",
+        "lag": "T-1"
+      }
+    }
+  },
+  {
+    "id": "urn:li:dataFlow:(airflow,platform-etl-lib,PROD)",
+    "name": "platform-etl-lib",
+    "entityType": "pipeline",
+    "owner": {
+      "type": "team",
+      "name": "Data Platform Core",
+      "slack": "#data-eng-oncall"
+    },
+    "domain": "acme.analytics.infra",
+    "tier": "Tier2",
+    "description": "Shared reference/lookup tables and the data-quality result tables produced by the platform DQ framework. Airflow batch pipeline (daily T-1).",
+    "files": [
+      "dags/platform_etl_lib.py",
+      "README.md",
+      "sql/transform.sql",
+      "config/job.yaml"
+    ],
+    "lineage": {
+      "upstream": [],
+      "downstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.reference.lookup.currency_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.reference.lookup.calendar_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.reference.lookup.product_catalog_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.dataquality.result.dq_check_results,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.dataquality.result.dq_freshness_log,PROD)"
+      ]
+    },
+    "directory_structure": {
+      "dags": {
+        "platform_etl_lib.py": "file"
+      },
+      "sql": {
+        "transform.sql": "file",
+        "schema_checks.sql": "file"
+      },
+      "config": {
+        "job.yaml": "file"
+      },
+      "tests": {
+        "test_transform.py": "file"
+      },
+      "README.md": "file",
+      ".gitlab-ci.yml": "file"
+    },
+    "metadata": {
+      "branch_tracked": "main",
+      "schedule": {
+        "type": "batch",
+        "frequency": "daily",
+        "trigger_time": "02:30 ICT",
+        "lag": "T-1"
+      }
+    }
+  },
+  {
+    "id": "urn:li:dataFlow:(airflow,risk-scorecard-etl,PROD)",
+    "name": "risk-scorecard-etl",
+    "entityType": "pipeline",
+    "owner": {
+      "type": "team",
+      "name": "Risk Engineering",
+      "slack": "#risk-oncall"
+    },
+    "domain": "acme.analytics.risk",
+    "tier": "Tier2",
+    "description": "Credit-risk scorecards, PD/LGD model features and the daily NPL/exposure marts consumed by Risk. Airflow batch pipeline (daily T-1).",
+    "files": [
+      "dags/risk_scorecard_etl.py",
+      "README.md",
+      "sql/transform.sql",
+      "config/job.yaml"
+    ],
+    "lineage": {
+      "upstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_account_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.identity_mart,PROD)"
+      ],
+      "downstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.risk_feature_store,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.credit_risk_scorecard,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.pd_model_scores,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.lgd_model_scores,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.npl_exposure_daily_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.risk_limit_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.collection_priority_mart,PROD)"
+      ]
+    },
+    "directory_structure": {
+      "dags": {
+        "risk_scorecard_etl.py": "file"
+      },
+      "sql": {
+        "transform.sql": "file",
+        "schema_checks.sql": "file"
+      },
+      "config": {
+        "job.yaml": "file"
+      },
+      "tests": {
+        "test_transform.py": "file"
+      },
+      "README.md": "file",
+      ".gitlab-ci.yml": "file"
+    },
+    "metadata": {
+      "branch_tracked": "main",
+      "schedule": {
+        "type": "batch",
+        "frequency": "daily",
+        "trigger_time": "02:30 ICT",
+        "lag": "T-1"
+      }
+    }
+  },
+  {
+    "id": "urn:li:dataFlow:(airflow,fraud-signal-streaming,PROD)",
+    "name": "fraud-signal-streaming",
+    "entityType": "pipeline",
+    "owner": {
+      "type": "team",
+      "name": "Fraud Detection",
+      "slack": "#fraud-oncall"
+    },
+    "domain": "acme.analytics.fraud",
+    "tier": "Tier2",
+    "description": "Near-real-time fraud signals and rule hits computed from the QR-pay enriched stream. Spark Structured Streaming service.",
+    "files": [
+      "dags/fraud_signal_streaming.py",
+      "README.md",
+      "sql/transform.sql",
+      "config/job.yaml"
+    ],
+    "lineage": {
+      "upstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.rt.qrpay_txn_enriched,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.identity.curated.identity_device_dim,PROD)"
+      ],
+      "downstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.fraud.rt.fraud_txn_signal,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.fraud.rt.fraud_rule_hits,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.fraud.rt.device_risk_score,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.fraud.curated.fraud_case_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.fraud.curated.blocklist_dim,PROD)"
+      ]
+    },
+    "directory_structure": {
+      "dags": {
+        "fraud_signal_streaming.py": "file"
+      },
+      "sql": {
+        "transform.sql": "file",
+        "schema_checks.sql": "file"
+      },
+      "config": {
+        "job.yaml": "file"
+      },
+      "tests": {
+        "test_transform.py": "file"
+      },
+      "README.md": "file",
+      ".gitlab-ci.yml": "file"
+    },
+    "metadata": {
+      "branch_tracked": "main",
+      "schedule": {
+        "type": "streaming",
+        "frequency": "continuous",
+        "trigger_time": null,
+        "sla_minutes": 5
+      }
+    }
+  },
+  {
+    "id": "urn:li:dataFlow:(airflow,marketing-segment-etl,PROD)",
+    "name": "marketing-segment-etl",
+    "entityType": "pipeline",
+    "owner": {
+      "type": "team",
+      "name": "Marketing Analytics",
+      "slack": "#marketing-data"
+    },
+    "domain": "acme.analytics.marketing",
+    "tier": "Tier2",
+    "description": "Customer segments, campaign audiences and engagement marts built from identity + payment data. Airflow batch pipeline (daily T-1).",
+    "files": [
+      "dags/marketing_segment_etl.py",
+      "README.md",
+      "sql/transform.sql",
+      "config/job.yaml"
+    ],
+    "lineage": {
+      "upstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.identity_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_account_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.curated.qrpay_daily_volume_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)"
+      ],
+      "downstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.curated.customer_segment_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.curated.campaign_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.curated.campaign_audience_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.raw.engagement_event_log,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.curated.marketing_attribution_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.curated.ltv_prediction_mart,PROD)"
+      ]
+    },
+    "directory_structure": {
+      "dags": {
+        "marketing_segment_etl.py": "file"
+      },
+      "sql": {
+        "transform.sql": "file",
+        "schema_checks.sql": "file"
+      },
+      "config": {
+        "job.yaml": "file"
+      },
+      "tests": {
+        "test_transform.py": "file"
+      },
+      "README.md": "file",
+      ".gitlab-ci.yml": "file"
+    },
+    "metadata": {
+      "branch_tracked": "main",
+      "schedule": {
+        "type": "batch",
+        "frequency": "daily",
+        "trigger_time": "02:30 ICT",
+        "lag": "T-1"
+      }
+    }
+  },
+  {
+    "id": "urn:li:dataFlow:(airflow,finance-reporting-etl,PROD)",
+    "name": "finance-reporting-etl",
+    "entityType": "pipeline",
+    "owner": {
+      "type": "team",
+      "name": "Finance Analytics",
+      "slack": "#finance-data"
+    },
+    "domain": "acme.analytics.finance",
+    "tier": "Tier2",
+    "description": "GL postings, revenue recognition and P&L reporting marts feeding Finance dashboards (batch T-1). Airflow batch pipeline (daily T-1).",
+    "files": [
+      "dags/finance_reporting_etl.py",
+      "README.md",
+      "sql/transform.sql",
+      "config/job.yaml"
+    ],
+    "lineage": {
+      "upstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.curated.qrpay_merchant_settlement,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_payment_fact,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.curated.merchant_revenue_mart,PROD)"
+      ],
+      "downstream": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.gl_posting_fact,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.revenue_recognition_fact,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.pnl_daily_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.fee_income_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.chart_of_accounts_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.finance_close_log,PROD)"
+      ]
+    },
+    "directory_structure": {
+      "dags": {
+        "finance_reporting_etl.py": "file"
+      },
+      "sql": {
+        "transform.sql": "file",
+        "schema_checks.sql": "file"
+      },
+      "config": {
+        "job.yaml": "file"
+      },
+      "tests": {
+        "test_transform.py": "file"
+      },
+      "README.md": "file",
+      ".gitlab-ci.yml": "file"
+    },
+    "metadata": {
+      "branch_tracked": "main",
+      "schedule": {
+        "type": "batch",
+        "frequency": "daily",
+        "trigger_time": "02:30 ICT",
+        "lag": "T-1"
       }
     }
   }

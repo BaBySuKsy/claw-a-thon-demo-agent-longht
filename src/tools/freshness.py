@@ -83,11 +83,17 @@ async def get_data_freshness(entity_id: str) -> dict:
         from src.tools.discovery import get_engine
         engine = get_engine()
         entity = engine.get_entity(entity_id)
+        stats = (getattr(entity, "metadata", {}) or {}).get("stats", {}) if entity else {}
+        last_ms = stats.get("last_modified_ms")
         return {
             "entity_id": entity_id,
             "source": "cache_only",
             "status": getattr(entity, "status", "unknown") if entity else "not_found",
-            "note": "DataHub unreachable — showing cached status only",
+            "last_modified_ms": last_ms,
+            "last_modified_human": _ms_to_human(last_ms),
+            "row_count": stats.get("row_count"),
+            "column_count": stats.get("column_count"),
+            "note": "DataHub unreachable — showing last cached snapshot",
         }
 
 

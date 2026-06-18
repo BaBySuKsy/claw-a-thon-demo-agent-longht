@@ -1,7 +1,9 @@
 import os
+import json
 import requests
 import asyncio
 import logging
+from pathlib import Path
 from datetime import datetime, timedelta
 from urllib.parse import quote
 
@@ -10,6 +12,41 @@ logger = logging.getLogger(__name__)
 _PREFIXES = ["dataeng/", "dataeng/datainfra/", "dataeng/", ""]
 
 _PROJECT_ID_CACHE = {}
+
+_GITLAB_CACHE = Path("src/data_platform/cache/gitlab")
+
+
+def _read_cache_json(project_name: str, *parts):
+    """Best-effort read of a JSON file under cache/gitlab/<project>/<parts...>.
+    Returns the parsed JSON, or None if absent/unreadable."""
+    p = _GITLAB_CACHE.joinpath(project_name, *parts)
+    if p.exists():
+        try:
+            return json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            return None
+    return None
+
+
+def _map_diff(raw, project_name, sha, max_files, max_chars):
+    """Shared live/cache diff → response mapper (raw is a list of GitLab diff dicts)."""
+    files = []
+    for d in raw[:max_files]:
+        path = d.get("new_path") or d.get("old_path", "")
+        files.append({
+            "path": path,
+            "new_file": d.get("new_file", False),
+            "deleted_file": d.get("deleted_file", False),
+            "renamed_file": d.get("renamed_file", False),
+            "diff": (d.get("diff") or "")[:max_chars],
+        })
+    return {
+        "project": project_name,
+        "sha": sha,
+        "changed_files": [f["path"] for f in files],
+        "files": files,
+        "file_count": len(raw),
+    }
 
 
 def _base() -> str:
@@ -87,6 +124,19 @@ async def get_recent_commits(project_name: str, days: int = 7, limit: int = 20) 
         ]
         return {"project": project_name, "commits": commits, "days": days, "count": len(commits)}
     except Exception as e:
+        raw = _read_cache_json(project_name, "_commits.json")
+        if raw is not None:
+            commits = [
+                {
+                    "id": c.get("short_id") or c.get("id"),
+                    "message": c.get("title") or c.get("message"),
+                    "author": c.get("author_name") or c.get("author"),
+                    "date": c.get("committed_date") or c.get("date"),
+                }
+                for c in raw
+            ][:limit]
+            return {"project": project_name, "commits": commits, "days": days,
+                    "count": len(commits), "source": "cache"}
         logger.error("get_recent_commits(%s): %s", project_name, e)
         return {"error": str(e), "project": project_name, "commits": []}
 
@@ -112,25 +162,13 @@ async def get_commit_diff(project_name: str, sha: str, max_files: int = 6, max_c
 
     try:
         raw = await loop.run_in_executor(None, _fetch)
-        files = []
-        for d in raw[:max_files]:
-            path = d.get("new_path") or d.get("old_path", "")
-            snippet = (d.get("diff") or "")[:max_chars]
-            files.append({
-                "path": path,
-                "new_file": d.get("new_file", False),
-                "deleted_file": d.get("deleted_file", False),
-                "renamed_file": d.get("renamed_file", False),
-                "diff": snippet,
-            })
-        return {
-            "project": project_name,
-            "sha": sha,
-            "changed_files": [f["path"] for f in files],
-            "files": files,
-            "file_count": len(raw),
-        }
+        return _map_diff(raw, project_name, sha, max_files, max_chars)
     except Exception as e:
+        raw = _read_cache_json(project_name, "_diffs", f"{sha}.json")
+        if raw is not None:
+            out = _map_diff(raw, project_name, sha, max_files, max_chars)
+            out["source"] = "cache"
+            return out
         logger.error("get_commit_diff(%s, %s): %s", project_name, sha, e)
         return {"error": str(e), "project": project_name, "sha": sha, "files": []}
 
@@ -164,5 +202,20 @@ async def get_merge_requests(project_name: str, state: str = "opened") -> dict:
         mrs = await loop.run_in_executor(None, _fetch)
         return {"project": project_name, "merge_requests": mrs, "state": state}
     except Exception as e:
+        raw = _read_cache_json(project_name, "_mrs.json")
+        if raw is not None:
+            mrs = [
+                {
+                    "id": m.get("iid") or m.get("id"),
+                    "title": m.get("title"),
+                    "author": (m.get("author") or {}).get("name") if isinstance(m.get("author"), dict) else m.get("author"),
+                    "state": m.get("state"),
+                    "created_at": m.get("created_at"),
+                    "source_branch": m.get("source_branch"),
+                }
+                for m in raw
+                if not state or m.get("state") == state
+            ]
+            return {"project": project_name, "merge_requests": mrs, "state": state, "source": "cache"}
         logger.error("get_merge_requests(%s): %s", project_name, e)
         return {"error": str(e), "project": project_name, "merge_requests": []}

@@ -4,21 +4,20 @@
     "name": "Lending (Credit / Consumer Loan)",
     "entityType": "domain",
     "tier": "Tier1",
-    "description": "Buy Now Pay Later và Consumer Loan của Acme. Quản lý tài khoản tín dụng, đơn trả góp, sao kê, thanh toán. Đây là domain business-critical — incident là P0.",
+    "description": "Domain Lending (Credit / Consumer Loan) trên Acme Data Platform.",
     "owner": {
       "type": "team",
-      "name": "data-engineering",
-      "slack": "#credit-oncall"
+      "name": "Data Platform Core",
+      "slack": "#data-eng-oncall"
     },
     "tags": [
       "credit",
       "lending",
-      "finance",
-      "tier1",
-      "pii"
+      "pii",
+      "tier1"
     ],
     "teams": [
-      "team:data-engineering"
+      "team:data-platform-core"
     ],
     "metadata": {
       "key_datasets": [
@@ -26,120 +25,132 @@
         "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_order,PROD)",
         "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_bill,PROD)",
         "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_statement,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_user,PROD)"
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.lending_svc.installment.loan_core_user,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.staging.credit.stg_loan_statement,PROD)"
       ],
       "key_pipelines": [
+        "urn:li:dataFlow:(airflow,lending-ingest-etl,PROD)",
         "urn:li:dataFlow:(airflow,credit-curated-etl,PROD)"
       ],
       "key_docs": [
         {
-          "title": "Curated Data Zone",
-          "page_id": "10000007"
+          "title": "Lending (Credit / Consumer Loan) — Overview",
+          "page_id": "30000001"
         }
       ]
     }
   },
   {
     "id": "domain:payment",
-    "name": "Payment (QrPay / Acme Core)",
+    "name": "Payment (QR-Pay / Acme Core)",
     "entityType": "domain",
     "tier": "Tier1",
-    "description": "Thanh toán QrPay và Acme core: user payment profile, transaction log, bank account mapping. Phục vụ data mart thanh toán và gateway.",
+    "description": "Domain Payment (QR-Pay / Acme Core) trên Acme Data Platform.",
     "owner": {
       "type": "team",
-      "name": "data-engineering",
-      "slack": "#data-eng-oncall"
+      "name": "Payments Data",
+      "slack": "#payments-data"
     },
     "tags": [
       "payment",
       "qrpay",
-      "transaction",
+      "streaming",
       "tier1"
     ],
     "teams": [
-      "team:data-engineering"
+      "team:payments-data"
     ],
     "metadata": {
       "key_datasets": [
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.qrpay_user,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.qrpay_user_translog,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.bank_code_mapping,PROD)"
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.raw.qrpay_txn_stream,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.rt.qrpay_txn_enriched,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.raw.qrpay_refund_stream,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.curated.qrpay_merchant_settlement,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.payment.qrpay.curated.qrpay_daily_volume_mart,PROD)"
       ],
-      "key_pipelines": [],
+      "key_pipelines": [
+        "urn:li:dataFlow:(airflow,qrpay-streaming-svc,PROD)"
+      ],
       "key_docs": [
         {
-          "title": "[DP][BR] Pass through payment user",
-          "page_id": "10000002"
-        },
-        {
-          "title": "Data Warehouse",
-          "page_id": "10000011"
-        }
-      ]
-    }
-  },
-  {
-    "id": "domain:identity",
-    "name": "Identity (Customer Identity)",
-    "entityType": "domain",
-    "tier": "Tier1",
-    "description": "Xác minh khách hàng (Know Your Customer). Identity mart tổng hợp trạng thái định danh user, là nguồn tin cậy cho eligibility của lending và payment.",
-    "owner": {
-      "type": "team",
-      "name": "data-engineering",
-      "slack": "#data-eng-oncall"
-    },
-    "tags": [
-      "identity",
-      "identity",
-      "compliance",
-      "tier1",
-      "pii"
-    ],
-    "teams": [
-      "team:data-engineering"
-    ],
-    "metadata": {
-      "key_datasets": [
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.identity_mart,PROD)"
-      ],
-      "key_pipelines": [],
-      "key_docs": [
-        {
-          "title": "Customer Data Platform",
-          "page_id": "10000005"
+          "title": "Payment (QR-Pay / Acme Core) — Overview",
+          "page_id": "30000002"
         }
       ]
     }
   },
   {
     "id": "domain:merchant",
-    "name": "Partner Ecosystem (Partner)",
+    "name": "Merchant Ecosystem",
     "entityType": "domain",
     "tier": "Tier2",
-    "description": "Hệ sinh thái đối tác kinh doanh (Partner Platform): thông tin merchant, phân loại ngành hàng, app config. Phục vụ analytics đối tác.",
+    "description": "Domain Merchant Ecosystem trên Acme Data Platform.",
     "owner": {
       "type": "team",
-      "name": "data-engineering",
-      "slack": "#data-eng-oncall"
+      "name": "Payments Data",
+      "slack": "#payments-data"
     },
     "tags": [
       "merchant",
-      "partner",
-      "config",
       "tier2"
     ],
     "teams": [
-      "team:data-engineering"
+      "team:payments-data"
     ],
     "metadata": {
       "key_datasets": [
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.config.partner.api.merchant_info,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.config.partner.api.merchant_category,PROD)",
-        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.secure.config.partner.api.app_info,PROD)"
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.staging.stg_merchant_profile,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.staging.stg_merchant_kyc_status,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.curated.merchant_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.curated.merchant_revenue_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.merchant.curated.merchant_active_daily_mart,PROD)"
       ],
-      "key_pipelines": [],
-      "key_docs": []
+      "key_pipelines": [
+        "urn:li:dataFlow:(airflow,merchant-mart-etl,PROD)"
+      ],
+      "key_docs": [
+        {
+          "title": "Merchant Ecosystem — Overview",
+          "page_id": "30000003"
+        }
+      ]
+    }
+  },
+  {
+    "id": "domain:identity",
+    "name": "Identity (Customer Verification)",
+    "entityType": "domain",
+    "tier": "Tier1",
+    "description": "Domain Identity (Customer Verification) trên Acme Data Platform.",
+    "owner": {
+      "type": "team",
+      "name": "Identity Platform",
+      "slack": "#identity-oncall"
+    },
+    "tags": [
+      "identity",
+      "pii",
+      "tier1"
+    ],
+    "teams": [
+      "team:identity-platform"
+    ],
+    "metadata": {
+      "key_datasets": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.identity.staging.stg_identity_events,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.identity.curated.identity_graph,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.identity_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.identity.curated.identity_device_dim,PROD)"
+      ],
+      "key_pipelines": [
+        "urn:li:dataFlow:(airflow,identity-resolution-etl,PROD)"
+      ],
+      "key_docs": [
+        {
+          "title": "Identity (Customer Verification) — Overview",
+          "page_id": "30000004"
+        }
+      ]
     }
   },
   {
@@ -147,39 +158,193 @@
     "name": "Data Platform Infrastructure",
     "entityType": "domain",
     "tier": "Tier2",
-    "description": "Nền tảng dùng chung: data quality framework, Airflow orchestration (on-premise + cloud), ETL library (Spark/Scala). Hạ tầng chạy mọi pipeline của Data Platform.",
+    "description": "Domain Data Platform Infrastructure trên Acme Data Platform.",
     "owner": {
       "type": "team",
-      "name": "data-engineering",
+      "name": "Data Platform Core",
       "slack": "#data-eng-oncall"
     },
     "tags": [
       "infra",
-      "airflow",
       "data-quality",
-      "etl",
-      "spark"
+      "reference"
     ],
     "teams": [
-      "team:data-engineering"
+      "team:data-platform-core"
     ],
     "metadata": {
-      "key_datasets": [],
+      "key_datasets": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.bank_code_mapping,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.reference.lookup.currency_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.reference.lookup.calendar_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.reference.lookup.product_catalog_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.dataquality.result.dq_check_results,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.dataquality.result.dq_freshness_log,PROD)"
+      ],
       "key_pipelines": [
-        "urn:li:dataFlow:(airflow,data-quality-svc,PROD)",
-        "urn:li:dataFlow:(airflow,airflow-onprem,PROD)",
-        "urn:li:dataFlow:(airflow,airflow-cloud,PROD)",
-        "urn:li:dataFlow:(airflow,etl-lib,PROD)",
-        "urn:li:dataFlow:(airflow,fund-mapping-etl,PROD)"
+        "urn:li:dataFlow:(airflow,platform-etl-lib,PROD)"
       ],
       "key_docs": [
         {
-          "title": "Data Infra",
-          "page_id": "10000001"
-        },
+          "title": "Data Platform Infrastructure — Overview",
+          "page_id": "30000005"
+        }
+      ]
+    }
+  },
+  {
+    "id": "domain:risk",
+    "name": "Risk (Credit Risk / Scorecards)",
+    "entityType": "domain",
+    "tier": "Tier1",
+    "description": "Domain Risk (Credit Risk / Scorecards) trên Acme Data Platform.",
+    "owner": {
+      "type": "team",
+      "name": "Risk Engineering",
+      "slack": "#risk-oncall"
+    },
+    "tags": [
+      "risk",
+      "scorecard",
+      "pii",
+      "tier1"
+    ],
+    "teams": [
+      "team:risk-engineering"
+    ],
+    "metadata": {
+      "key_datasets": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.risk_feature_store,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.credit_risk_scorecard,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.pd_model_scores,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.lgd_model_scores,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.npl_exposure_daily_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.risk.curated.risk_limit_dim,PROD)"
+      ],
+      "key_pipelines": [
+        "urn:li:dataFlow:(airflow,risk-scorecard-etl,PROD)"
+      ],
+      "key_docs": [
         {
-          "title": "Metadata Standards",
-          "page_id": "10000008"
+          "title": "Risk (Credit Risk / Scorecards) — Overview",
+          "page_id": "30000006"
+        }
+      ]
+    }
+  },
+  {
+    "id": "domain:fraud",
+    "name": "Fraud Detection",
+    "entityType": "domain",
+    "tier": "Tier1",
+    "description": "Domain Fraud Detection trên Acme Data Platform.",
+    "owner": {
+      "type": "team",
+      "name": "Fraud Detection",
+      "slack": "#fraud-oncall"
+    },
+    "tags": [
+      "fraud",
+      "real-time",
+      "tier1"
+    ],
+    "teams": [
+      "team:fraud-detection"
+    ],
+    "metadata": {
+      "key_datasets": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.fraud.rt.fraud_txn_signal,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.fraud.rt.fraud_rule_hits,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.fraud.rt.device_risk_score,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.fraud.curated.fraud_case_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.fraud.curated.blocklist_dim,PROD)"
+      ],
+      "key_pipelines": [
+        "urn:li:dataFlow:(airflow,fraud-signal-streaming,PROD)"
+      ],
+      "key_docs": [
+        {
+          "title": "Fraud Detection — Overview",
+          "page_id": "30000007"
+        }
+      ]
+    }
+  },
+  {
+    "id": "domain:marketing",
+    "name": "Marketing & Growth Analytics",
+    "entityType": "domain",
+    "tier": "Tier2",
+    "description": "Domain Marketing & Growth Analytics trên Acme Data Platform.",
+    "owner": {
+      "type": "team",
+      "name": "Marketing Analytics",
+      "slack": "#marketing-data"
+    },
+    "tags": [
+      "marketing",
+      "segments",
+      "tier2"
+    ],
+    "teams": [
+      "team:marketing-analytics"
+    ],
+    "metadata": {
+      "key_datasets": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.curated.customer_segment_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.curated.campaign_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.curated.campaign_audience_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.raw.engagement_event_log,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.curated.marketing_attribution_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.marketing.curated.ltv_prediction_mart,PROD)"
+      ],
+      "key_pipelines": [
+        "urn:li:dataFlow:(airflow,marketing-segment-etl,PROD)"
+      ],
+      "key_docs": [
+        {
+          "title": "Marketing & Growth Analytics — Overview",
+          "page_id": "30000008"
+        }
+      ]
+    }
+  },
+  {
+    "id": "domain:finance",
+    "name": "Finance & Reporting",
+    "entityType": "domain",
+    "tier": "Tier1",
+    "description": "Domain Finance & Reporting trên Acme Data Platform.",
+    "owner": {
+      "type": "team",
+      "name": "Finance Analytics",
+      "slack": "#finance-data"
+    },
+    "tags": [
+      "finance",
+      "gl",
+      "reporting",
+      "tier1"
+    ],
+    "teams": [
+      "team:finance-analytics"
+    ],
+    "metadata": {
+      "key_datasets": [
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.gl_posting_fact,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.revenue_recognition_fact,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.pnl_daily_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.fee_income_mart,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.chart_of_accounts_dim,PROD)",
+        "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.finance.curated.finance_close_log,PROD)"
+      ],
+      "key_pipelines": [
+        "urn:li:dataFlow:(airflow,finance-reporting-etl,PROD)"
+      ],
+      "key_docs": [
+        {
+          "title": "Finance & Reporting — Overview",
+          "page_id": "30000009"
         }
       ]
     }

@@ -1,52 +1,244 @@
 [
   {
-    "id": "team:data-engineering",
-    "name": "Data Engineering (Data Platform)",
+    "id": "team:data-platform-core",
+    "name": "Data Platform Core",
     "entityType": "team",
-    "description": "Team Data Engineering thuộc Data Platform Acme. Sở hữu và vận hành toàn bộ data warehouse, curated zone, các pipeline Airflow/Spark và framework data quality. Là điểm liên hệ chính cho mọi vấn đề về dataset, lineage và pipeline.",
+    "description": "Team Data Platform Core thuộc Acme Data Platform. Sở hữu: credit-curated-etl, platform-etl-lib.",
     "owner": {
       "type": "team",
-      "name": "data-engineering",
+      "name": "Data Platform Core",
       "slack": "#data-eng-oncall",
-      "tech_lead": "Data Platform Lead"
+      "tech_lead": "Tâm Nguyễn"
     },
     "tags": [
       "data-engineering",
-      "data-platform",
       "owner"
     ],
     "domains": [
-      "domain:lending",
-      "domain:payment",
-      "domain:identity",
-      "domain:merchant",
-      "domain:data-platform-infra"
+      "domain:data-platform-infra",
+      "domain:lending"
     ],
     "projects": [
       "credit-curated-etl",
-      "fund-mapping-etl",
-      "data-quality-svc",
-      "airflow-onprem",
-      "airflow-cloud",
-      "etl-lib"
+      "platform-etl-lib"
     ],
     "metadata": {
       "onboarding_docs": [
         {
-          "title": "Data Platform Home",
-          "page_id": "10000009"
-        },
+          "title": "Data Platform Core — Onboarding",
+          "page_id": "30000010"
+        }
+      ]
+    }
+  },
+  {
+    "id": "team:lending-data",
+    "name": "Lending Data",
+    "entityType": "team",
+    "description": "Team Lending Data thuộc Acme Data Platform. Sở hữu: lending-ingest-etl.",
+    "owner": {
+      "type": "team",
+      "name": "Lending Data",
+      "slack": "#credit-oncall",
+      "tech_lead": "Bình Trần"
+    },
+    "tags": [
+      "data-engineering",
+      "owner"
+    ],
+    "domains": [
+      "domain:lending"
+    ],
+    "projects": [
+      "lending-ingest-etl"
+    ],
+    "metadata": {
+      "onboarding_docs": [
         {
-          "title": "Data Platform Overview",
-          "page_id": "10000012"
-        },
+          "title": "Lending Data — Onboarding",
+          "page_id": "30000011"
+        }
+      ]
+    }
+  },
+  {
+    "id": "team:payments-data",
+    "name": "Payments Data",
+    "entityType": "team",
+    "description": "Team Payments Data thuộc Acme Data Platform. Sở hữu: qrpay-streaming-svc, merchant-mart-etl.",
+    "owner": {
+      "type": "team",
+      "name": "Payments Data",
+      "slack": "#payments-data",
+      "tech_lead": "Hùng Lê"
+    },
+    "tags": [
+      "data-engineering",
+      "owner"
+    ],
+    "domains": [
+      "domain:merchant",
+      "domain:payment"
+    ],
+    "projects": [
+      "qrpay-streaming-svc",
+      "merchant-mart-etl"
+    ],
+    "metadata": {
+      "onboarding_docs": [
         {
-          "title": "Data Infra",
-          "page_id": "10000001"
-        },
+          "title": "Payments Data — Onboarding",
+          "page_id": "30000012"
+        }
+      ]
+    }
+  },
+  {
+    "id": "team:identity-platform",
+    "name": "Identity Platform",
+    "entityType": "team",
+    "description": "Team Identity Platform thuộc Acme Data Platform. Sở hữu: identity-resolution-etl.",
+    "owner": {
+      "type": "team",
+      "name": "Identity Platform",
+      "slack": "#identity-oncall",
+      "tech_lead": "Mai Phạm"
+    },
+    "tags": [
+      "data-engineering",
+      "owner"
+    ],
+    "domains": [
+      "domain:identity"
+    ],
+    "projects": [
+      "identity-resolution-etl"
+    ],
+    "metadata": {
+      "onboarding_docs": [
         {
-          "title": "Metadata Standards",
-          "page_id": "10000008"
+          "title": "Identity Platform — Onboarding",
+          "page_id": "30000013"
+        }
+      ]
+    }
+  },
+  {
+    "id": "team:risk-engineering",
+    "name": "Risk Engineering",
+    "entityType": "team",
+    "description": "Team Risk Engineering thuộc Acme Data Platform. Sở hữu: risk-scorecard-etl.",
+    "owner": {
+      "type": "team",
+      "name": "Risk Engineering",
+      "slack": "#risk-oncall",
+      "tech_lead": "Sơn Đỗ"
+    },
+    "tags": [
+      "data-engineering",
+      "owner"
+    ],
+    "domains": [
+      "domain:risk"
+    ],
+    "projects": [
+      "risk-scorecard-etl"
+    ],
+    "metadata": {
+      "onboarding_docs": [
+        {
+          "title": "Risk Engineering — Onboarding",
+          "page_id": "30000014"
+        }
+      ]
+    }
+  },
+  {
+    "id": "team:fraud-detection",
+    "name": "Fraud Detection",
+    "entityType": "team",
+    "description": "Team Fraud Detection thuộc Acme Data Platform. Sở hữu: fraud-signal-streaming.",
+    "owner": {
+      "type": "team",
+      "name": "Fraud Detection",
+      "slack": "#fraud-oncall",
+      "tech_lead": "Linh Vũ"
+    },
+    "tags": [
+      "data-engineering",
+      "owner"
+    ],
+    "domains": [
+      "domain:fraud"
+    ],
+    "projects": [
+      "fraud-signal-streaming"
+    ],
+    "metadata": {
+      "onboarding_docs": [
+        {
+          "title": "Fraud Detection — Onboarding",
+          "page_id": "30000015"
+        }
+      ]
+    }
+  },
+  {
+    "id": "team:marketing-analytics",
+    "name": "Marketing Analytics",
+    "entityType": "team",
+    "description": "Team Marketing Analytics thuộc Acme Data Platform. Sở hữu: marketing-segment-etl.",
+    "owner": {
+      "type": "team",
+      "name": "Marketing Analytics",
+      "slack": "#marketing-data",
+      "tech_lead": "Quân Hoàng"
+    },
+    "tags": [
+      "data-engineering",
+      "owner"
+    ],
+    "domains": [
+      "domain:marketing"
+    ],
+    "projects": [
+      "marketing-segment-etl"
+    ],
+    "metadata": {
+      "onboarding_docs": [
+        {
+          "title": "Marketing Analytics — Onboarding",
+          "page_id": "30000016"
+        }
+      ]
+    }
+  },
+  {
+    "id": "team:finance-analytics",
+    "name": "Finance Analytics",
+    "entityType": "team",
+    "description": "Team Finance Analytics thuộc Acme Data Platform. Sở hữu: finance-reporting-etl.",
+    "owner": {
+      "type": "team",
+      "name": "Finance Analytics",
+      "slack": "#finance-data",
+      "tech_lead": "Hà Đặng"
+    },
+    "tags": [
+      "data-engineering",
+      "owner"
+    ],
+    "domains": [
+      "domain:finance"
+    ],
+    "projects": [
+      "finance-reporting-etl"
+    ],
+    "metadata": {
+      "onboarding_docs": [
+        {
+          "title": "Finance Analytics — Onboarding",
+          "page_id": "30000017"
         }
       ]
     }

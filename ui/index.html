@@ -257,7 +257,7 @@
 <script>
 (function () {
   const TOOL_SOURCE = { search_metadata:'DataHub', get_entity_details:'DataHub', get_schema:'DataHub', get_data_freshness:'DataHub', analyze_impact:'Knowledge Graph', get_ownership:'Knowledge Graph', get_platform_overview:'Knowledge Graph', read_confluence_page:'Confluence', get_related_context:'Confluence + Jira', search_jira_tickets:'Jira', get_recent_commits:'GitLab', read_gitlab_file:'GitLab', get_platform_alerts:'Live Monitor', get_health_briefing:'Live Monitor', diagnose_entity:'DataHub + GitLab + Jira' };
-  const TOOL_LABEL = { search_metadata:'🔍 Tìm metadata', get_platform_overview:'🧭 Tổng quan platform', get_ownership:'👤 Chủ sở hữu', get_entity_details:'📄 Chi tiết entity', analyze_impact:'💥 Phân tích impact', diagnose_entity:'🚨 Chẩn đoán sự cố', get_related_context:'🔗 Ngữ cảnh', read_gitlab_file:'📂 Đọc file GitLab', read_confluence_page:'📘 Đọc Confluence', search_jira_tickets:'🎫 Tìm Jira', get_recent_commits:'⎇ Commit gần đây', get_data_freshness:'⏱ Độ tươi dữ liệu', get_schema:'🧬 Schema', get_platform_alerts:'🔔 Cảnh báo', get_health_briefing:'📋 Health briefing' };
+  const TOOL_LABEL = { search_metadata:'🔍 Search metadata', get_platform_overview:'🧭 Platform overview', get_ownership:'👤 Ownership', get_entity_details:'📄 Entity details', analyze_impact:'💥 Impact analysis', diagnose_entity:'🚨 Incident diagnosis', get_related_context:'🔗 Related context', read_gitlab_file:'📂 Read GitLab file', read_confluence_page:'📘 Read Confluence', search_jira_tickets:'🎫 Search Jira', get_recent_commits:'⎇ Recent commits', get_data_freshness:'⏱ Data freshness', get_schema:'🧬 Schema', get_platform_alerts:'🔔 Alerts', get_health_briefing:'📋 Health briefing' };
   const EXAMPLES = [
     { ico:'🔍', t:'Data Discovery', d:'Tìm bảng liên quan đến lending', q:'Tìm các bảng liên quan đến lending' },
     { ico:'🧭', t:'Smart Onboarding', d:'Mới join, bắt đầu từ đâu?', q:'Tôi mới join team Data Platform, nên bắt đầu từ đâu?' },
@@ -267,28 +267,28 @@
   ];
 
   const TOOL_CATALOG = [
-    { group:'🔍 Khám phá dữ liệu', tools:[
-      { label:'Tìm kiếm metadata',   n:'search_metadata',       d:'Tìm bảng / pipeline theo tên hoặc mô tả (hỗ trợ tiếng Việt + chống gõ sai).', ex:'Tìm các bảng liên quan đến lending' },
-      { label:'Tổng quan platform',  n:'get_platform_overview', d:'Bức tranh toàn cảnh: các domain, bảng Tier1, pipeline và tài liệu onboarding.', ex:'Data platform có những domain chính nào?' },
-      { label:'Chi tiết bảng',       n:'get_entity_details',    d:'Thông tin đầy đủ một bảng + cập nhật độ tươi real-time.', ex:'Cho mình chi tiết bảng loan_core_statement' },
-      { label:'Xem schema cột',      n:'get_schema',            d:'Danh sách cột: tên, kiểu dữ liệu, mô tả, cột nhạy cảm (PII).', ex:'Bảng loan_core_statement có những cột nào?' },
-      { label:'Tra chủ sở hữu',      n:'get_ownership',         d:'Đội / người chịu trách nhiệm và domain của một bảng.', ex:'Ai sở hữu bảng loan_core_order?' },
+    { group:'🔍 Data Discovery', tools:[
+      { label:'Search metadata',    n:'search_metadata',       d:'Find tables / pipelines by name or description (fuzzy + multi-language).', ex:'Find tables related to lending' },
+      { label:'Platform overview',  n:'get_platform_overview', d:'Big picture: domains, Tier1 tables, pipelines and onboarding docs.', ex:'What are the main domains on the data platform?' },
+      { label:'Entity details',     n:'get_entity_details',    d:'Full information for a table + real-time freshness.', ex:'Show me details of loan_core_statement' },
+      { label:'Column schema',      n:'get_schema',            d:'Columns: name, data type, description, sensitive (PII) flags.', ex:'What columns does loan_core_statement have?' },
+      { label:'Ownership',          n:'get_ownership',         d:'Owning team / person and the domain of a table.', ex:'Who owns loan_core_order?' },
     ]},
-    { group:'💥 Phân tích tác động', tools:[
-      { label:'Phân tích impact',    n:'analyze_impact',        d:'Tìm toàn bộ bảng/pipeline bị ảnh hưởng khi thay đổi + cảnh báo Tier1 + sơ đồ lineage.', ex:'Sửa loan_core_statement ảnh hưởng gì? vẽ sơ đồ lineage' },
+    { group:'💥 Impact Analysis', tools:[
+      { label:'Impact analysis',    n:'analyze_impact',        d:'All affected tables/pipelines on a change + Tier1 warning + lineage diagram.', ex:'What does changing loan_core_statement affect? draw the lineage' },
     ]},
-    { group:'🚨 Sự cố & giám sát', tools:[
-      { label:'Chẩn đoán sự cố',     n:'diagnose_entity',       d:'Điều tra nguyên nhân gốc: kết hợp độ tươi + commit + Jira + tác động.', ex:'Tại sao loan_core_statement bị chậm? điều tra giúp mình' },
-      { label:'Bản tin sức khỏe',    n:'get_health_briefing',   d:'Tổng quan sức khỏe platform: bảng Tier1 trễ, sự cố đang mở, commit rủi ro.', ex:'Tình hình data platform hôm nay thế nào?' },
-      { label:'Cảnh báo platform',   n:'get_platform_alerts',   d:'Các cảnh báo chủ động (agent tự quét nền mỗi 30 phút).', ex:'Có cảnh báo gì trên platform không?' },
-      { label:'Độ tươi dữ liệu',     n:'get_data_freshness',    d:'Lần cập nhật cuối và số dòng của bảng.', ex:'loan_core_statement cập nhật lần cuối khi nào?' },
+    { group:'🚨 Incidents & Monitoring', tools:[
+      { label:'Incident diagnosis', n:'diagnose_entity',       d:'Root-cause investigation: freshness + commits + Jira + impact combined.', ex:'Why is loan_core_statement delayed? investigate it' },
+      { label:'Health briefing',    n:'get_health_briefing',   d:'Platform health digest: stale Tier1 tables, open incidents, risky commits.', ex:'How is the data platform doing today?' },
+      { label:'Platform alerts',    n:'get_platform_alerts',   d:'Proactive alerts (the agent scans in the background every 30 min).', ex:'Are there any alerts on the platform?' },
+      { label:'Data freshness',     n:'get_data_freshness',    d:'Last update time and row count of a table.', ex:'When was loan_core_statement last updated?' },
     ]},
-    { group:'🔗 Nguồn liên kết', tools:[
-      { label:'Ngữ cảnh liên quan',  n:'get_related_context',   d:'Liên kết chéo: Jira ticket + tài liệu Confluence + pipeline liên quan.', ex:'Có tài liệu hay ticket nào về loan_core_statement?' },
-      { label:'Tìm Jira ticket',     n:'search_jira_tickets',   d:'Tìm ticket Jira theo từ khóa (live).', ex:'Có Jira ticket nào về lending đang mở không?' },
-      { label:'Commit gần đây',      n:'get_recent_commits',    d:'Các commit GitLab mới của một pipeline.', ex:'credit-curated-etl có commit gì gần đây?' },
-      { label:'Đọc file GitLab',     n:'read_gitlab_file',      d:'Xem nội dung file (DAG / SQL / config) từ GitLab.', ex:'Đọc file DAG của credit-curated-etl' },
-      { label:'Đọc trang Confluence',n:'read_confluence_page',  d:'Xem nội dung một trang tài liệu Confluence.', ex:'Đọc tài liệu Data Platform Overview' },
+    { group:'🔗 Linked Sources', tools:[
+      { label:'Related context',    n:'get_related_context',   d:'Cross-source links: Jira tickets + Confluence docs + related pipelines.', ex:'Any docs or tickets about loan_core_statement?' },
+      { label:'Search Jira tickets',n:'search_jira_tickets',   d:'Search Jira tickets by keyword (live).', ex:'Any open Jira tickets about lending?' },
+      { label:'Recent commits',     n:'get_recent_commits',    d:'Latest GitLab commits on a pipeline.', ex:'Any recent commits on credit-curated-etl?' },
+      { label:'Read GitLab file',   n:'read_gitlab_file',      d:'View file content (DAG / SQL / config) from GitLab.', ex:'Read the DAG file of credit-curated-etl' },
+      { label:'Read Confluence page',n:'read_confluence_page', d:'View the content of a Confluence documentation page.', ex:'Read the Data Platform Overview doc' },
     ]},
   ];
 
@@ -385,7 +385,7 @@
       const h = document.createElement('div'); h.className = 'tool-group'; h.textContent = g.group; wrap.appendChild(h);
       g.tools.forEach(t => {
         const row = document.createElement('div'); row.className = 'tool-row';
-        row.innerHTML = `<button class="tool-name"><span class="tlabel">${t.label}</span><span class="caret">▾</span></button><div class="tool-detail"><p>${t.d}</p><div class="tool-meta"><span class="fn-tag">fn · ${t.n}</span><button class="tool-try">▶ Thử ví dụ</button></div></div>`;
+        row.innerHTML = `<button class="tool-name"><span class="tlabel">${t.label}</span><span class="caret">▾</span></button><div class="tool-detail"><p>${t.d}</p><div class="tool-meta"><span class="fn-tag">fn · ${t.n}</span><button class="tool-try">▶ Try example</button></div></div>`;
         row.querySelector('.tool-name').onclick = () => row.classList.toggle('open');
         row.querySelector('.tool-try').onclick = ev => { ev.stopPropagation(); if (!busy) { send(t.ex); closeSidebarMobile(); } };
         wrap.appendChild(row);
@@ -413,7 +413,7 @@
     if (tx) tx.textContent = text;
     scrollDown();
   }
-  // Split a "🔍 Tìm metadata" label into [icon, text].
+  // Split a "🔍 Search metadata" label into [icon, text].
   function splitToolLabel(tool) {
     const full = TOOL_LABEL[tool] || tool || '';
     const sp = full.indexOf(' ');
