@@ -28,3 +28,11 @@ docx/
 test_*.py
 GEMINI.md
 *.md
+
+# Ingestion caches & raw dumps — never bake into image
+src/data_platform/cache/
+src/data_platform/confluence_index.json
+src/data_platform/file_descriptions.json
+src/data_platform/history/
+temp_analysis/
+*.mp4
