@@ -27,6 +27,19 @@
 > *Toàn bộ dữ liệu trong repo & bản demo là **dữ liệu giả hoàn toàn** (không dùng data
 > production) để tránh rủi ro lộ thông tin nội bộ — nhưng vẫn cho trải nghiệm agent y như thật.*
 
+> [!TIP]
+> **Using real production data (optional, local only).** The hosted/public deployment is
+> intentionally cut off from internal systems and **only ever serves the synthetic cache**. To run
+> the agent against **real** data you must run it **locally** — inside your corporate network / VPN —
+> and supply your **own credentials/tokens for every source** you want it to reach (DataHub, GitLab,
+> Jira, Confluence) in a local `.env` (see `.env.example`). The agent only queries the sources you
+> provide tokens for; anything without a token falls back to the synthetic cache. Real credentials
+> are never committed and never baked into the published image.
+>
+> *Muốn dùng **data thật**: chỉ có thể **chạy project ở local** (trong mạng nội bộ / VPN) và **tự
+> cung cấp toàn bộ key/token** cho mọi nguồn muốn truy cập (DataHub / GitLab / Jira / Confluence)
+> trong `.env`. Nguồn nào không có token sẽ tự fallback về cache giả.*
+
 ---
 
 ## Mục lục
