@@ -210,15 +210,15 @@
         <div class="sub">Data Platform AI</div>
       </div>
     </div>
-    <button class="new-btn" id="newChat">＋ Cuộc trò chuyện mới</button>
+    <button class="new-btn" id="newChat">＋ New chat</button>
 
     <div class="side-label">Agent Functions</div>
     <div class="side-list" id="toolCatalog" style="max-height:42vh; overflow-y:auto"></div>
 
-    <div class="side-label">Lịch sử</div>
+    <div class="side-label">History</div>
     <div class="side-list" id="historyList" style="flex:1; min-height:60px"></div>
 
-    <div class="side-foot"><span class="dot"></span> Agent live · 865 datasets</div>
+    <div class="side-foot"><span class="dot"></span> Agent live · 54 datasets</div>
   </aside>
 
   <div class="main">
@@ -227,21 +227,21 @@
       <div class="stream" id="stream">
         <div class="hero" id="hero">
           <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13l0-8z" fill="#fff"/></svg></div>
-          <h2>Chào mừng đến Acme Data Platform AI</h2>
-          <p>Trợ lý AI hiểu toàn bộ data platform Acme — khám phá metadata, phân tích impact, điều tra sự cố, onboarding. Hỏi bằng tiếng Việt hoặc tiếng Anh.</p>
+          <h2>Welcome to Acme Data Platform AI</h2>
+          <p>An AI assistant that understands the entire Acme data platform — discover metadata, analyze impact, investigate incidents, and onboard. Ask in English or Vietnamese.</p>
           <div class="cards" id="cards"></div>
         </div>
       </div>
     </div>
-    <button id="scrollBtn" class="scroll-btn" title="Xuống cuối">↓</button>
+    <button id="scrollBtn" class="scroll-btn" title="Scroll to bottom">↓</button>
     <div class="composer-wrap">
       <div class="composer">
-        <textarea id="input" rows="1" placeholder="Hỏi về data platform… (Enter để gửi, Shift+Enter xuống dòng)"></textarea>
-        <button class="send" id="send" title="Gửi" disabled>
+        <textarea id="input" rows="1" placeholder="Ask about the data platform… (Enter to send, Shift+Enter for newline)"></textarea>
+        <button class="send" id="send" title="Send" disabled>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a.993.993 0 00-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .69.71 1.16 1.39.91z" fill="currentColor"/></svg>
         </button>
       </div>
-      <div class="hint">Câu trả lời do AI tạo từ metadata thật — luôn kiểm chứng trước khi hành động quan trọng.</div>
+      <div class="hint">Answers are AI-generated from metadata — always verify before any critical action.</div>
     </div>
   </div>
 
@@ -259,11 +259,11 @@
   const TOOL_SOURCE = { search_metadata:'DataHub', get_entity_details:'DataHub', get_schema:'DataHub', get_data_freshness:'DataHub', analyze_impact:'Knowledge Graph', get_ownership:'Knowledge Graph', get_platform_overview:'Knowledge Graph', read_confluence_page:'Confluence', get_related_context:'Confluence + Jira', search_jira_tickets:'Jira', get_recent_commits:'GitLab', read_gitlab_file:'GitLab', get_platform_alerts:'Live Monitor', get_health_briefing:'Live Monitor', diagnose_entity:'DataHub + GitLab + Jira' };
   const TOOL_LABEL = { search_metadata:'🔍 Search metadata', get_platform_overview:'🧭 Platform overview', get_ownership:'👤 Ownership', get_entity_details:'📄 Entity details', analyze_impact:'💥 Impact analysis', diagnose_entity:'🚨 Incident diagnosis', get_related_context:'🔗 Related context', read_gitlab_file:'📂 Read GitLab file', read_confluence_page:'📘 Read Confluence', search_jira_tickets:'🎫 Search Jira', get_recent_commits:'⎇ Recent commits', get_data_freshness:'⏱ Data freshness', get_schema:'🧬 Schema', get_platform_alerts:'🔔 Alerts', get_health_briefing:'📋 Health briefing' };
   const EXAMPLES = [
-    { ico:'🔍', t:'Data Discovery', d:'Tìm bảng liên quan đến lending', q:'Tìm các bảng liên quan đến lending' },
-    { ico:'🧭', t:'Smart Onboarding', d:'Mới join, bắt đầu từ đâu?', q:'Tôi mới join team Data Platform, nên bắt đầu từ đâu?' },
-    { ico:'💥', t:'Impact Analysis', d:'Sửa loan_core_statement?', q:'Sửa loan_core_statement ảnh hưởng những gì? Vẽ sơ đồ lineage giúp mình' },
-    { ico:'🚨', t:'Incident Triage', d:'Bảng bị chậm, điều tra', q:'Tại sao loan_core_statement bị chậm? Điều tra giúp mình' },
-    { ico:'📋', t:'Health Briefing', d:'Tình hình hôm nay?', q:'Tình hình data platform hôm nay thế nào?' },
+    { ico:'🔍', t:'Data Discovery', d:'Find tables related to lending', q:'Find tables related to lending' },
+    { ico:'🧭', t:'Smart Onboarding', d:'Just joined — where do I start?', q:'I just joined the Data Platform team — where should I start?' },
+    { ico:'💥', t:'Impact Analysis', d:'Change loan_core_statement?', q:'What does changing loan_core_statement affect? Draw the lineage diagram' },
+    { ico:'🚨', t:'Incident Triage', d:'A table is delayed — investigate', q:'Why is loan_core_statement delayed? Investigate it for me' },
+    { ico:'📋', t:'Health Briefing', d:'How is today looking?', q:'How is the data platform doing today?' },
   ];
 
   const TOOL_CATALOG = [
@@ -301,7 +301,7 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   marked.use({ renderer: { code(code, lang) { let t = code, l = lang; if (code && typeof code === 'object') { t = code.text; l = code.lang; } return (l||'').toLowerCase().split(/\s+/)[0] === 'mermaid' ? '<pre class="mermaid">'+esc(t)+'</pre>' : '<pre><code>'+esc(t)+'</code></pre>'; } } });
 
-  const stripFooter = md => md.replace(/\n*-{3,}\n\*🔎\s*Nguồn:[\s\S]*$/u, '').trimEnd();
+  const stripFooter = md => md.replace(/\n*-{3,}\n\*🔎\s*(Nguồn|Source)s?:[\s\S]*$/u, '').trimEnd();
   // Extract the machine-readable follow-up line and remove it from the displayed text
   function extractFollowups(md) {
     const m = md.match(/\[\[\s*follow-ups?\s*:(.*?)\]\]/is);
@@ -338,21 +338,21 @@
   function renderHistory() {
     const list = $('#historyList'); list.innerHTML = '';
     const convs = loadConvs();
-    if (!convs.length) { list.innerHTML = '<div class="hist-empty">Chưa có cuộc trò chuyện nào</div>'; return; }
+    if (!convs.length) { list.innerHTML = '<div class="hist-empty">No conversations yet</div>'; return; }
     convs.forEach(c => {
       const row = document.createElement('div');
       row.className = 'hist-row' + (c.id === convId ? ' active' : '');
-      row.innerHTML = `<button class="hist-open"><span class="ico">💬</span><span class="tx">${esc(c.title || 'Cuộc trò chuyện')}</span></button>`
-        + `<span class="hist-acts"><button class="hist-act" data-a="rename" title="Đổi tên">✎</button><button class="hist-act" data-a="del" title="Xoá">✕</button></span>`;
+      row.innerHTML = `<button class="hist-open"><span class="ico">💬</span><span class="tx">${esc(c.title || 'Conversation')}</span></button>`
+        + `<span class="hist-acts"><button class="hist-act" data-a="rename" title="Rename">✎</button><button class="hist-act" data-a="del" title="Delete">✕</button></span>`;
       row.querySelector('.hist-open').onclick = () => openConv(c.id);
       row.querySelector('[data-a="rename"]').onclick = e => {
         e.stopPropagation();
-        const nv = prompt('Đổi tên cuộc trò chuyện:', c.title || '');
+        const nv = prompt('Rename conversation:', c.title || '');
         if (nv !== null) { const cs = loadConvs(); const x = cs.find(z => z.id === c.id); if (x) { x.title = nv.trim().slice(0, 60) || x.title; saveConvs(cs); renderHistory(); } }
       };
       row.querySelector('[data-a="del"]').onclick = e => {
         e.stopPropagation();
-        if (!confirm('Xoá cuộc trò chuyện này?')) return;
+        if (!confirm('Delete this conversation?')) return;
         saveConvs(loadConvs().filter(z => z.id !== c.id));
         if (c.id === convId) { convId = null; sessionId = crypto.randomUUID(); location.reload(); return; }
         renderHistory();
@@ -402,7 +402,7 @@
   const AV = '<div class="av"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13l0-8z" fill="#fff"/></svg></div>';
   function addBotShell() {
     const t = document.createElement('div'); t.className = 'turn bot';
-    t.innerHTML = AV + `<div class="body"><div class="think"><span class="think-ico bob">🧭</span><span class="think-tx">Đang định tuyến câu hỏi…</span></div></div>`;
+    t.innerHTML = AV + `<div class="body"><div class="think"><span class="think-ico bob">🧭</span><span class="think-tx">Routing your question…</span></div></div>`;
     stream.appendChild(t); scrollDown(); return t;
   }
   // Update the phase-morph thinking pill: swap icon (with pop), animation, and text.
@@ -430,20 +430,20 @@
       meta = '<div class="meta">';
       if (fresh) meta += fresh;
       if (srcs.length) meta += `<div class="sources">🔎 ${srcs.map(s=>`<span class="src">${s}</span>`).join('')}</div>`;
-      if (tools.length) meta += `<div class="tools-toggle">🔧 ${tools.length} bước · xem chi tiết ▾</div>`;
+      if (tools.length) meta += `<div class="tools-toggle">🔧 ${tools.length} steps · view details ▾</div>`;
       meta += '<div class="trace">' + tools.map((t,i)=>{ const a = t.args && Object.keys(t.args).length ? esc(JSON.stringify(t.args)) : ''; return `<div class="trace-item"><span class="n">${i+1}</span><div><code>${TOOL_LABEL[t.tool]||t.tool}</code>${a?` <span class="args">${a}</span>`:''}</div></div>`; }).join('') + '</div></div>';
     }
     let fuHtml = '';
     if (followups.length) fuHtml = `<div class="followups">${followups.map(q=>`<button class="fu-chip">${esc(q)}</button>`).join('')}</div>`;
-    const actions = `<div class="msg-actions"><button class="act-btn" data-act="copy" title="Sao chép câu trả lời">📋 Copy</button><button class="act-btn" data-act="regen" title="Tạo lại câu trả lời">↻ Hỏi lại</button></div>`;
+    const actions = `<div class="msg-actions"><button class="act-btn" data-act="copy" title="Copy answer">📋 Copy</button><button class="act-btn" data-act="regen" title="Regenerate answer">↻ Ask again</button></div>`;
     body.innerHTML = `<div class="md">${html}</div>${actions}${meta}${fuHtml}`;
     const nodes = body.querySelectorAll('pre.mermaid');
     if (nodes.length) { let n=0; (function go(){ if (window.__mermaid) window.__mermaid.run({nodes}).catch(()=>{}); else if (n++<40) setTimeout(go,150); })(); }
     const tog = body.querySelector('.tools-toggle');
-    if (tog) tog.onclick = () => { const tr = body.querySelector('.trace'); tr.classList.toggle('open'); tog.textContent = tr.classList.contains('open') ? `🔧 ${tools.length} bước · ẩn ▴` : `🔧 ${tools.length} bước · xem chi tiết ▾`; };
+    if (tog) tog.onclick = () => { const tr = body.querySelector('.trace'); tr.classList.toggle('open'); tog.textContent = tr.classList.contains('open') ? `🔧 ${tools.length} steps · hide ▴` : `🔧 ${tools.length} steps · view details ▾`; };
     body.querySelectorAll('.fu-chip').forEach(c => c.onclick = () => { if (!busy) send(c.textContent); });
     const cp = body.querySelector('[data-act="copy"]');
-    if (cp) cp.onclick = () => { navigator.clipboard.writeText(text).then(() => { cp.textContent = '✓ Đã copy'; setTimeout(() => cp.textContent = '📋 Copy', 1500); }).catch(()=>{}); };
+    if (cp) cp.onclick = () => { navigator.clipboard.writeText(text).then(() => { cp.textContent = '✓ Copied'; setTimeout(() => cp.textContent = '📋 Copy', 1500); }).catch(()=>{}); };
     const rg = body.querySelector('[data-act="regen"]');
     if (rg) rg.onclick = () => { if (!busy && userText) send(userText); };
     scrollDown();
@@ -467,20 +467,20 @@
   }
   const scrollDown = () => { scroll.scrollTop = scroll.scrollHeight; };
 
-  const INTENT_LABEL = { IMPACT:'💥 Phân tích ảnh hưởng', ONBOARDING:'🧭 Hướng dẫn onboarding', INCIDENT:'🚨 Chẩn đoán sự cố', BRIEFING:'📋 Tổng quan sức khỏe', CHANGES:'🕒 Thay đổi gần đây', SPECIFIC:'🔎 Tra cứu', BROAD:'🔍 Khám phá' };
+  const INTENT_LABEL = { IMPACT:'💥 Impact analysis', ONBOARDING:'🧭 Onboarding guide', INCIDENT:'🚨 Incident diagnosis', BRIEFING:'📋 Health overview', CHANGES:'🕒 Recent changes', SPECIFIC:'🔎 Lookup', BROAD:'🔍 Discovery' };
 
   // Non-streaming fallback (used if the streaming endpoint is unavailable).
   async function sendBlocking(text, shell, body) {
     if (!shell.querySelector('.think')) body.insertAdjacentHTML('afterbegin', '<div class="think"><span class="think-ico bob">🧭</span><span class="think-tx"></span></div>');
-    const phases = [['🧭','Đang phân loại câu hỏi…','bob'],['🔍','Đang truy vấn knowledge graph…','scan'],['✍️','Đang tổng hợp câu trả lời…','write']]; let i=0;
+    const phases = [['🧭','Classifying your question…','bob'],['🔍','Querying the knowledge graph…','scan'],['✍️','Synthesizing the answer…','write']]; let i=0;
     setThink(shell, ...phases[0]);
     const tick = setInterval(()=>{ i = Math.min(i+1, phases.length-1); setThink(shell, ...phases[i]); }, 2800);
     try {
       const r = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message:text, session_id:sessionId }) });
       const data = await r.json(); clearInterval(tick); body.querySelector('.think')?.remove();
-      if (data.status === 'error') body.innerHTML = `<div class="md">⚠️ ${esc(data.message||'Có lỗi xảy ra')}</div>`;
+      if (data.status === 'error') body.innerHTML = `<div class="md">⚠️ ${esc(data.message||'Something went wrong')}</div>`;
       else { typeThenRender(shell, data, text); upsertConv('bot', data); }
-    } catch (e) { clearInterval(tick); body.querySelector('.think')?.remove(); body.innerHTML = `<div class="md">⚠️ Không kết nối được tới agent.</div>`; }
+    } catch (e) { clearInterval(tick); body.querySelector('.think')?.remove(); body.innerHTML = `<div class="md">⚠️ Could not connect to the agent.</div>`; }
   }
 
   async function send(text) {
@@ -505,9 +505,9 @@
           if (!line) continue;
           let ev; try { ev = JSON.parse(line.slice(6)); } catch { continue; }
           if (ev.type === 'status') {
-            if (ev.stage === 'routing') setThink(shell, '🧭', (INTENT_LABEL[ev.intent] || 'Đang xử lý') + '…', 'bob');
-            else if (ev.stage === 'tool') { const [ic, lb] = splitToolLabel(ev.tool); setThink(shell, ic, 'Đang ' + lb.toLowerCase() + '…', 'scan'); }
-            else if (ev.stage === 'tools_done') setThink(shell, '✍️', 'Đang viết câu trả lời…', 'write');
+            if (ev.stage === 'routing') setThink(shell, '🧭', (INTENT_LABEL[ev.intent] || 'Processing') + '…', 'bob');
+            else if (ev.stage === 'tool') { const [ic, lb] = splitToolLabel(ev.tool); setThink(shell, ic, 'Running ' + lb.toLowerCase() + '…', 'scan'); }
+            else if (ev.stage === 'tools_done') setThink(shell, '✍️', 'Writing the answer…', 'write');
           } else if (ev.type === 'token') {
             if (!mdEl) { body.querySelector('.think')?.remove(); body.insertAdjacentHTML('afterbegin','<div class="md"></div>'); mdEl = body.querySelector('.md'); }
             acc += ev.content;

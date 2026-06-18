@@ -64,7 +64,7 @@ async def chat(request):
         return JSONResponse(data)
     except httpx.TimeoutException:
         return JSONResponse(
-            {"status": "error", "message": "Agent timed out — thử lại hoặc hỏi ngắn gọn hơn."},
+            {"status": "error", "message": "Agent timed out — please retry or ask a shorter question."},
             status_code=504,
         )
     except Exception as exc:
