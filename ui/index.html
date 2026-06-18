@@ -200,6 +200,65 @@
 
   ::-webkit-scrollbar { width: 9px; } ::-webkit-scrollbar-thumb { background: #d6d1c4; border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
   @media (max-width: 760px){ aside{position:absolute; z-index:30; height:100%; margin-left:-280px; box-shadow:0 0 40px rgba(0,0,0,.2)} aside.open{margin-left:0} .topbar{display:flex} .cards{grid-template-columns:1fr} }
+  /* ═══ Themes (default = :root above) ═══ */
+  html[data-theme="dark"]{--bg:#1a1b1e;--sidebar:#202125;--surface:#26282d;--user-bubble:#2f3640;--text:#e8e8e6;--muted:#a3a39d;--faint:#76766f;--border:#34363c;--border-strong:#45474e;--blue:#5b8cff;--blue-700:#83a6ff;--blue-50:#222a3c;--green:#00CF6A;}
+  html[data-theme="midnight"]{--bg:#0e1626;--sidebar:#121d33;--surface:#16223d;--user-bubble:#22315a;--text:#e6ecff;--muted:#94a3c7;--faint:#647097;--border:#21314f;--border-strong:#2e406b;--blue:#6da8ff;--blue-700:#92c0ff;--blue-50:#19243f;--green:#36e0a0;}
+  html[data-theme="forest"]{--bg:#0f1a14;--sidebar:#13241b;--surface:#1a2c22;--user-bubble:#243a2d;--text:#e4f0e8;--muted:#94a89c;--faint:#6a7d72;--border:#243a2e;--border-strong:#31503f;--blue:#3ddc84;--blue-700:#6ff0a6;--blue-50:#1d3327;--green:#aef3c0;}
+  html[data-theme="sakura"]{--bg:#fff5f8;--sidebar:#fde8ef;--surface:#fffafc;--user-bubble:#ffe3ee;--text:#3a2630;--muted:#9c6b7e;--faint:#c79bab;--border:#f6d9e4;--border-strong:#eec3d4;--blue:#e84393;--blue-700:#c2185b;--blue-50:#fde3ee;--green:#ff8fab;}
+  html[data-theme="mint"]{--bg:#f0faf4;--sidebar:#e3f5ea;--surface:#fbfffc;--user-bubble:#d8f3e3;--text:#1c2b24;--muted:#5e7a6c;--faint:#8fae9d;--border:#d3ecdd;--border-strong:#bfe1cd;--blue:#0a9d6e;--blue-700:#077a55;--blue-50:#dbf3e7;--green:#00CF6A;}
+  html[data-theme="ocean"]{--bg:#eef6fb;--sidebar:#e0eef7;--surface:#fbfdff;--user-bubble:#d9ecf8;--text:#15262f;--muted:#5a7383;--faint:#90a8b6;--border:#d3e6f1;--border-strong:#bedaea;--blue:#0277bd;--blue-700:#015f96;--blue-50:#dcecf8;--green:#00b8d4;}
+  html[data-theme="sunset"]{--bg:#fff6ef;--sidebar:#ffe9db;--surface:#fffbf8;--user-bubble:#ffe2cf;--text:#3a2a1e;--muted:#9c7a63;--faint:#c7a98f;--border:#f7ddcb;--border-strong:#f0cbb0;--blue:#e8590c;--blue-700:#c44608;--blue-50:#ffe2cf;--green:#f08c00;}
+  html[data-theme="lavender"]{--bg:#f6f3fd;--sidebar:#ece6fa;--surface:#fdfcff;--user-bubble:#e7ddfb;--text:#272138;--muted:#766b94;--faint:#a99fc4;--border:#e3dbf5;--border-strong:#d3c7ee;--blue:#7048e8;--blue-700:#5a32d6;--blue-50:#e7ddfb;--green:#9775fa;}
+  html[data-theme="mono"]{--bg:#f5f5f4;--sidebar:#ececeb;--surface:#ffffff;--user-bubble:#e8e8e6;--text:#1c1c1a;--muted:#737370;--faint:#a3a39e;--border:#e2e2df;--border-strong:#d2d2ce;--blue:#3a3a3a;--blue-700:#1f1f1f;--blue-50:#e6e6e4;--green:#6b7280;}
+  /* dark-theme polish: user bubble border + code blocks */
+  html[data-theme="dark"] .turn.user .ub,html[data-theme="midnight"] .turn.user .ub,html[data-theme="forest"] .turn.user .ub{border-color:var(--border-strong);}
+
+  /* ═══ Wallpapers (applied on .scroll; previews reuse [data-wallpaper]) ═══ */
+  [data-wallpaper="aurora"]{background:linear-gradient(135deg,#a8edea,#fed6e3);}
+  [data-wallpaper="peach"]{background:linear-gradient(135deg,#ffecd2,#fcb69f);}
+  [data-wallpaper="ocean"]{background:linear-gradient(135deg,#a1c4fd,#c2e9fb);}
+  [data-wallpaper="lavender"]{background:linear-gradient(135deg,#e0c3fc,#8ec5fc);}
+  [data-wallpaper="mint"]{background:linear-gradient(135deg,#d4fc79,#96e6a1);}
+  [data-wallpaper="sunset"]{background:linear-gradient(135deg,#ff9a9e,#fecfef);}
+  [data-wallpaper="sky"]{background:linear-gradient(180deg,#cfd9df,#e2ebf0);}
+  [data-wallpaper="rose"]{background:linear-gradient(135deg,#ffdde1,#ee9ca7);}
+  [data-wallpaper="sand"]{background:linear-gradient(135deg,#f6d365,#fda085);}
+  [data-wallpaper="dusk"]{background:linear-gradient(135deg,#2b5876,#4e4376);}
+  [data-wallpaper="dots"]{background:radial-gradient(circle,rgba(127,127,127,.13) 1.5px,transparent 1.6px) 0 0/20px 20px,var(--bg);}
+  [data-wallpaper="grid"]{background:linear-gradient(rgba(127,127,127,.10) 1px,transparent 1px) 0 0/26px 26px,linear-gradient(90deg,rgba(127,127,127,.10) 1px,transparent 1px) 0 0/26px 26px,var(--bg);}
+  [data-wallpaper="diagonal"]{background:repeating-linear-gradient(45deg,rgba(127,127,127,.07) 0 1px,transparent 1px 14px),var(--bg);}
+  [data-wallpaper="crosshatch"]{background:repeating-linear-gradient(45deg,rgba(127,127,127,.06) 0 1px,transparent 1px 13px),repeating-linear-gradient(-45deg,rgba(127,127,127,.06) 0 1px,transparent 1px 13px),var(--bg);}
+  [data-wallpaper="confetti"]{background:radial-gradient(circle at 12% 20%,#ff8fab 0 4px,transparent 5px),radial-gradient(circle at 68% 14%,#5b8cff 0 4px,transparent 5px),radial-gradient(circle at 40% 60%,#ffd43b 0 4px,transparent 5px),radial-gradient(circle at 85% 70%,#69db7c 0 4px,transparent 5px),radial-gradient(circle at 22% 85%,#b197fc 0 4px,transparent 5px);background-size:90px 90px;background-color:var(--bg);}
+  [data-wallpaper="bubbles"]{background:radial-gradient(circle at 20% 30%,rgba(91,140,255,.10) 0 18px,transparent 20px),radial-gradient(circle at 75% 55%,rgba(0,207,106,.10) 0 24px,transparent 26px),radial-gradient(circle at 50% 85%,rgba(232,67,147,.08) 0 16px,transparent 18px);background-size:140px 140px;background-color:var(--bg);}
+  [data-wallpaper="diamonds"]{background:linear-gradient(135deg,rgba(127,127,127,.06) 25%,transparent 25%) -10px 0,linear-gradient(225deg,rgba(127,127,127,.06) 25%,transparent 25%) -10px 0,linear-gradient(315deg,rgba(127,127,127,.06) 25%,transparent 25%),linear-gradient(45deg,rgba(127,127,127,.06) 25%,transparent 25%);background-size:22px 22px;background-color:var(--bg);}
+  [data-wallpaper="stripes"]{background:repeating-linear-gradient(135deg,rgba(127,127,127,.05) 0 10px,transparent 10px 20px),var(--bg);}
+  [data-wallpaper="polka"]{background:radial-gradient(circle,rgba(91,140,255,.12) 4px,transparent 5px) 0 0/30px 30px,var(--bg);}
+  [data-wallpaper="vstripes"]{background:repeating-linear-gradient(90deg,rgba(127,127,127,.05) 0 12px,transparent 12px 24px),var(--bg);}
+  /* "Reading sheet" — keep content legible over ANY theme×wallpaper */
+  .scroll[data-wallpaper]:not([data-wallpaper=""]) .stream{background:color-mix(in srgb,var(--surface) 88%,transparent);border-radius:18px;padding:24px 22px;margin:16px auto;box-shadow:0 6px 28px rgba(0,0,0,.08);backdrop-filter:blur(2px);}
+
+  /* ═══ Theme/Wallpaper picker ═══ */
+  .look-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:11px;padding:9px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;transition:.15s;}
+  .look-btn:hover{border-color:var(--blue);color:var(--blue);}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:60;padding:20px;}
+  .modal-overlay.open{display:flex;animation:fade .2s ease;}
+  .modal{background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:18px;width:min(720px,96vw);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 70px rgba(0,0,0,.35);}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+  .modal-head h3{margin:0;font-size:16px;font-weight:650;}
+  .modal-x{background:none;border:none;font-size:22px;line-height:1;cursor:pointer;color:var(--muted);}
+  .modal-tabs{display:flex;gap:6px;align-items:center;padding:12px 20px 0;}
+  .modal-tab{background:none;border:none;padding:8px 14px;border-radius:9px;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;color:var(--muted);}
+  .modal-tab.active{background:var(--blue-50);color:var(--blue-700);}
+  .look-reset{margin-left:auto;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--muted);font-family:var(--font);}
+  .modal-body{padding:14px 20px 22px;overflow-y:auto;}
+  .look-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px;}
+  .look-cell{border:2px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;background:var(--surface);padding:0;font-family:var(--font);transition:transform .12s,border-color .12s;}
+  .look-cell:hover{transform:translateY(-2px);}
+  .look-cell.active{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-50);}
+  .look-prev{height:58px;display:flex;align-items:center;justify-content:center;gap:5px;}
+  .look-prev .ds{width:9px;height:9px;border-radius:50%;}
+  .look-prev .aa{font-weight:700;font-size:13px;}
+  .look-name{font-size:12px;padding:7px 6px;color:var(--text);text-align:center;}
 </style>
 </head>
 <body>
@@ -211,6 +270,7 @@
       </div>
     </div>
     <button class="new-btn" id="newChat">＋ New chat</button>
+    <button class="look-btn" id="lookBtn">🎨 Theme &amp; Wallpaper</button>
 
     <div class="side-label">Agent Functions</div>
     <div class="side-list" id="toolCatalog" style="max-height:42vh; overflow-y:auto"></div>
@@ -297,6 +357,83 @@
   let busy = false, sessionId = crypto.randomUUID(), convId = null;
   const LS = 'zlp_copilot_convs';
 
+  // ── Theme & wallpaper picker (per-conversation; default = current look) ──
+  const LOOK_LS = 'zlp_look_default';
+  const THEMES = [
+    {id:'',name:'Default',bg:'#f7f6f1',a:'#0033C9',b:'#00CF6A',t:'#20201c'},
+    {id:'dark',name:'Graphite',bg:'#1a1b1e',a:'#5b8cff',b:'#00CF6A',t:'#e8e8e6'},
+    {id:'midnight',name:'Midnight',bg:'#0e1626',a:'#6da8ff',b:'#36e0a0',t:'#e6ecff'},
+    {id:'forest',name:'Forest',bg:'#0f1a14',a:'#3ddc84',b:'#aef3c0',t:'#e4f0e8'},
+    {id:'sakura',name:'Sakura',bg:'#fff5f8',a:'#e84393',b:'#ff8fab',t:'#3a2630'},
+    {id:'mint',name:'Mint',bg:'#f0faf4',a:'#0a9d6e',b:'#00CF6A',t:'#1c2b24'},
+    {id:'ocean',name:'Ocean',bg:'#eef6fb',a:'#0277bd',b:'#00b8d4',t:'#15262f'},
+    {id:'sunset',name:'Sunset',bg:'#fff6ef',a:'#e8590c',b:'#f08c00',t:'#3a2a1e'},
+    {id:'lavender',name:'Lavender',bg:'#f6f3fd',a:'#7048e8',b:'#9775fa',t:'#272138'},
+    {id:'mono',name:'Mono',bg:'#f5f5f4',a:'#3a3a3a',b:'#6b7280',t:'#1c1c1a'},
+  ];
+  const WALLPAPERS = [
+    {id:'',name:'None'},{id:'aurora',name:'Aurora'},{id:'peach',name:'Peach'},{id:'ocean',name:'Ocean'},
+    {id:'lavender',name:'Lavender'},{id:'mint',name:'Mint'},{id:'sunset',name:'Sunset'},{id:'sky',name:'Sky'},
+    {id:'rose',name:'Rose'},{id:'sand',name:'Sand'},{id:'dusk',name:'Dusk'},{id:'dots',name:'Dots'},
+    {id:'grid',name:'Grid'},{id:'diagonal',name:'Diagonal'},{id:'crosshatch',name:'Crosshatch'},
+    {id:'confetti',name:'Confetti'},{id:'bubbles',name:'Bubbles'},{id:'diamonds',name:'Diamonds'},
+    {id:'stripes',name:'Stripes'},{id:'polka',name:'Polka'},{id:'vstripes',name:'V-Stripes'},
+  ];
+  let currentLook = (()=>{ try { return JSON.parse(localStorage.getItem(LOOK_LS)) || {theme:'',wallpaper:''}; } catch { return {theme:'',wallpaper:''}; } })();
+  function applyLook(theme, wallpaper){
+    document.documentElement.dataset.theme = theme || '';
+    const sc = document.getElementById('scroll'); if (sc) sc.dataset.wallpaper = wallpaper || '';
+  }
+  function setLook(theme, wallpaper){
+    currentLook = { theme: theme||'', wallpaper: wallpaper||'' };
+    applyLook(currentLook.theme, currentLook.wallpaper);
+    localStorage.setItem(LOOK_LS, JSON.stringify(currentLook));          // seed for new chats
+    if (convId){ const cs=loadConvs(); const x=cs.find(z=>z.id===convId); if (x){ x.theme=currentLook.theme; x.wallpaper=currentLook.wallpaper; saveConvs(cs); } }
+    renderLookCells();
+  }
+  function buildLookModal(){
+    const ov = document.createElement('div'); ov.className='modal-overlay'; ov.id='lookModal';
+    ov.innerHTML = `<div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head"><h3>🎨 Theme &amp; Wallpaper</h3><button class="modal-x" id="lookClose" title="Close">×</button></div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-tab="themes">Themes</button>
+        <button class="modal-tab" data-tab="wallpapers">Wallpapers</button>
+        <button class="look-reset" id="lookReset">Reset to default</button>
+      </div>
+      <div class="modal-body"><div class="look-grid" id="lookThemes"></div><div class="look-grid" id="lookWalls" style="display:none"></div></div>
+    </div>`;
+    document.body.appendChild(ov);
+    ov.addEventListener('click', e=>{ if (e.target===ov) closeLook(); });
+    ov.querySelector('#lookClose').onclick = closeLook;
+    ov.querySelector('#lookReset').onclick = ()=> setLook('','');
+    ov.querySelectorAll('.modal-tab').forEach(t=> t.onclick = ()=>{
+      ov.querySelectorAll('.modal-tab').forEach(x=>x.classList.remove('active')); t.classList.add('active');
+      const themes = t.dataset.tab==='themes';
+      ov.querySelector('#lookThemes').style.display = themes?'grid':'none';
+      ov.querySelector('#lookWalls').style.display  = themes?'none':'grid';
+    });
+    const tg = ov.querySelector('#lookThemes');
+    THEMES.forEach(th=>{
+      const b=document.createElement('button'); b.className='look-cell'; b.dataset.kind='theme'; b.dataset.id=th.id;
+      b.innerHTML = `<div class="look-prev" style="background:${th.bg}"><span class="ds" style="background:${th.a}"></span><span class="aa" style="color:${th.t}">Aa</span><span class="ds" style="background:${th.b}"></span></div><div class="look-name">${th.name}</div>`;
+      b.onclick = ()=> setLook(th.id, currentLook.wallpaper); tg.appendChild(b);
+    });
+    const wg = ov.querySelector('#lookWalls');
+    WALLPAPERS.forEach(w=>{
+      const b=document.createElement('button'); b.className='look-cell'; b.dataset.kind='wall'; b.dataset.id=w.id;
+      const prev = w.id ? `<div class="look-prev" data-wallpaper="${w.id}"></div>` : `<div class="look-prev" style="background:var(--surface);color:var(--muted)"><span class="aa" style="font-weight:500">Off</span></div>`;
+      b.innerHTML = `${prev}<div class="look-name">${w.name}</div>`;
+      b.onclick = ()=> setLook(currentLook.theme, w.id); wg.appendChild(b);
+    });
+  }
+  function renderLookCells(){
+    const ov=document.getElementById('lookModal'); if(!ov) return;
+    ov.querySelectorAll('.look-cell[data-kind="theme"]').forEach(c=>c.classList.toggle('active', c.dataset.id===currentLook.theme));
+    ov.querySelectorAll('.look-cell[data-kind="wall"]').forEach(c=>c.classList.toggle('active', c.dataset.id===currentLook.wallpaper));
+  }
+  function openLook(){ renderLookCells(); document.getElementById('lookModal').classList.add('open'); }
+  function closeLook(){ document.getElementById('lookModal').classList.remove('open'); }
+
   marked.setOptions({ breaks: true, gfm: true });
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   marked.use({ renderer: { code(code, lang) { let t = code, l = lang; if (code && typeof code === 'object') { t = code.text; l = code.lang; } return (l||'').toLowerCase().split(/\s+/)[0] === 'mermaid' ? '<pre class="mermaid">'+esc(t)+'</pre>' : '<pre><code>'+esc(t)+'</code></pre>'; } } });
@@ -329,7 +466,7 @@
   function upsertConv(role, payload) {
     const convs = loadConvs();
     let c = convs.find(x => x.id === convId);
-    if (!c) { c = { id: convId, title: '', items: [] }; convs.unshift(c); }
+    if (!c) { c = { id: convId, title: '', items: [], theme: currentLook.theme, wallpaper: currentLook.wallpaper }; convs.unshift(c); }
     else { convs.splice(convs.indexOf(c), 1); convs.unshift(c); }
     c.items.push(role === 'user' ? { role:'user', text: payload } : { role:'bot', data: payload });
     if (role === 'user' && !c.title) c.title = payload.slice(0, 48);
@@ -364,6 +501,7 @@
     if (busy) return;
     const c = loadConvs().find(x => x.id === id); if (!c) return;
     convId = id; sessionId = id; // reuse for agent memory continuity within a conv
+    currentLook = { theme: c.theme || '', wallpaper: c.wallpaper || '' }; applyLook(currentLook.theme, currentLook.wallpaper);
     $('#hero')?.remove(); stream.innerHTML = '';
     let lastUser = '';
     c.items.forEach(it => { if (it.role === 'user') { lastUser = it.text; addUser(it.text, true); } else { renderBot(addBotShell(), it.data, lastUser); } });
@@ -542,6 +680,9 @@
   });
   sbBtn.onclick = () => scrollDown();
 
+  buildLookModal(); applyLook(currentLook.theme, currentLook.wallpaper);
+  $('#lookBtn').onclick = openLook;
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLook(); });
   buildCards(); renderTools(); renderHistory(); input.focus();
 })();
 </script>
