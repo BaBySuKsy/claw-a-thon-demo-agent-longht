@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Deterministic synthetic-data generator for the Acme Data Platform AI agent.
+Deterministic synthetic-data generator for the ZaloPay Data Platform AI agent.
 
 ONE in-memory MODEL -> projects EVERY data file so all 16 tools return rich,
 internally-consistent results. Everything fictional (company "Acme"). No real
@@ -303,7 +303,7 @@ def build_pipelines(by_urn):
 # ───────────────────── domains + teams ─────────────────────
 DOMAINS = [
     ("domain:lending",  "Lending (Credit / Consumer Loan)",  "Tier1", "core",     "lending",  ["credit","lending","pii","tier1"]),
-    ("domain:payment",  "Payment (QR-Pay / Acme Core)",      "Tier1", "payments", "payment",  ["payment","qrpay","streaming","tier1"]),
+    ("domain:payment",  "Payment (QR-Pay / ZaloPay Core)",   "Tier1", "payments", "payment",  ["payment","qrpay","streaming","tier1"]),
     ("domain:merchant", "Merchant Ecosystem",                "Tier2", "payments", "merchant", ["merchant","tier2"]),
     ("domain:identity", "Identity (Customer Verification)",  "Tier1", "identity", "identity", ["identity","pii","tier1"]),
     ("domain:data-platform-infra", "Data Platform Infrastructure", "Tier2", "core", "infra", ["infra","data-quality","reference"]),
@@ -337,7 +337,7 @@ def build_domains():
         doc = f"{dname} — Overview"
         out.append({
             "id": did, "name": dname, "entityType": "domain", "tier": tier,
-            "description": f"Domain {dname} trên Acme Data Platform.",
+            "description": f"Domain {dname} trên ZaloPay Data Platform.",
             "owner": {"type": "team", "name": TEAMS[teamk]["name"], "slack": TEAMS[teamk]["slack"]},
             "tags": tags, "teams": [TEAMS[teamk]["id"]],
             "metadata": {"key_datasets": key_ds, "key_pipelines": key_pl,
@@ -353,7 +353,7 @@ def build_teams():
         doc = f"{t['name']} — Onboarding"
         out.append({
             "id": t["id"], "name": t["name"], "entityType": "team",
-            "description": f"Team {t['name']} thuộc Acme Data Platform. Sở hữu: {', '.join(projs)}.",
+            "description": f"Team {t['name']} thuộc ZaloPay Data Platform. Sở hữu: {', '.join(projs)}.",
             "owner": {"type": "team", "name": t["name"], "slack": t["slack"], "tech_lead": t["lead"]},
             "tags": ["data-engineering", "owner"], "domains": doms, "projects": projs,
             "metadata": {"onboarding_docs": [{"title": doc, "page_id": page_id(doc)}]},

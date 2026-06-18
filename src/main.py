@@ -83,7 +83,7 @@ try:
     _UI_HTML = (Path(__file__).resolve().parent.parent / "ui" / "index.html").read_text(encoding="utf-8")
 except Exception as _e:  # pragma: no cover — UI is optional, agent still serves /invocations
     logger.warning("UI index.html not found, GET / will show a minimal page: %s", _e)
-    _UI_HTML = "<h1>Acme Data Platform AI</h1><p>POST /invocations with {\"message\": \"...\"}.</p>"
+    _UI_HTML = "<h1>ZaloPay Data Platform AI</h1><p>POST /invocations with {\"message\": \"...\"}.</p>"
 
 
 async def _ui_index(request):
@@ -95,7 +95,7 @@ def _envelope(result: dict, session_id):
         t.pop("result", None)  # UI only renders tool name + args; keep payload small
     return {
         "status": "success",
-        "agent": "Acme Data Platform AI",
+        "agent": "ZaloPay Data Platform AI",
         "answer": result.get("answer", ""),
         "tools_called": result.get("tools_called", []),
         "tool_call_count": result.get("tool_call_count", 0),
@@ -158,7 +158,7 @@ app.add_route("/api/chat/stream", _api_chat_stream, methods=["POST"])
 
 @app.entrypoint
 async def handle_request(payload: dict, context: RequestContext) -> dict:
-    """GreenNode AgentBase entrypoint — Acme Data Platform AI Agent."""
+    """GreenNode AgentBase entrypoint — ZaloPay Data Platform AI Agent."""
     user_query = payload.get("message", "")
     session_id = getattr(context, "session_id", None) or payload.get("session_id")
 
@@ -182,7 +182,7 @@ async def handle_request(payload: dict, context: RequestContext) -> dict:
 
     return {
         "status": "success",
-        "agent": "Acme Data Platform AI",
+        "agent": "ZaloPay Data Platform AI",
         "answer": result.get("answer", ""),
         "tools_called": result.get("tools_called", []),
         "tool_call_count": result.get("tool_call_count", 0),

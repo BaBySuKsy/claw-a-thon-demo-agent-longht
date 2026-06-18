@@ -3,7 +3,7 @@
     "id": "team:data-platform-core",
     "name": "Data Platform Core",
     "entityType": "team",
-    "description": "Team Data Platform Core thuộc Acme Data Platform. Sở hữu: credit-curated-etl, platform-etl-lib.",
+    "description": "Team Data Platform Core thuộc ZaloPay Data Platform. Sở hữu: credit-curated-etl, platform-etl-lib.",
     "owner": {
       "type": "team",
       "name": "Data Platform Core",
@@ -35,7 +35,7 @@
     "id": "team:lending-data",
     "name": "Lending Data",
     "entityType": "team",
-    "description": "Team Lending Data thuộc Acme Data Platform. Sở hữu: lending-ingest-etl.",
+    "description": "Team Lending Data thuộc ZaloPay Data Platform. Sở hữu: lending-ingest-etl.",
     "owner": {
       "type": "team",
       "name": "Lending Data",
@@ -65,7 +65,7 @@
     "id": "team:payments-data",
     "name": "Payments Data",
     "entityType": "team",
-    "description": "Team Payments Data thuộc Acme Data Platform. Sở hữu: qrpay-streaming-svc, merchant-mart-etl.",
+    "description": "Team Payments Data thuộc ZaloPay Data Platform. Sở hữu: qrpay-streaming-svc, merchant-mart-etl.",
     "owner": {
       "type": "team",
       "name": "Payments Data",
@@ -97,7 +97,7 @@
     "id": "team:identity-platform",
     "name": "Identity Platform",
     "entityType": "team",
-    "description": "Team Identity Platform thuộc Acme Data Platform. Sở hữu: identity-resolution-etl.",
+    "description": "Team Identity Platform thuộc ZaloPay Data Platform. Sở hữu: identity-resolution-etl.",
     "owner": {
       "type": "team",
       "name": "Identity Platform",
@@ -127,7 +127,7 @@
     "id": "team:risk-engineering",
     "name": "Risk Engineering",
     "entityType": "team",
-    "description": "Team Risk Engineering thuộc Acme Data Platform. Sở hữu: risk-scorecard-etl.",
+    "description": "Team Risk Engineering thuộc ZaloPay Data Platform. Sở hữu: risk-scorecard-etl.",
     "owner": {
       "type": "team",
       "name": "Risk Engineering",
@@ -157,7 +157,7 @@
     "id": "team:fraud-detection",
     "name": "Fraud Detection",
     "entityType": "team",
-    "description": "Team Fraud Detection thuộc Acme Data Platform. Sở hữu: fraud-signal-streaming.",
+    "description": "Team Fraud Detection thuộc ZaloPay Data Platform. Sở hữu: fraud-signal-streaming.",
     "owner": {
       "type": "team",
       "name": "Fraud Detection",
@@ -187,7 +187,7 @@
     "id": "team:marketing-analytics",
     "name": "Marketing Analytics",
     "entityType": "team",
-    "description": "Team Marketing Analytics thuộc Acme Data Platform. Sở hữu: marketing-segment-etl.",
+    "description": "Team Marketing Analytics thuộc ZaloPay Data Platform. Sở hữu: marketing-segment-etl.",
     "owner": {
       "type": "team",
       "name": "Marketing Analytics",
@@ -217,7 +217,7 @@
     "id": "team:finance-analytics",
     "name": "Finance Analytics",
     "entityType": "team",
-    "description": "Team Finance Analytics thuộc Acme Data Platform. Sở hữu: finance-reporting-etl.",
+    "description": "Team Finance Analytics thuộc ZaloPay Data Platform. Sở hữu: finance-reporting-etl.",
     "owner": {
       "type": "team",
       "name": "Finance Analytics",

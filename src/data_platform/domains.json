@@ -4,7 +4,7 @@
     "name": "Lending (Credit / Consumer Loan)",
     "entityType": "domain",
     "tier": "Tier1",
-    "description": "Domain Lending (Credit / Consumer Loan) trên Acme Data Platform.",
+    "description": "Domain Lending (Credit / Consumer Loan) trên ZaloPay Data Platform.",
     "owner": {
       "type": "team",
       "name": "Data Platform Core",
@@ -42,10 +42,10 @@
   },
   {
     "id": "domain:payment",
-    "name": "Payment (QR-Pay / Acme Core)",
+    "name": "Payment (QR-Pay / ZaloPay Core)",
     "entityType": "domain",
     "tier": "Tier1",
-    "description": "Domain Payment (QR-Pay / Acme Core) trên Acme Data Platform.",
+    "description": "Domain Payment (QR-Pay / ZaloPay Core) trên ZaloPay Data Platform.",
     "owner": {
       "type": "team",
       "name": "Payments Data",
@@ -73,7 +73,7 @@
       ],
       "key_docs": [
         {
-          "title": "Payment (QR-Pay / Acme Core) — Overview",
+          "title": "Payment (QR-Pay / ZaloPay Core) — Overview",
           "page_id": "30000002"
         }
       ]
@@ -84,7 +84,7 @@
     "name": "Merchant Ecosystem",
     "entityType": "domain",
     "tier": "Tier2",
-    "description": "Domain Merchant Ecosystem trên Acme Data Platform.",
+    "description": "Domain Merchant Ecosystem trên ZaloPay Data Platform.",
     "owner": {
       "type": "team",
       "name": "Payments Data",
@@ -121,7 +121,7 @@
     "name": "Identity (Customer Verification)",
     "entityType": "domain",
     "tier": "Tier1",
-    "description": "Domain Identity (Customer Verification) trên Acme Data Platform.",
+    "description": "Domain Identity (Customer Verification) trên ZaloPay Data Platform.",
     "owner": {
       "type": "team",
       "name": "Identity Platform",
@@ -158,7 +158,7 @@
     "name": "Data Platform Infrastructure",
     "entityType": "domain",
     "tier": "Tier2",
-    "description": "Domain Data Platform Infrastructure trên Acme Data Platform.",
+    "description": "Domain Data Platform Infrastructure trên ZaloPay Data Platform.",
     "owner": {
       "type": "team",
       "name": "Data Platform Core",
@@ -197,7 +197,7 @@
     "name": "Risk (Credit Risk / Scorecards)",
     "entityType": "domain",
     "tier": "Tier1",
-    "description": "Domain Risk (Credit Risk / Scorecards) trên Acme Data Platform.",
+    "description": "Domain Risk (Credit Risk / Scorecards) trên ZaloPay Data Platform.",
     "owner": {
       "type": "team",
       "name": "Risk Engineering",
@@ -237,7 +237,7 @@
     "name": "Fraud Detection",
     "entityType": "domain",
     "tier": "Tier1",
-    "description": "Domain Fraud Detection trên Acme Data Platform.",
+    "description": "Domain Fraud Detection trên ZaloPay Data Platform.",
     "owner": {
       "type": "team",
       "name": "Fraud Detection",
@@ -275,7 +275,7 @@
     "name": "Marketing & Growth Analytics",
     "entityType": "domain",
     "tier": "Tier2",
-    "description": "Domain Marketing & Growth Analytics trên Acme Data Platform.",
+    "description": "Domain Marketing & Growth Analytics trên ZaloPay Data Platform.",
     "owner": {
       "type": "team",
       "name": "Marketing Analytics",
@@ -314,7 +314,7 @@
     "name": "Finance & Reporting",
     "entityType": "domain",
     "tier": "Tier1",
-    "description": "Domain Finance & Reporting trên Acme Data Platform.",
+    "description": "Domain Finance & Reporting trên ZaloPay Data Platform.",
     "owner": {
       "type": "team",
       "name": "Finance Analytics",
