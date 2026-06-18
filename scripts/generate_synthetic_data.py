@@ -392,6 +392,127 @@ def build_cross_team():
             "consumer_datasets": consumers, "edges": edges}
 
 # ───────────────────── confluence (knowledge + index + md + tree) ─────────────────────
+# ── Real-world domain knowledge (accurate concepts; entities are fictional) ──
+DOMAIN_KB = {
+    "lending": (
+        "Domain **Lending** quản lý sản phẩm cho vay trả góp / Buy Now Pay Later (BNPL). Vòng đời một khoản vay: "
+        "mở **tài khoản** (`loan_core_account`) → phát sinh **đơn/giải ngân** (`loan_core_order`) → hệ thống tạo "
+        "**hóa đơn** từng kỳ (`loan_core_bill`) → tổng hợp thành **sao kê** hàng tháng (`loan_core_statement`) gắn với "
+        "hồ sơ **người vay** (`loan_core_user`). Dữ liệu raw được curate thành fact/dim (`loan_statement_fact`, "
+        "`loan_account_dim`) phục vụ báo cáo và mô hình rủi ro.",
+        "**DPD (Days Past Due)**: số ngày quá hạn, chia nhóm 0 / 1–30 / 31–60 / 61–90 / 90+ để phân loại nợ. "
+        "**Outstanding**: dư nợ còn lại. **Minimum payment**: số tối thiểu phải trả kỳ này. "
+        "**NPL (Non-Performing Loan)**: nợ xấu, thường DPD ≥ 90. Sao kê chốt theo `statement_period` và là nguồn tính lãi/phí."),
+    "payment": (
+        "Domain **Payment** xử lý giao dịch thanh toán QR. Luồng: sự kiện thô **streaming** (`qrpay_txn_stream`) → "
+        "**enrich** gần real-time với thông tin ngân hàng/merchant (`qrpay_txn_enriched`) → **settlement** theo ngày cho "
+        "merchant (`qrpay_merchant_settlement`) + mart sản lượng (`qrpay_daily_volume_mart`). Hoàn tiền theo luồng riêng (`qrpay_refund_stream`).",
+        "**Settlement (đối soát)**: gộp giao dịch theo merchant rồi chuyển tiền, thường T+1. "
+        "**MDR (Merchant Discount Rate)**: phí trên mỗi giao dịch (gross → fee → net). "
+        "**Streaming enrichment**: bổ sung bank_code/merchant/trạng thái vào sự kiện thô. "
+        "**Idempotency**: khử trùng lặp theo `txn_id` để đảm bảo exactly-once."),
+    "merchant": (
+        "Domain **Merchant** quản lý hồ sơ đối tác bán hàng: `stg_merchant_profile` + `stg_merchant_kyc_status` → "
+        "`merchant_dim` (chiều merchant chuẩn hoá) → `merchant_revenue_mart` / `merchant_active_daily_mart` phân tích "
+        "doanh thu và độ hoạt động.",
+        "**MCC (Merchant Category Code)**: mã ngành hàng chuẩn. **KYC status**: trạng thái định danh merchant "
+        "(pending/verified/rejected). **Active merchant**: có giao dịch trong kỳ. Doanh thu join từ `qrpay_merchant_settlement`."),
+    "identity": (
+        "Domain **Identity** giải bài toán **identity resolution** — gộp nhiều định danh/thiết bị về một khách hàng: "
+        "`stg_identity_events` → `identity_graph` (đồ thị user–device + `match_score`) → `identity_mart` (định danh tin cậy) "
+        "+ `identity_device_dim`. Là nguồn eligibility cho lending và tín hiệu cho fraud.",
+        "**Identity graph**: đồ thị liên kết dựa trên tín hiệu chung. **Match score**: độ tin cậy liên kết (0–1). "
+        "**Deterministic vs probabilistic matching**: khớp khoá cứng (`national_id_hash`) vs xác suất. "
+        "PII luôn được **hash** (national_id_hash, phone_hash)."),
+    "infra": (
+        "Domain **Data Platform Infrastructure** cung cấp nền tảng dùng chung: bảng tham chiếu (`currency_dim`, "
+        "`calendar_dim`, `product_catalog_dim`, `bank_code_mapping`) và kết quả **data quality** (`dq_check_results`, "
+        "`dq_freshness_log`). Orchestration bằng Airflow, thư viện ETL dùng chung (`etl-lib`).",
+        "**Reference/lookup (dim) tables**: dữ liệu chuẩn hoá ít đổi, join để giàu hoá. "
+        "**Data Quality framework**: chạy rule completeness/uniqueness/validity/freshness, ghi kết quả vào `dq_check_results`. "
+        "**Freshness log**: theo dõi SLA cập nhật từng bảng."),
+    "risk": (
+        "Domain **Risk** đo lường rủi ro tín dụng. `risk_feature_store` tổng hợp đặc trưng (từ `loan_account_dim`, "
+        "`loan_statement_fact`, `identity_mart`) → mô hình sinh `credit_risk_scorecard`, `pd_model_scores`, "
+        "`lgd_model_scores` → `npl_exposure_daily_mart` và `collection_priority_mart`.",
+        "**PD (Probability of Default)**: xác suất vỡ nợ 12 tháng. **LGD (Loss Given Default)**: tỷ lệ tổn thất khi vỡ nợ. "
+        "**EAD (Exposure at Default)**: dư nợ tại thời điểm vỡ nợ. **Expected Loss = PD × LGD × EAD** (khung Basel). "
+        "**NPL ratio** = nợ xấu / tổng dư nợ. **Scorecard** → grade. **Provisioning**: trích lập dự phòng theo nhóm nợ."),
+    "fraud": (
+        "Domain **Fraud** phát hiện gian lận gần real-time: `fraud_txn_signal` (tín hiệu rủi ro mỗi giao dịch, từ "
+        "`qrpay_txn_enriched`) → `fraud_rule_hits` + `device_risk_score` → `fraud_case_mart`, với `blocklist_dim` chặn entity xấu.",
+        "**Rules vs ML signals**: luật cứng (velocity, ngưỡng) kết hợp điểm mô hình. **Velocity**: số giao dịch/đơn vị thời gian. "
+        "**Device risk**: thiết bị chia sẻ/giả lập. **Blocklist**: danh sách chặn (hash hoá). "
+        "Cân bằng **false-positive rate** với recall để tránh chặn nhầm."),
+    "marketing": (
+        "Domain **Marketing** phân tích khách hàng & chiến dịch: `customer_segment_dim` (từ `identity_mart` + "
+        "`loan_account_dim`) → `campaign_audience_mart` với `campaign_dim`; `engagement_event_log` → "
+        "`marketing_attribution_mart` và `ltv_prediction_mart`.",
+        "**RFM (Recency–Frequency–Monetary)**: phân khúc theo độ gần đây/tần suất/giá trị. "
+        "**Attribution**: quy kết chuyển đổi cho kênh/chiến dịch (last-touch / multi-touch). "
+        "**LTV (Lifetime Value)**: tổng giá trị dự kiến của khách. **Audience**: tập user đủ điều kiện chiến dịch."),
+    "finance": (
+        "Domain **Finance** phục vụ kế toán & báo cáo: `gl_posting_fact` (bút toán sổ cái, từ `qrpay_merchant_settlement` + "
+        "`loan_payment_fact`) → `revenue_recognition_fact` → `pnl_daily_mart` + `fee_income_mart`, với "
+        "`chart_of_accounts_dim` và `finance_close_log`.",
+        "**Double-entry / GL**: mỗi bút toán ghi Nợ–Có cân bằng theo `account_code`. "
+        "**Revenue recognition (accrual)**: ghi nhận doanh thu theo kỳ phát sinh, không theo dòng tiền. "
+        "**P&L**: báo cáo lãi/lỗ theo line item. **Period close**: quy trình chốt sổ. **Fee income**: thu nhập từ phí (MDR, phí trả góp)."),
+}
+
+def _leaf_desc(leaf):
+    if leaf.startswith("stg_"): return "bảng staging (chuẩn hoá dữ liệu thô)"
+    if leaf.endswith("_fact"): return "bảng fact (sự kiện đo lường được)"
+    if leaf.endswith("_dim"):  return "bảng chiều (dimension)"
+    if leaf.endswith("_mart"): return "data mart phục vụ báo cáo/BI"
+    if leaf.endswith(("_log", "_stream")): return "log/stream sự kiện"
+    if "score" in leaf or "scorecard" in leaf: return "kết quả chấm điểm mô hình"
+    if "mapping" in leaf or "catalog" in leaf or leaf.endswith("_dim"): return "bảng tham chiếu"
+    return "bảng nguồn (raw/core)"
+LEAF_DESC = {t[0]: _leaf_desc(t[0]) for t in TABLES}
+
+CONCEPT_DOCS = [
+    ("Data Tiering & Medallion Architecture (Standard)", [
+        ("Tiering", "Mọi bảng gắn **Tier** theo mức quan trọng nghiệp vụ: **Tier1** = P0 (incident là khẩn cấp, SLA chặt), "
+         "**Tier2** = quan trọng, **Tier3** = phụ trợ/dev. Tier dùng để ưu tiên cảnh báo, change-management và RCA."),
+        ("Medallion layers", "Dữ liệu chảy qua 3 lớp: **raw** (nhập thô, vd `qrpay_txn_stream`, `loan_core_statement`), "
+         "**staging** (`stg_*` — làm sạch/chuẩn hoá), **curated** (fact/dim & mart phục vụ phân tích, vd `loan_statement_fact`). "
+         "Nguyên tắc: không query thẳng raw cho báo cáo; luôn đi qua curated."),
+    ], ["architecture", "tiering"]),
+    ("Dimensional Modeling — Kimball (Standard)", [
+        ("Fact vs Dimension", "**Fact** lưu sự kiện đo lường được theo một **grain** xác định (vd `loan_statement_fact` — "
+         "grain = 1 dòng / sao kê / kỳ). **Dimension** mô tả ngữ cảnh (vd `loan_account_dim`, `merchant_dim`)."),
+        ("SCD & grain", "**SCD Type 1** ghi đè giá trị cũ; **Type 2** lưu lịch sử bằng dòng mới + khoảng hiệu lực. "
+         "Xác định grain trước khi xây fact để tránh double-count. Mart tổng hợp (vd `pnl_daily_mart`) được build từ fact + dim."),
+    ], ["modeling", "kimball"]),
+    ("Streaming vs Batch (T-1) — Standard", [
+        ("Batch T-1", "Phần lớn bảng curate theo **batch daily T-1**: Airflow chạy 02:30 ICT xử lý dữ liệu của ngày hôm trước, "
+         "partition theo `dt`. Vd `loan_statement_fact`, `gl_posting_fact`. SLA hoàn thành thường trước 04:00."),
+        ("Streaming", "Bảng near-real-time dùng **Spark Structured Streaming** (vd `qrpay_txn_enriched`, `fraud_txn_signal`): "
+         "**watermark** để xử lý sự kiện trễ, **checkpoint** để khôi phục, **idempotent sink** để đạt **exactly-once**. SLA ~5 phút."),
+    ], ["streaming", "batch"]),
+    ("Data Quality Framework — DAMA Dimensions (Standard)", [
+        ("6 dimensions", "Chất lượng dữ liệu đo theo DAMA: **Completeness** (không thiếu), **Uniqueness** (không trùng PK), "
+         "**Validity** (đúng định dạng/miền giá trị), **Consistency** (khớp giữa nguồn), **Accuracy** (đúng thực tế), "
+         "**Timeliness/Freshness** (cập nhật đúng hạn)."),
+        ("Cơ chế", "Framework chạy rule trên mỗi bảng curated và ghi kết quả vào `dq_check_results`; SLA cập nhật theo dõi ở "
+         "`dq_freshness_log`. Check fail trên bảng Tier1 sẽ chặn ghi + tạo cảnh báo (get_platform_alerts)."),
+    ], ["data-quality", "dama"]),
+    ("Data Lineage & Impact Analysis (Standard)", [
+        ("Lineage", "Lineage = quan hệ **upstream/downstream** giữa bảng và pipeline (chuẩn OpenMetadata/DataHub). "
+         "Vd `loan_core_statement` → pipeline `credit-curated-etl` → `loan_statement_fact` → `credit_risk_scorecard`."),
+        ("Impact / blast radius", "Trước khi đổi schema, chạy **analyze_impact** để thấy toàn bộ bảng/pipeline downstream và "
+         "**team khác bị ảnh hưởng (cross-team)** — vd đổi `loan_statement_fact` ảnh hưởng Risk, Finance, Marketing. "
+         "Đổi bảng Tier1 phải thông báo các team downstream TRƯỚC."),
+    ], ["lineage", "governance"]),
+    ("PII & Data Governance (Standard)", [
+        ("PII handling", "Cột định danh nhạy cảm không lưu thô — luôn **hash** (vd `national_id_hash`, `phone_hash` trong "
+         "`loan_core_user`, `identity_mart`). Bảng chứa PII gắn tag `pii` và bị giới hạn truy cập."),
+        ("Access", "Áp dụng **RBAC + least privilege**: chỉ team sở hữu + downstream được duyệt mới có quyền đọc. "
+         "Truy cập PII được audit. Không bao giờ commit credential; nguồn nội bộ chỉ truy cập khi chạy local có token."),
+    ], ["pii", "governance"]),
+]
+
 def safe(t): return "".join(ch if ch.isalnum() else "_" for ch in t)[:60]
 
 def build_confluence():
@@ -427,33 +548,66 @@ def build_confluence():
             },
             "child_pages": [],
         }
-    # domain docs
+    # ── domain docs: real domain knowledge + how the fake tables map ──────────
     for did, dname, tier, teamk, area, tags in DOMAINS:
         leaves = area_leaves(area)
+        ov, concept = DOMAIN_KB[area]
+        model = " ".join(
+            f"`{l}` — {LEAF_DESC.get(l, 'bảng dữ liệu')} ({'streaming near-real-time' if LEAF2META[l][4]=='streaming' else 'batch daily T-1'})."
+            for l in leaves)
         secs = [
-            ("Overview", f"Tài liệu domain {dname}. Các bảng chính: {', '.join(leaves)}."),
-            ("Tables", "Chi tiết: " + "; ".join(f"`{l}` ({LEAF2META[l][4]})" for l in leaves) + "."),
-            ("Ownership", f"Owner: team {TEAMS[teamk]['name']} ({TEAMS[teamk]['slack']})."),
+            ("Overview", ov),
+            ("Data model", f"Domain **{dname}** gồm {len(leaves)} bảng theo kiến trúc medallion (raw → staging → curated/mart). " + model),
+            ("Key concepts", concept),
+            ("Ownership & SLA", f"Owner: **{TEAMS[teamk]['name']}** ({TEAMS[teamk]['slack']}). "
+                f"Bảng Tier1 có SLA cập nhật ≤ 24h (batch T-1) hoặc ≤ 5 phút (streaming); "
+                f"Tier2 ≤ 72h. Vi phạm SLA sẽ phát cảnh báo qua get_platform_alerts."),
         ]
         add(f"{dname} — Overview", dname, TEAMS[teamk]["name"], secs, ["domain"] + tags)
-    # project docs
+    # ── project runbooks: real operational content ───────────────────────────
     for project, p in PROJECTS.items():
         leaves = [t[0] for t in TABLES if t[2] == project]
+        streaming = p["flow"] == "streaming"
+        inputs = sorted({u for t in TABLES if t[2] == project for u in t[6] if not u.startswith("ext:")})
+        sched = ("Spark Structured Streaming, chạy liên tục, checkpoint mỗi 30s, watermark 10 phút, "
+                 "đảm bảo exactly-once qua idempotent sink." if streaming else
+                 "Airflow DAG `%s`, lịch `30 2 * * *` (02:30 ICT) xử lý dữ liệu ngày T-1, "
+                 "partition theo cột `dt`." % project)
         secs = [
-            ("Pipeline", f"Pipeline `{project}`: {p['desc']}"),
-            ("Outputs", "Sinh ra các bảng: " + ", ".join(f"`{l}`" for l in leaves) + "."),
-            ("Runbook", f"On-call: {TEAMS[p['team']]['slack']}. DAG chạy {'streaming' if p['flow']=='streaming' else 'batch daily T-1'}."),
+            ("Pipeline", f"`{project}` — {p['desc']} Repo GitLab: `dataeng/datainfra/{project}`, branch `main`."),
+            ("Schedule & SLA", sched + f" SLA hoàn thành: {'5 phút' if streaming else '04:00 ICT'}."),
+            ("Inputs / Outputs", f"Đầu vào: {', '.join('`'+i+'`' for i in inputs) or 'nguồn ngoài (CDC/Kafka)'}. "
+                f"Đầu ra: {', '.join('`'+l+'`' for l in leaves)}."),
+            ("Common failures & recovery",
+                "1) **Upstream trễ** → job chờ sensor, nếu quá SLA sẽ tạo Jira incident tự động. "
+                "2) **Schema drift** (đổi/ xoá cột nguồn) → DQ check fail, dừng trước khi ghi. "
+                "3) **Skew/OOM** → tăng partition, repartition theo key. "
+                f"Recovery: backfill bằng `airflow dags backfill {project} -s <ngày>`; "
+                f"điều tra nhanh bằng diagnose_entity trên bảng output."),
+            ("On-call", f"Kênh: {TEAMS[p['team']]['slack']} · Tech lead: {TEAMS[p['team']]['lead']}."),
         ]
         add(f"Pipeline {project} — Runbook", p["domain"], TEAMS[p["team"]]["name"], secs, ["runbook", "pipeline"])
-    # team onboarding docs (referenced by teams.json key_docs)
+    # ── team onboarding: real guidance ───────────────────────────────────────
     for k, t in TEAMS.items():
         projs = [pn for pn, pp in PROJECTS.items() if pp["team"] == k]
         team_leaves = [x[0] for x in TABLES if x[2] in projs]
         tier1 = [x[0] for x in TABLES if x[2] in projs and x[3] == "Tier1"]
-        key_line = ("Tier1 cần nắm: " + ", ".join(f"`{l}`" for l in tier1) + ". ") if tier1 else ""
-        secs = [("Welcome", f"Onboarding cho team {t['name']}. Bạn sở hữu: {', '.join(projs)}."),
-                ("Key tables", key_line + "Các bảng team quản lý: " + ", ".join(f"`{l}`" for l in team_leaves) + ".")]
+        key_line = ("Bảng Tier1 (P0, cần nắm trước): " + ", ".join(f"`{l}`" for l in tier1) + ". ") if tier1 else ""
+        secs = [
+            ("Welcome", f"Chào mừng đến team **{t['name']}**. Team sở hữu pipeline: {', '.join(projs) or '—'}. "
+                f"Tech lead: {t['lead']}, kênh on-call {t['slack']}."),
+            ("Tuần đầu", "1) Đọc tài liệu domain + runbook các pipeline của team. "
+                "2) Xin quyền đọc DataHub/GitLab/Jira/Confluence. "
+                "3) Dùng get_platform_overview để nắm bức tranh tổng thể, "
+                "search_metadata để tra bảng, analyze_impact trước khi đổi schema."),
+            ("Key tables", key_line + "Toàn bộ bảng team quản lý: " + ", ".join(f"`{l}`" for l in team_leaves) + "."),
+            ("Quy tắc thay đổi", "Mọi thay đổi schema bảng Tier1 phải chạy analyze_impact + thông báo các team "
+                "downstream (cross-team) TRƯỚC khi merge; tuân thủ quy trình P0 change-management."),
+        ]
         add(f"{t['name']} — Onboarding", "Data Platform", t["name"], secs, ["onboarding"])
+    # ── cross-cutting CONCEPT docs: accurate, real-world knowledge ────────────
+    for title, secs, tags in CONCEPT_DOCS:
+        add(title, "Data Platform", "Data Platform Core", secs, ["concept", "standard"] + tags)
     return knowledge, index, md_files, trees
 
 # ───────────────────── jira (epics + tickets) ─────────────────────
