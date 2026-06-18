@@ -1,0 +1,59 @@
+1
+00:00:01,000 --> 00:00:07,500
+Acme Data Platform AI — hợp nhất metadata rải rác ở DataHub, GitLab, Confluence, Jira.
+
+2
+00:00:07,500 --> 00:00:14,000
+16 công cụ, knowledge graph hơn 800 dataset — hỏi đáp bằng tiếng Việt.
+
+3
+00:00:16,000 --> 00:00:24,000
+Câu 1 — Tìm các bảng liên quan đến lending.
+
+4
+00:00:24,000 --> 00:00:38,000
+Agent tự chọn đúng công cụ, trả về danh sách bảng và pipeline trong vài giây.
+
+5
+00:00:38,000 --> 00:00:50,000
+Mỗi kết quả kèm owner, tier và domain.
+
+6
+00:00:50,000 --> 00:00:59,000
+Dữ liệu được verify realtime — nhãn 🟢.
+
+7
+00:01:01,000 --> 00:01:09,000
+Câu 2 — Sửa loan_core_statement ảnh hưởng gì? Vẽ sơ đồ lineage.
+
+8
+00:01:09,000 --> 00:01:18,000
+Agent cảnh báo Tier1 và liệt kê toàn bộ bảng downstream bị tác động.
+
+9
+00:01:18,000 --> 00:01:27,000
+Điểm khác biệt: tác động không dừng lại trong team Data.
+
+10
+00:01:27,000 --> 00:01:38,000
+🚨 4 team khác đang dùng: Product Experience · Finance Operations · Platform Engineering · Growth Products.
+
+11
+00:01:38,000 --> 00:01:47,000
+Suy ra từ Confluence thật, kèm sơ đồ lineage blast-radius — tư duy Knowledge OS.
+
+12
+00:01:49,000 --> 00:01:57,000
+Câu 3 — Tại sao loan_core_statement bị chậm? Điều tra giúp mình.
+
+13
+00:01:57,000 --> 00:02:08,000
+Agent đi ngược lineage tìm nguyên nhân gốc thật, lấy đúng commit gây lỗi.
+
+14
+00:02:08,000 --> 00:02:23,000
+Và soạn sẵn ticket Jira cùng cảnh báo Slack — kỹ sư chỉ việc xác nhận và gửi.
+
+15
+00:02:23,000 --> 00:02:27,000
+Deploy live trên GreenNode AgentBase. Xin cảm ơn!

@@ -1,0 +1,287 @@
+{
+  "_comment": "Fully fictional cross-team consumers (synthetic) — teams that reference platform datasets, mapped to the dataset they depend on. No real org names or PII.",
+  "consumer_datasets": [
+    {
+      "id": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.platform_engineering.lending_consumer,PROD)",
+      "name": "Platform Engineering · lending consumer",
+      "entityType": "dataset",
+      "description": "Team 'Platform Engineering' (Confluence space PEG) tham chiếu dữ liệu lending của Data Platform (27 trang nhắc tới 'credit') → phụ thuộc downstream.",
+      "tier": "Tier2",
+      "owner": {
+        "type": "team",
+        "name": "Platform Engineering",
+        "space": "PEG"
+      },
+      "domain": "domain:lending",
+      "tags": [
+        "cross-team",
+        "confluence-evidence",
+        "lending"
+      ],
+      "lineage": {
+        "upstream": [
+          "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)"
+        ],
+        "downstream": []
+      }
+    },
+    {
+      "id": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.platform_engineering.payment_consumer,PROD)",
+      "name": "Platform Engineering · payment consumer",
+      "entityType": "dataset",
+      "description": "Team 'Platform Engineering' (Confluence space PEG) tham chiếu dữ liệu payment của Data Platform (20 trang nhắc tới 'qrpay') → phụ thuộc downstream.",
+      "tier": "Tier2",
+      "owner": {
+        "type": "team",
+        "name": "Platform Engineering",
+        "space": "PEG"
+      },
+      "domain": "domain:payment",
+      "tags": [
+        "cross-team",
+        "confluence-evidence",
+        "payment"
+      ],
+      "lineage": {
+        "upstream": [
+          "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.qrpay_user,PROD)"
+        ],
+        "downstream": []
+      }
+    },
+    {
+      "id": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.platform_engineering.identity_consumer,PROD)",
+      "name": "Platform Engineering · identity consumer",
+      "entityType": "dataset",
+      "description": "Team 'Platform Engineering' (Confluence space PEG) tham chiếu dữ liệu identity của Data Platform (7 trang nhắc tới 'identity') → phụ thuộc downstream.",
+      "tier": "Tier2",
+      "owner": {
+        "type": "team",
+        "name": "Platform Engineering",
+        "space": "PEG"
+      },
+      "domain": "domain:identity",
+      "tags": [
+        "cross-team",
+        "confluence-evidence",
+        "identity"
+      ],
+      "lineage": {
+        "upstream": [
+          "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.identity_mart,PROD)"
+        ],
+        "downstream": []
+      }
+    },
+    {
+      "id": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.finance_operations.lending_consumer,PROD)",
+      "name": "Finance Operations · lending consumer",
+      "entityType": "dataset",
+      "description": "Team 'Finance Operations' (Confluence space FINOPS) tham chiếu dữ liệu lending của Data Platform (3 trang nhắc tới 'credit') → phụ thuộc downstream.",
+      "tier": "Tier2",
+      "owner": {
+        "type": "team",
+        "name": "Finance Operations",
+        "space": "FINOPS"
+      },
+      "domain": "domain:lending",
+      "tags": [
+        "cross-team",
+        "confluence-evidence",
+        "lending"
+      ],
+      "lineage": {
+        "upstream": [
+          "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)"
+        ],
+        "downstream": []
+      }
+    },
+    {
+      "id": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.finance_operations.payment_consumer,PROD)",
+      "name": "Finance Operations · payment consumer",
+      "entityType": "dataset",
+      "description": "Team 'Finance Operations' (Confluence space FINOPS) tham chiếu dữ liệu payment của Data Platform (7 trang nhắc tới 'qrpay') → phụ thuộc downstream.",
+      "tier": "Tier2",
+      "owner": {
+        "type": "team",
+        "name": "Finance Operations",
+        "space": "FINOPS"
+      },
+      "domain": "domain:payment",
+      "tags": [
+        "cross-team",
+        "confluence-evidence",
+        "payment"
+      ],
+      "lineage": {
+        "upstream": [
+          "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.qrpay_user,PROD)"
+        ],
+        "downstream": []
+      }
+    },
+    {
+      "id": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.growth_products.lending_consumer,PROD)",
+      "name": "Growth Products · lending consumer",
+      "entityType": "dataset",
+      "description": "Team 'Growth Products' (Confluence space GRW) tham chiếu dữ liệu lending của Data Platform (4 trang nhắc tới 'credit') → phụ thuộc downstream.",
+      "tier": "Tier2",
+      "owner": {
+        "type": "team",
+        "name": "Growth Products",
+        "space": "GRW"
+      },
+      "domain": "domain:lending",
+      "tags": [
+        "cross-team",
+        "confluence-evidence",
+        "lending"
+      ],
+      "lineage": {
+        "upstream": [
+          "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)"
+        ],
+        "downstream": []
+      }
+    },
+    {
+      "id": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.growth_products.payment_consumer,PROD)",
+      "name": "Growth Products · payment consumer",
+      "entityType": "dataset",
+      "description": "Team 'Growth Products' (Confluence space GRW) tham chiếu dữ liệu payment của Data Platform (5 trang nhắc tới 'qrpay') → phụ thuộc downstream.",
+      "tier": "Tier2",
+      "owner": {
+        "type": "team",
+        "name": "Growth Products",
+        "space": "GRW"
+      },
+      "domain": "domain:payment",
+      "tags": [
+        "cross-team",
+        "confluence-evidence",
+        "payment"
+      ],
+      "lineage": {
+        "upstream": [
+          "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.qrpay_user,PROD)"
+        ],
+        "downstream": []
+      }
+    },
+    {
+      "id": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.product_experience.lending_consumer,PROD)",
+      "name": "Product Experience · lending consumer",
+      "entityType": "dataset",
+      "description": "Team 'Product Experience' (Confluence space PXP) tham chiếu dữ liệu lending của Data Platform (64 trang nhắc tới 'credit') → phụ thuộc downstream.",
+      "tier": "Tier2",
+      "owner": {
+        "type": "team",
+        "name": "Product Experience",
+        "space": "PXP"
+      },
+      "domain": "domain:lending",
+      "tags": [
+        "cross-team",
+        "confluence-evidence",
+        "lending"
+      ],
+      "lineage": {
+        "upstream": [
+          "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)"
+        ],
+        "downstream": []
+      }
+    },
+    {
+      "id": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.product_experience.payment_consumer,PROD)",
+      "name": "Product Experience · payment consumer",
+      "entityType": "dataset",
+      "description": "Team 'Product Experience' (Confluence space PXP) tham chiếu dữ liệu payment của Data Platform (11 trang nhắc tới 'qrpay') → phụ thuộc downstream.",
+      "tier": "Tier2",
+      "owner": {
+        "type": "team",
+        "name": "Product Experience",
+        "space": "PXP"
+      },
+      "domain": "domain:payment",
+      "tags": [
+        "cross-team",
+        "confluence-evidence",
+        "payment"
+      ],
+      "lineage": {
+        "upstream": [
+          "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.qrpay_user,PROD)"
+        ],
+        "downstream": []
+      }
+    },
+    {
+      "id": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.product_experience.identity_consumer,PROD)",
+      "name": "Product Experience · identity consumer",
+      "entityType": "dataset",
+      "description": "Team 'Product Experience' (Confluence space PXP) tham chiếu dữ liệu identity của Data Platform (3 trang nhắc tới 'identity') → phụ thuộc downstream.",
+      "tier": "Tier2",
+      "owner": {
+        "type": "team",
+        "name": "Product Experience",
+        "space": "PXP"
+      },
+      "domain": "domain:identity",
+      "tags": [
+        "cross-team",
+        "confluence-evidence",
+        "identity"
+      ],
+      "lineage": {
+        "upstream": [
+          "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.identity_mart,PROD)"
+        ],
+        "downstream": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.platform_engineering.lending_consumer,PROD)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.qrpay_user,PROD)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.platform_engineering.payment_consumer,PROD)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.identity_mart,PROD)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.platform_engineering.identity_consumer,PROD)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.finance_operations.lending_consumer,PROD)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.qrpay_user,PROD)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.finance_operations.payment_consumer,PROD)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.growth_products.lending_consumer,PROD)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.qrpay_user,PROD)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.growth_products.payment_consumer,PROD)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.curated.credit.loan_statement_fact,PROD)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.product_experience.lending_consumer,PROD)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.qrpay_user,PROD)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.product_experience.payment_consumer,PROD)"
+    },
+    {
+      "from": "urn:li:dataset:(urn:li:dataPlatform:hdfs,acme.analytics.warehouse.identity_mart,PROD)",
+      "to": "urn:li:dataset:(urn:li:dataPlatform:confluence_ref,acme.cross_team.product_experience.identity_consumer,PROD)"
+    }
+  ]
+}

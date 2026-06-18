@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Acme Data Platform AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --blue: #0033C9;          /* Acme primary */
+    --blue-700: #00269e;
+    --blue-50: #eaeffc;
+    --green: #00CF6A;         /* Acme accent */
+    --green-700: #00a854;
+    --bg: #f7f6f1;            /* warm paper (Claude-like calm) */
+    --sidebar: #efece3;
+    --surface: #ffffff;
+    --user-bubble: #eef2fb;
+    --text: #20201c;
+    --muted: #76736b;
+    --faint: #9a968c;
+    --border: #e7e3d8;
+    --border-strong: #d9d4c7;
+    --tier1: #c0392b;
+    --tier2: #c5860b;
+    --tier3: #0033C9;
+    --radius: 14px;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; display: flex; height: 100vh; overflow: hidden; font-size: 15px; }
+
+  /* ── Sidebar ─────────────────────────────────────────── */
+  aside { width: 268px; flex: none; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 16px 12px; gap: 4px; transition: margin-left .25s; }
+  .side-head { display: flex; align-items: center; gap: 10px; padding: 6px 8px 14px; }
+  .side-head svg { height: 22px; width: auto; }
+  .side-head .sub { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: .2px; margin-top: 2px; }
+  .new-btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--blue); color: #fff; border: none; border-radius: 11px; padding: 11px; font-family: var(--font); font-size: 14px; font-weight: 600; cursor: pointer; transition: .15s; box-shadow: 0 2px 8px rgba(0,51,201,.22); }
+  .new-btn:hover { background: var(--blue-700); transform: translateY(-1px); }
+  .side-label { font-size: 11px; font-weight: 600; color: var(--faint); text-transform: uppercase; letter-spacing: .6px; padding: 16px 10px 6px; }
+  .side-list { display: flex; flex-direction: column; gap: 1px; overflow-y: auto; }
+  .side-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 9px; cursor: pointer; font-size: 13.5px; color: var(--text); border: none; background: none; text-align: left; font-family: var(--font); width: 100%; transition: background .12s; overflow: hidden; }
+  .side-item:hover { background: rgba(0,51,201,.06); }
+  .side-item.active { background: rgba(0,51,201,.1); font-weight: 550; }
+  .side-item .ico { font-size: 15px; flex: none; }
+  .side-item .tx { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .side-item .d { font-size: 11.5px; color: var(--muted); }
+  /* Tool catalog */
+  .tool-group { font-size: 11px; font-weight: 600; color: var(--blue-700); padding: 10px 10px 3px; }
+  .tool-row { display: flex; flex-direction: column; }
+  .tool-name { display: flex; align-items: center; justify-content: space-between; gap: 6px; background: none; border: none; cursor: pointer; padding: 6px 10px; border-radius: 8px; font-family: var(--font); text-align: left; width: 100%; transition: background .12s; }
+  .tool-name:hover { background: rgba(0,51,201,.06); }
+  .tool-name .tlabel { font-size: 13px; color: var(--text); font-weight: 500; }
+  .tool-name .caret { color: var(--faint); font-size: 10px; transition: transform .15s; }
+  .tool-row.open .tool-name { background: rgba(0,51,201,.06); }
+  .tool-row.open .tool-name .caret { transform: rotate(180deg); }
+  .tool-detail { display: none; padding: 2px 10px 10px; }
+  .tool-row.open .tool-detail { display: block; animation: fade .2s ease; }
+  .tool-detail p { margin: 0 0 8px; font-size: 12px; color: var(--muted); line-height: 1.45; }
+  .tool-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .fn-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--faint); }
+  .tool-try { background: var(--blue-50); border: none; color: var(--blue-700); border-radius: 8px; padding: 5px 10px; font-size: 11.5px; font-weight: 600; cursor: pointer; font-family: var(--font); flex: none; }
+  .tool-try:hover { background: #dde7fb; }
+  .side-foot { margin-top: auto; padding: 12px 10px 4px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(0,207,106,.18); animation: pulse 2.4s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
+
+  /* ── Main ────────────────────────────────────────────── */
+  .main { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; }
+  .topbar { display: none; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .hamburger { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--text); }
+  .scroll { flex: 1; overflow-y: auto; scroll-behavior: smooth; }
+  .stream { max-width: 740px; margin: 0 auto; padding: 30px 24px 24px; }
+
+  /* Welcome */
+  .hero { text-align: center; padding: 46px 16px 10px; animation: fade .5s ease; }
+  @keyframes fade { from{opacity:0; transform: translateY(10px)} to{opacity:1} }
+  .hero .mark { width: 60px; height: 60px; border-radius: 18px; background: linear-gradient(140deg, var(--blue), #1f5ce0); display: grid; place-items: center; margin: 0 auto 20px; box-shadow: 0 10px 30px rgba(0,51,201,.3); position: relative; }
+  .hero .mark::after { content: ''; position: absolute; right: -4px; bottom: -4px; width: 18px; height: 18px; border-radius: 50%; background: var(--green); border: 3px solid var(--bg); }
+  .hero .mark svg { width: 30px; height: 30px; }
+  .hero h2 { font-size: 26px; margin: 0 0 8px; letter-spacing: -.5px; font-weight: 650; }
+  .hero p { color: var(--muted); margin: 0 auto; max-width: 440px; line-height: 1.6; font-size: 14.5px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 600px; margin: 30px auto 0; }
+  .card { text-align: left; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 15px 16px; cursor: pointer; transition: .18s; }
+  .card:hover { border-color: var(--blue); transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,51,201,.1); }
+  .card .ico { font-size: 19px; } .card .t { font-weight: 600; font-size: 13.5px; margin: 9px 0 3px; } .card .d { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+
+  /* Messages */
+  .turn { margin-bottom: 30px; animation: fade .3s ease; }
+  .turn.user { display: flex; justify-content: flex-end; }
+  .turn.user .ub { background: var(--user-bubble); border: 1px solid #dde5f6; border-radius: 16px 16px 5px 16px; padding: 11px 16px; max-width: 85%; font-size: 14.5px; line-height: 1.55; }
+  .turn.bot { display: flex; gap: 14px; }
+  .turn.bot .av { width: 30px; height: 30px; border-radius: 9px; flex: none; background: linear-gradient(140deg, var(--blue), #1f5ce0); display: grid; place-items: center; margin-top: 2px; position: relative; }
+  .turn.bot .av svg { width: 17px; height: 17px; }
+  .turn.bot .av::after { content:''; position:absolute; right:-2px; bottom:-2px; width:9px; height:9px; border-radius:50%; background:var(--green); border:2px solid var(--bg); }
+  .turn.bot .body { flex: 1; min-width: 0; padding-top: 2px; }
+
+  /* Markdown */
+  .md { font-size: 15px; line-height: 1.68; overflow-wrap: anywhere; }
+  .md > :first-child { margin-top: 0; }
+  .md h1,.md h2,.md h3 { line-height: 1.3; margin: 18px 0 9px; font-weight: 650; letter-spacing: -.2px; }
+  .md h1 { font-size: 20px; } .md h2 { font-size: 17px; } .md h3 { font-size: 15px; }
+  .md p { margin: 10px 0; }
+  .md ul,.md ol { margin: 9px 0; padding-left: 22px; } .md li { margin: 5px 0; }
+  .md code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; background: #f0eee6; padding: 2px 6px; border-radius: 6px; }
+  .md pre { background: #1a2740; color: #e6edf7; padding: 14px 16px; border-radius: 12px; overflow-x: auto; margin: 12px 0; }
+  .md pre code { background: none; padding: 0; color: inherit; }
+  .md pre.mermaid { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 14px; padding: 18px; text-align: center; overflow-x: auto; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+  .md table { border-collapse: collapse; width: 100%; margin: 13px 0; font-size: 13px; box-shadow: 0 0 0 1px var(--border); border-radius: 10px; overflow: hidden; }
+  .md th { background: #f0eee6; text-align: left; font-weight: 600; } .md th,.md td { padding: 9px 13px; border-bottom: 1px solid var(--border); } .md tr:last-child td { border-bottom: none; }
+  .md blockquote { border-left: 3px solid var(--blue); margin: 11px 0; padding: 5px 15px; color: var(--muted); background: rgba(0,51,201,.04); border-radius: 0 8px 8px 0; }
+  .md a { color: var(--blue-700); } .md strong { font-weight: 600; }
+
+  /* Meta */
+  .meta { margin-top: 16px; padding-top: 13px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; font-size: 12px; }
+  .conf { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+  .conf .bar { width: 88px; height: 7px; border-radius: 4px; background: #e7e3d8; overflow: hidden; }
+  .conf .fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--green)); border-radius: 4px; transition: width .6s ease; }
+  .conf b { color: var(--text); font-variant-numeric: tabular-nums; }
+  .sources { display: flex; flex-wrap: wrap; gap: 6px; }
+  .src { background: var(--blue-50); color: var(--blue-700); padding: 3px 9px; border-radius: 20px; font-weight: 600; font-size: 11px; }
+  .sources { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; color: var(--muted); }
+  /* Trust badge (live vs cache provenance) */
+  .fresh-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: default; }
+  .fresh-badge .fdot { width: 7px; height: 7px; border-radius: 50%; }
+  .fresh-badge.live { background: rgba(0,207,106,.12); color: var(--green-700); }
+  .fresh-badge.live .fdot { background: var(--green); box-shadow: 0 0 0 3px rgba(0,207,106,.18); }
+  .fresh-badge.partial { background: rgba(0,51,201,.08); color: var(--blue-700); }
+  .fresh-badge.partial .fdot { background: var(--blue); }
+  .fresh-badge.stale { background: rgba(192,57,43,.1); color: var(--tier1); }
+  .fresh-badge.stale .fdot { background: var(--tier1); }
+  .fresh-badge.cached { background: #f0eee6; color: var(--muted); }
+  .fresh-badge.cached .fdot { background: var(--faint); }
+  .followups { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .fu-chip { background: var(--surface); border: 1px solid var(--border-strong); color: var(--blue-700); border-radius: 18px; padding: 8px 14px; font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; transition: .15s; text-align: left; }
+  .fu-chip:hover { border-color: var(--blue); background: var(--blue-50); transform: translateY(-1px); }
+  .fu-chip::before { content: '↳ '; color: var(--faint); }
+  .tools-toggle { margin-left: auto; cursor: pointer; color: var(--blue-700); font-weight: 600; user-select: none; }
+  .tools-toggle:hover { text-decoration: underline; }
+  .trace { width: 100%; margin-top: 6px; display: none; flex-direction: column; gap: 6px; }
+  .trace.open { display: flex; }
+  .trace-item { display: flex; gap: 9px; align-items: baseline; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 12px; }
+  .trace-item .n { width: 18px; height: 18px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 10px; display: grid; place-items: center; flex: none; font-weight: 700; }
+  .trace-item code { font-family: 'JetBrains Mono', monospace; color: var(--blue-700); font-weight: 600; background: none; }
+  .trace-item .args { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+  .typing { display: flex; gap: 5px; padding: 4px 0; } .typing span { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); opacity: .4; animation: blink 1.4s infinite; }
+  .typing span:nth-child(2){animation-delay:.2s} .typing span:nth-child(3){animation-delay:.4s}
+  @keyframes blink { 0%,60%,100%{opacity:.25; transform:translateY(0)} 30%{opacity:1; transform:translateY(-4px)} }
+  .status-line { font-size: 13px; color: var(--muted); margin-top: 8px; font-style: italic; }
+
+  /* ── Phase-morph "thinking" pill (🧭→🔍→✍️) ─────────────── */
+  .think { display: inline-flex; align-items: center; gap: 9px; padding: 7px 15px 7px 11px; background: var(--blue-50); border: 1px solid #dde7fb; border-radius: 20px; }
+  .think-ico { display: inline-block; font-size: 20px; line-height: 1; transform-origin: 60% 60%; animation: pop .28s ease; }
+  .think-ico.bob   { animation: pop .28s ease, bob 1.6s ease-in-out .28s infinite; }
+  .think-ico.scan  { animation: pop .28s ease, scan 1.1s ease-in-out .28s infinite; }
+  .think-ico.write { animation: pop .28s ease, write .9s ease-in-out .28s infinite; }
+  .think-tx { font-size: 13.5px; font-weight: 550; background: linear-gradient(90deg, var(--muted) 28%, var(--blue) 50%, var(--muted) 72%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; animation: shimmer 2.1s linear infinite; }
+  @keyframes pop   { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.18)} 100%{transform:scale(1);opacity:1} }
+  @keyframes bob   { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-3px) rotate(-6deg)} }
+  @keyframes scan  { 0%,100%{transform:translateX(-2px) rotate(-9deg) scale(1)} 50%{transform:translateX(2px) rotate(9deg) scale(1.08)} }
+  @keyframes write { 0%,100%{transform:rotate(-7deg)} 25%{transform:rotate(5deg) translateY(-1px)} 50%{transform:rotate(-3deg)} 75%{transform:rotate(6deg) translateY(-1px)} }
+  @keyframes shimmer { 0%{background-position:210% 0} 100%{background-position:-210% 0} }
+  @media (prefers-reduced-motion: reduce) {
+    .think-ico, .think-tx { animation: none !important; }
+    .think-tx { background: none; color: var(--muted); -webkit-text-fill-color: var(--muted); }
+  }
+
+  /* Message actions (copy / regenerate) */
+  .msg-actions { display: flex; gap: 6px; margin-top: 12px; opacity: 0; transition: opacity .15s; }
+  .turn.bot:hover .msg-actions { opacity: 1; }
+  .act-btn { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: var(--font); transition: .12s; }
+  .act-btn:hover { border-color: var(--blue); color: var(--blue-700); background: var(--blue-50); }
+
+  /* History rows with hover actions */
+  .hist-row { display: flex; align-items: center; border-radius: 9px; transition: background .12s; }
+  .hist-row:hover, .hist-row.active { background: rgba(0,51,201,.08); }
+  .hist-open { flex: 1; min-width: 0; display: flex; align-items: center; gap: 9px; background: none; border: none; cursor: pointer; padding: 8px 10px; font-family: var(--font); font-size: 13.5px; color: var(--text); text-align: left; }
+  .hist-open .ico { flex: none; } .hist-open .tx { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hist-acts { display: none; gap: 2px; padding-right: 6px; } .hist-row:hover .hist-acts { display: flex; }
+  .hist-act { background: none; border: none; cursor: pointer; color: var(--faint); font-size: 12px; padding: 4px 5px; border-radius: 6px; }
+  .hist-act:hover { color: var(--blue-700); background: #fff; }
+  .hist-empty { font-size: 12px; color: var(--faint); padding: 6px 10px; font-style: italic; }
+
+  /* Scroll-to-bottom */
+  .scroll-btn { position: absolute; right: 28px; bottom: 96px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-strong); background: var(--surface); color: var(--blue-700); cursor: pointer; display: none; place-items: center; font-size: 18px; box-shadow: 0 3px 12px rgba(0,0,0,.12); z-index: 20; }
+  .scroll-btn.show { display: grid; }
+  .scroll-btn:hover { background: var(--blue-50); }
+
+  /* Composer */
+  .composer-wrap { padding: 10px 24px 18px; background: linear-gradient(to top, var(--bg) 70%, transparent); }
+  .composer { max-width: 740px; margin: 0 auto; display: flex; gap: 10px; align-items: flex-end; background: var(--surface); border: 1.5px solid var(--border-strong); border-radius: 18px; padding: 9px 9px 9px 18px; transition: border-color .15s, box-shadow .15s; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+  .composer:focus-within { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(0,51,201,.08); }
+  .composer textarea { flex: 1; border: none; background: none; resize: none; outline: none; font-family: inherit; font-size: 15px; line-height: 1.5; max-height: 170px; color: var(--text); padding: 7px 0; }
+  .send { width: 40px; height: 40px; border-radius: 12px; border: none; background: var(--blue); color: #fff; cursor: pointer; display: grid; place-items: center; flex: none; transition: .15s; }
+  .send:hover:not(:disabled) { background: var(--blue-700); transform: scale(1.05); } .send:disabled { opacity: .4; cursor: not-allowed; }
+  .hint { max-width: 740px; margin: 9px auto 0; font-size: 11.5px; color: var(--faint); text-align: center; }
+
+  ::-webkit-scrollbar { width: 9px; } ::-webkit-scrollbar-thumb { background: #d6d1c4; border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+  @media (max-width: 760px){ aside{position:absolute; z-index:30; height:100%; margin-left:-280px; box-shadow:0 0 40px rgba(0,0,0,.2)} aside.open{margin-left:0} .topbar{display:flex} .cards{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+  <aside id="sidebar">
+    <div class="side-head">
+      <div>
+        <svg viewBox="0 0 125 28" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M104.314 4.30811V17.2269H106.462V21.5445H104.935C103.203 21.5445 101.684 20.6532 100.8 19.3065C99.3434 20.6897 97.4172 21.5421 95.2961 21.5421C90.7666 21.5421 87.0919 17.6896 87.0919 12.936C87.0919 8.18252 90.7642 4.33003 95.2961 4.33003C97.0446 4.33003 98.6616 4.90717 99.9912 5.88368V4.30811H104.314ZM91.4046 12.9336C91.4046 15.3055 93.326 17.2269 95.6979 17.2269C98.0698 17.2269 99.9912 15.3055 99.9912 12.9336C99.9912 10.5617 98.0698 8.64034 95.6979 8.64034C93.326 8.64034 91.4046 10.5617 91.4046 12.9336ZM76.864 4.30822C72.1105 4.30822 68.2458 8.17532 68.2458 12.9264V28.0003H72.561V20.383C73.8298 21.1184 75.2958 21.5446 76.864 21.5446C81.6176 21.5446 85.4822 17.6775 85.4822 12.9264C85.4822 8.17532 81.6151 4.30822 76.864 4.30822ZM76.864 17.2294C74.4921 17.2294 72.561 15.2983 72.561 12.9264C72.561 10.5545 74.4921 8.6234 76.864 8.6234C79.2359 8.6234 81.1671 10.5545 81.1671 12.9264C81.1671 15.2983 79.2384 17.2294 76.864 17.2294ZM119.563 4.31303L114.973 15.0206L110.614 4.31303H105.953L112.584 20.5997L109.411 28.0003H114.108L124.26 4.31303H119.563Z" fill="#00CF6A"/><path fill-rule="evenodd" clip-rule="evenodd" d="M17.5863 1.22491C17.9637 1.97982 17.8834 2.86867 17.3768 3.54322L7.11487 17.2266H17.8712V21.5418H2.90927C2.06669 21.5418 1.30691 21.0743 0.92945 20.3194C0.551993 19.5644 0.632355 18.6756 1.13888 18.001L11.4033 4.31518H0.644531V0H15.604C16.449 0 17.2088 0.469994 17.5863 1.22491ZM47.8023 12.9262C47.8023 8.1751 51.6694 4.30799 56.4205 4.30799C61.1716 4.30799 65.0387 8.1751 65.0387 12.9262C65.0387 17.6773 61.1716 21.5444 56.4205 21.5444C51.6694 21.5444 47.8023 17.6773 47.8023 12.9262ZM52.1175 12.9262C52.1175 15.2981 54.0486 17.2292 56.4205 17.2292C58.7948 17.2292 60.7235 15.2981 60.7235 12.9262C60.7235 10.5543 58.7948 8.62318 56.4205 8.62318C54.0461 8.62318 52.1175 10.5543 52.1175 12.9262ZM36.7075 17.2268V4.30799H32.385V5.88357C31.0554 4.90705 29.4384 4.32991 27.6899 4.32991C23.158 4.32991 19.4857 8.18241 19.4857 12.9359C19.4857 17.6895 23.1605 21.5419 27.6899 21.5419C29.811 21.5419 31.7373 20.6896 33.1935 19.3064C34.0775 20.6531 35.5971 21.5444 37.3285 21.5444H38.8554V17.2268H36.7075ZM28.0917 17.2268C25.7199 17.2268 23.7985 15.3054 23.7985 12.9335C23.7985 10.5616 25.7199 8.64023 28.0917 8.64023C30.4636 8.64023 32.385 10.5616 32.385 12.9335C32.385 15.3054 30.4636 17.2268 28.0917 17.2268ZM44.8167 17.2218V0H40.4918V16.5935C40.4918 19.3258 42.7054 21.5418 45.4377 21.5418H46.9792V17.2218H44.8167Z" fill="#0033C9"/></svg>
+        <div class="sub">Data Platform AI</div>
+      </div>
+    </div>
+    <button class="new-btn" id="newChat">＋ Cuộc trò chuyện mới</button>
+
+    <div class="side-label">Agent Functions</div>
+    <div class="side-list" id="toolCatalog" style="max-height:42vh; overflow-y:auto"></div>
+
+    <div class="side-label">Lịch sử</div>
+    <div class="side-list" id="historyList" style="flex:1; min-height:60px"></div>
+
+    <div class="side-foot"><span class="dot"></span> Agent live · 865 datasets</div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar"><button class="hamburger" id="ham">☰</button> <strong style="font-size:14px">Acme Data Platform AI</strong></div>
+    <div class="scroll" id="scroll">
+      <div class="stream" id="stream">
+        <div class="hero" id="hero">
+          <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13l0-8z" fill="#fff"/></svg></div>
+          <h2>Chào mừng đến Acme Data Platform AI</h2>
+          <p>Trợ lý AI hiểu toàn bộ data platform Acme — khám phá metadata, phân tích impact, điều tra sự cố, onboarding. Hỏi bằng tiếng Việt hoặc tiếng Anh.</p>
+          <div class="cards" id="cards"></div>
+        </div>
+      </div>
+    </div>
+    <button id="scrollBtn" class="scroll-btn" title="Xuống cuối">↓</button>
+    <div class="composer-wrap">
+      <div class="composer">
+        <textarea id="input" rows="1" placeholder="Hỏi về data platform… (Enter để gửi, Shift+Enter xuống dòng)"></textarea>
+        <button class="send" id="send" title="Gửi" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a.993.993 0 00-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .69.71 1.16 1.39.91z" fill="currentColor"/></svg>
+        </button>
+      </div>
+      <div class="hint">Câu trả lời do AI tạo từ metadata thật — luôn kiểm chứng trước khi hành động quan trọng.</div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: false, theme: 'base', securityLevel: 'loose',
+    themeVariables: { primaryColor: '#eef2fb', primaryBorderColor: '#0033C9', primaryTextColor: '#20201c', lineColor: '#9a968c', fontFamily: 'Inter' },
+    flowchart: { useMaxWidth: true, htmlLabels: true } });
+  window.__mermaid = mermaid;
+</script>
+<script>
+(function () {
+  const TOOL_SOURCE = { search_metadata:'DataHub', get_entity_details:'DataHub', get_schema:'DataHub', get_data_freshness:'DataHub', analyze_impact:'Knowledge Graph', get_ownership:'Knowledge Graph', get_platform_overview:'Knowledge Graph', read_confluence_page:'Confluence', get_related_context:'Confluence + Jira', search_jira_tickets:'Jira', get_recent_commits:'GitLab', read_gitlab_file:'GitLab', get_platform_alerts:'Live Monitor', get_health_briefing:'Live Monitor', diagnose_entity:'DataHub + GitLab + Jira' };
+  const TOOL_LABEL = { search_metadata:'🔍 Tìm metadata', get_platform_overview:'🧭 Tổng quan platform', get_ownership:'👤 Chủ sở hữu', get_entity_details:'📄 Chi tiết entity', analyze_impact:'💥 Phân tích impact', diagnose_entity:'🚨 Chẩn đoán sự cố', get_related_context:'🔗 Ngữ cảnh', read_gitlab_file:'📂 Đọc file GitLab', read_confluence_page:'📘 Đọc Confluence', search_jira_tickets:'🎫 Tìm Jira', get_recent_commits:'⎇ Commit gần đây', get_data_freshness:'⏱ Độ tươi dữ liệu', get_schema:'🧬 Schema', get_platform_alerts:'🔔 Cảnh báo', get_health_briefing:'📋 Health briefing' };
+  const EXAMPLES = [
+    { ico:'🔍', t:'Data Discovery', d:'Tìm bảng liên quan đến lending', q:'Tìm các bảng liên quan đến lending' },
+    { ico:'🧭', t:'Smart Onboarding', d:'Mới join, bắt đầu từ đâu?', q:'Tôi mới join team Data Platform, nên bắt đầu từ đâu?' },
+    { ico:'💥', t:'Impact Analysis', d:'Sửa loan_core_statement?', q:'Sửa loan_core_statement ảnh hưởng những gì? Vẽ sơ đồ lineage giúp mình' },
+    { ico:'🚨', t:'Incident Triage', d:'Bảng bị chậm, điều tra', q:'Tại sao loan_core_statement bị chậm? Điều tra giúp mình' },
+    { ico:'📋', t:'Health Briefing', d:'Tình hình hôm nay?', q:'Tình hình data platform hôm nay thế nào?' },
+  ];
+
+  const TOOL_CATALOG = [
+    { group:'🔍 Khám phá dữ liệu', tools:[
+      { label:'Tìm kiếm metadata',   n:'search_metadata',       d:'Tìm bảng / pipeline theo tên hoặc mô tả (hỗ trợ tiếng Việt + chống gõ sai).', ex:'Tìm các bảng liên quan đến lending' },
+      { label:'Tổng quan platform',  n:'get_platform_overview', d:'Bức tranh toàn cảnh: các domain, bảng Tier1, pipeline và tài liệu onboarding.', ex:'Data platform có những domain chính nào?' },
+      { label:'Chi tiết bảng',       n:'get_entity_details',    d:'Thông tin đầy đủ một bảng + cập nhật độ tươi real-time.', ex:'Cho mình chi tiết bảng loan_core_statement' },
+      { label:'Xem schema cột',      n:'get_schema',            d:'Danh sách cột: tên, kiểu dữ liệu, mô tả, cột nhạy cảm (PII).', ex:'Bảng loan_core_statement có những cột nào?' },
+      { label:'Tra chủ sở hữu',      n:'get_ownership',         d:'Đội / người chịu trách nhiệm và domain của một bảng.', ex:'Ai sở hữu bảng loan_core_order?' },
+    ]},
+    { group:'💥 Phân tích tác động', tools:[
+      { label:'Phân tích impact',    n:'analyze_impact',        d:'Tìm toàn bộ bảng/pipeline bị ảnh hưởng khi thay đổi + cảnh báo Tier1 + sơ đồ lineage.', ex:'Sửa loan_core_statement ảnh hưởng gì? vẽ sơ đồ lineage' },
+    ]},
+    { group:'🚨 Sự cố & giám sát', tools:[
+      { label:'Chẩn đoán sự cố',     n:'diagnose_entity',       d:'Điều tra nguyên nhân gốc: kết hợp độ tươi + commit + Jira + tác động.', ex:'Tại sao loan_core_statement bị chậm? điều tra giúp mình' },
+      { label:'Bản tin sức khỏe',    n:'get_health_briefing',   d:'Tổng quan sức khỏe platform: bảng Tier1 trễ, sự cố đang mở, commit rủi ro.', ex:'Tình hình data platform hôm nay thế nào?' },
+      { label:'Cảnh báo platform',   n:'get_platform_alerts',   d:'Các cảnh báo chủ động (agent tự quét nền mỗi 30 phút).', ex:'Có cảnh báo gì trên platform không?' },
+      { label:'Độ tươi dữ liệu',     n:'get_data_freshness',    d:'Lần cập nhật cuối và số dòng của bảng.', ex:'loan_core_statement cập nhật lần cuối khi nào?' },
+    ]},
+    { group:'🔗 Nguồn liên kết', tools:[
+      { label:'Ngữ cảnh liên quan',  n:'get_related_context',   d:'Liên kết chéo: Jira ticket + tài liệu Confluence + pipeline liên quan.', ex:'Có tài liệu hay ticket nào về loan_core_statement?' },
+      { label:'Tìm Jira ticket',     n:'search_jira_tickets',   d:'Tìm ticket Jira theo từ khóa (live).', ex:'Có Jira ticket nào về lending đang mở không?' },
+      { label:'Commit gần đây',      n:'get_recent_commits',    d:'Các commit GitLab mới của một pipeline.', ex:'credit-curated-etl có commit gì gần đây?' },
+      { label:'Đọc file GitLab',     n:'read_gitlab_file',      d:'Xem nội dung file (DAG / SQL / config) từ GitLab.', ex:'Đọc file DAG của credit-curated-etl' },
+      { label:'Đọc trang Confluence',n:'read_confluence_page',  d:'Xem nội dung một trang tài liệu Confluence.', ex:'Đọc tài liệu Data Platform Overview' },
+    ]},
+  ];
+
+  const $ = s => document.querySelector(s);
+  const scroll = $('#scroll'), stream = $('#stream'), input = $('#input'), sendBtn = $('#send');
+  let busy = false, sessionId = crypto.randomUUID(), convId = null;
+  const LS = 'zlp_copilot_convs';
+
+  marked.setOptions({ breaks: true, gfm: true });
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  marked.use({ renderer: { code(code, lang) { let t = code, l = lang; if (code && typeof code === 'object') { t = code.text; l = code.lang; } return (l||'').toLowerCase().split(/\s+/)[0] === 'mermaid' ? '<pre class="mermaid">'+esc(t)+'</pre>' : '<pre><code>'+esc(t)+'</code></pre>'; } } });
+
+  const stripFooter = md => md.replace(/\n*-{3,}\n\*🔎\s*Nguồn:[\s\S]*$/u, '').trimEnd();
+  // Extract the machine-readable follow-up line and remove it from the displayed text
+  function extractFollowups(md) {
+    const m = md.match(/\[\[\s*follow-ups?\s*:(.*?)\]\]/is);
+    if (!m) return { text: md, followups: [] };
+    const fu = m[1].split('|').map(s => s.trim()).filter(Boolean).slice(0, 4);
+    return { text: md.replace(m[0], '').trimEnd(), followups: fu };
+  }
+  const sourcesFromTools = tools => { const s = []; (tools||[]).forEach(t => (TOOL_SOURCE[t.tool]||'').split(' + ').forEach(x => { if (x && !s.includes(x)) s.push(x); })); return s; };
+  // Trust badge: shows whether the answer was verified against live sources or served from cache.
+  function freshBadge(f) {
+    if (!f || !f.level) return '';
+    const ICON = { live:'🟢', partial:'🟢', stale:'🔴', cached:'🟡' };
+    let label = esc(f.label || f.level);
+    if (f.level === 'live' || f.level === 'partial') label += ` · ${esc(f.verified_at || '')}`;
+    const tipParts = [];
+    if ((f.live_sources||[]).length) tipParts.push('Live: ' + f.live_sources.join(', '));
+    if ((f.fallback_sources||[]).length) tipParts.push('Cache: ' + f.fallback_sources.join(', '));
+    const tip = tipParts.join(' · ');
+    return `<span class="fresh-badge ${esc(f.level)}" title="${esc(tip)}"><span class="fdot"></span>${ICON[f.level]||''} ${label}</span>`;
+  }
+
+  // ── localStorage conversation history (Claude-like) ──
+  const loadConvs = () => { try { return JSON.parse(localStorage.getItem(LS)) || []; } catch { return []; } };
+  const saveConvs = c => localStorage.setItem(LS, JSON.stringify(c.slice(0, 30)));
+  function upsertConv(role, payload) {
+    const convs = loadConvs();
+    let c = convs.find(x => x.id === convId);
+    if (!c) { c = { id: convId, title: '', items: [] }; convs.unshift(c); }
+    else { convs.splice(convs.indexOf(c), 1); convs.unshift(c); }
+    c.items.push(role === 'user' ? { role:'user', text: payload } : { role:'bot', data: payload });
+    if (role === 'user' && !c.title) c.title = payload.slice(0, 48);
+    saveConvs(convs); renderHistory();
+  }
+  function renderHistory() {
+    const list = $('#historyList'); list.innerHTML = '';
+    const convs = loadConvs();
+    if (!convs.length) { list.innerHTML = '<div class="hist-empty">Chưa có cuộc trò chuyện nào</div>'; return; }
+    convs.forEach(c => {
+      const row = document.createElement('div');
+      row.className = 'hist-row' + (c.id === convId ? ' active' : '');
+      row.innerHTML = `<button class="hist-open"><span class="ico">💬</span><span class="tx">${esc(c.title || 'Cuộc trò chuyện')}</span></button>`
+        + `<span class="hist-acts"><button class="hist-act" data-a="rename" title="Đổi tên">✎</button><button class="hist-act" data-a="del" title="Xoá">✕</button></span>`;
+      row.querySelector('.hist-open').onclick = () => openConv(c.id);
+      row.querySelector('[data-a="rename"]').onclick = e => {
+        e.stopPropagation();
+        const nv = prompt('Đổi tên cuộc trò chuyện:', c.title || '');
+        if (nv !== null) { const cs = loadConvs(); const x = cs.find(z => z.id === c.id); if (x) { x.title = nv.trim().slice(0, 60) || x.title; saveConvs(cs); renderHistory(); } }
+      };
+      row.querySelector('[data-a="del"]').onclick = e => {
+        e.stopPropagation();
+        if (!confirm('Xoá cuộc trò chuyện này?')) return;
+        saveConvs(loadConvs().filter(z => z.id !== c.id));
+        if (c.id === convId) { convId = null; sessionId = crypto.randomUUID(); location.reload(); return; }
+        renderHistory();
+      };
+      list.appendChild(row);
+    });
+  }
+  function openConv(id) {
+    if (busy) return;
+    const c = loadConvs().find(x => x.id === id); if (!c) return;
+    convId = id; sessionId = id; // reuse for agent memory continuity within a conv
+    $('#hero')?.remove(); stream.innerHTML = '';
+    let lastUser = '';
+    c.items.forEach(it => { if (it.role === 'user') { lastUser = it.text; addUser(it.text, true); } else { renderBot(addBotShell(), it.data, lastUser); } });
+    renderHistory(); closeSidebarMobile();
+  }
+
+  function buildCards() {
+    const cw = $('#cards');
+    EXAMPLES.forEach(e => {
+      const c = document.createElement('div');
+      c.className = 'card'; c.innerHTML = `<div class="ico">${e.ico}</div><div class="t">${e.t}</div><div class="d">${e.d}</div>`;
+      c.onclick = () => { if (!busy) send(e.q); };
+      cw.appendChild(c);
+    });
+  }
+  function renderTools() {
+    const wrap = $('#toolCatalog'); wrap.innerHTML = '';
+    TOOL_CATALOG.forEach(g => {
+      const h = document.createElement('div'); h.className = 'tool-group'; h.textContent = g.group; wrap.appendChild(h);
+      g.tools.forEach(t => {
+        const row = document.createElement('div'); row.className = 'tool-row';
+        row.innerHTML = `<button class="tool-name"><span class="tlabel">${t.label}</span><span class="caret">▾</span></button><div class="tool-detail"><p>${t.d}</p><div class="tool-meta"><span class="fn-tag">fn · ${t.n}</span><button class="tool-try">▶ Thử ví dụ</button></div></div>`;
+        row.querySelector('.tool-name').onclick = () => row.classList.toggle('open');
+        row.querySelector('.tool-try').onclick = ev => { ev.stopPropagation(); if (!busy) { send(t.ex); closeSidebarMobile(); } };
+        wrap.appendChild(row);
+      });
+    });
+  }
+
+  function addUser(text, noStore) {
+    const t = document.createElement('div'); t.className = 'turn user';
+    const b = document.createElement('div'); b.className = 'ub'; b.textContent = text;
+    t.appendChild(b); stream.appendChild(t); scrollDown();
+    if (!noStore) upsertConv('user', text);
+  }
+  const AV = '<div class="av"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13l0-8z" fill="#fff"/></svg></div>';
+  function addBotShell() {
+    const t = document.createElement('div'); t.className = 'turn bot';
+    t.innerHTML = AV + `<div class="body"><div class="think"><span class="think-ico bob">🧭</span><span class="think-tx">Đang định tuyến câu hỏi…</span></div></div>`;
+    stream.appendChild(t); scrollDown(); return t;
+  }
+  // Update the phase-morph thinking pill: swap icon (with pop), animation, and text.
+  function setThink(shell, icon, text, anim) {
+    const pill = shell.querySelector('.think'); if (!pill) return;
+    const ico = pill.querySelector('.think-ico'), tx = pill.querySelector('.think-tx');
+    if (ico) { ico.textContent = icon; ico.classList.remove('bob','scan','write'); void ico.offsetWidth; ico.classList.add(anim || 'bob'); }
+    if (tx) tx.textContent = text;
+    scrollDown();
+  }
+  // Split a "🔍 Tìm metadata" label into [icon, text].
+  function splitToolLabel(tool) {
+    const full = TOOL_LABEL[tool] || tool || '';
+    const sp = full.indexOf(' ');
+    return sp > 0 ? [full.slice(0, sp), full.slice(sp + 1)] : ['🔧', full || tool];
+  }
+  function renderBot(shell, data, userText) {
+    const body = shell.querySelector('.body');
+    const { text, followups } = extractFollowups(stripFooter(data.answer || ''));
+    const html = DOMPurify.sanitize(marked.parse(text), { ADD_TAGS:['pre'], ADD_ATTR:['class'] });
+    const tools = data.tools_called || [], srcs = sourcesFromTools(tools);
+    const fresh = freshBadge(data.freshness);
+    let meta = '';
+    if (fresh || srcs.length || tools.length) {
+      meta = '<div class="meta">';
+      if (fresh) meta += fresh;
+      if (srcs.length) meta += `<div class="sources">🔎 ${srcs.map(s=>`<span class="src">${s}</span>`).join('')}</div>`;
+      if (tools.length) meta += `<div class="tools-toggle">🔧 ${tools.length} bước · xem chi tiết ▾</div>`;
+      meta += '<div class="trace">' + tools.map((t,i)=>{ const a = t.args && Object.keys(t.args).length ? esc(JSON.stringify(t.args)) : ''; return `<div class="trace-item"><span class="n">${i+1}</span><div><code>${TOOL_LABEL[t.tool]||t.tool}</code>${a?` <span class="args">${a}</span>`:''}</div></div>`; }).join('') + '</div></div>';
+    }
+    let fuHtml = '';
+    if (followups.length) fuHtml = `<div class="followups">${followups.map(q=>`<button class="fu-chip">${esc(q)}</button>`).join('')}</div>`;
+    const actions = `<div class="msg-actions"><button class="act-btn" data-act="copy" title="Sao chép câu trả lời">📋 Copy</button><button class="act-btn" data-act="regen" title="Tạo lại câu trả lời">↻ Hỏi lại</button></div>`;
+    body.innerHTML = `<div class="md">${html}</div>${actions}${meta}${fuHtml}`;
+    const nodes = body.querySelectorAll('pre.mermaid');
+    if (nodes.length) { let n=0; (function go(){ if (window.__mermaid) window.__mermaid.run({nodes}).catch(()=>{}); else if (n++<40) setTimeout(go,150); })(); }
+    const tog = body.querySelector('.tools-toggle');
+    if (tog) tog.onclick = () => { const tr = body.querySelector('.trace'); tr.classList.toggle('open'); tog.textContent = tr.classList.contains('open') ? `🔧 ${tools.length} bước · ẩn ▴` : `🔧 ${tools.length} bước · xem chi tiết ▾`; };
+    body.querySelectorAll('.fu-chip').forEach(c => c.onclick = () => { if (!busy) send(c.textContent); });
+    const cp = body.querySelector('[data-act="copy"]');
+    if (cp) cp.onclick = () => { navigator.clipboard.writeText(text).then(() => { cp.textContent = '✓ Đã copy'; setTimeout(() => cp.textContent = '📋 Copy', 1500); }).catch(()=>{}); };
+    const rg = body.querySelector('[data-act="regen"]');
+    if (rg) rg.onclick = () => { if (!busy && userText) send(userText); };
+    scrollDown();
+  }
+  // Typewriter reveal: progressively re-parse the markdown so formatting forms live,
+  // then do the final full render (mermaid/meta/chips) at the end.
+  function typeThenRender(shell, data, userText) {
+    const body = shell.querySelector('.body');
+    const { text } = extractFollowups(stripFooter(data.answer || ''));
+    const total = text.length;
+    if (total < 60) { renderBot(shell, data, userText); return; }
+    body.innerHTML = '<div class="md"></div>';
+    const mdEl = body.querySelector('.md');
+    let shown = 0; const step = Math.max(14, Math.ceil(total / 45));
+    const iv = setInterval(() => {
+      shown = Math.min(total, shown + step);
+      mdEl.innerHTML = DOMPurify.sanitize(marked.parse(text.slice(0, shown)), { ADD_TAGS:['pre'], ADD_ATTR:['class'] });
+      scrollDown();
+      if (shown >= total) { clearInterval(iv); renderBot(shell, data, userText); }
+    }, 16);
+  }
+  const scrollDown = () => { scroll.scrollTop = scroll.scrollHeight; };
+
+  const INTENT_LABEL = { IMPACT:'💥 Phân tích ảnh hưởng', ONBOARDING:'🧭 Hướng dẫn onboarding', INCIDENT:'🚨 Chẩn đoán sự cố', BRIEFING:'📋 Tổng quan sức khỏe', CHANGES:'🕒 Thay đổi gần đây', SPECIFIC:'🔎 Tra cứu', BROAD:'🔍 Khám phá' };
+
+  // Non-streaming fallback (used if the streaming endpoint is unavailable).
+  async function sendBlocking(text, shell, body) {
+    if (!shell.querySelector('.think')) body.insertAdjacentHTML('afterbegin', '<div class="think"><span class="think-ico bob">🧭</span><span class="think-tx"></span></div>');
+    const phases = [['🧭','Đang phân loại câu hỏi…','bob'],['🔍','Đang truy vấn knowledge graph…','scan'],['✍️','Đang tổng hợp câu trả lời…','write']]; let i=0;
+    setThink(shell, ...phases[0]);
+    const tick = setInterval(()=>{ i = Math.min(i+1, phases.length-1); setThink(shell, ...phases[i]); }, 2800);
+    try {
+      const r = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message:text, session_id:sessionId }) });
+      const data = await r.json(); clearInterval(tick); body.querySelector('.think')?.remove();
+      if (data.status === 'error') body.innerHTML = `<div class="md">⚠️ ${esc(data.message||'Có lỗi xảy ra')}</div>`;
+      else { typeThenRender(shell, data, text); upsertConv('bot', data); }
+    } catch (e) { clearInterval(tick); body.querySelector('.think')?.remove(); body.innerHTML = `<div class="md">⚠️ Không kết nối được tới agent.</div>`; }
+  }
+
+  async function send(text) {
+    text = (text || input.value).trim(); if (!text || busy) return;
+    if (!convId) convId = sessionId;
+    $('#hero')?.remove();
+    busy = true; sendBtn.disabled = true; input.value = ''; autoGrow();
+    addUser(text);
+    const shell = addBotShell(), body = shell.querySelector('.body');
+    try {
+      const r = await fetch('/api/chat/stream', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message:text, session_id:sessionId }) });
+      if (!r.ok || !r.body) throw new Error('stream unavailable');
+      const reader = r.body.getReader(), dec = new TextDecoder();
+      let buf = '', acc = '', mdEl = null, done = null;
+      while (true) {
+        const { value, done: rd } = await reader.read();
+        if (rd) break;
+        buf += dec.decode(value, { stream:true });
+        let idx;
+        while ((idx = buf.indexOf('\n\n')) >= 0) {
+          const line = buf.slice(0, idx).split('\n').find(l => l.startsWith('data: ')); buf = buf.slice(idx+2);
+          if (!line) continue;
+          let ev; try { ev = JSON.parse(line.slice(6)); } catch { continue; }
+          if (ev.type === 'status') {
+            if (ev.stage === 'routing') setThink(shell, '🧭', (INTENT_LABEL[ev.intent] || 'Đang xử lý') + '…', 'bob');
+            else if (ev.stage === 'tool') { const [ic, lb] = splitToolLabel(ev.tool); setThink(shell, ic, 'Đang ' + lb.toLowerCase() + '…', 'scan'); }
+            else if (ev.stage === 'tools_done') setThink(shell, '✍️', 'Đang viết câu trả lời…', 'write');
+          } else if (ev.type === 'token') {
+            if (!mdEl) { body.querySelector('.think')?.remove(); body.insertAdjacentHTML('afterbegin','<div class="md"></div>'); mdEl = body.querySelector('.md'); }
+            acc += ev.content;
+            mdEl.innerHTML = DOMPurify.sanitize(marked.parse(stripFooter(acc)), { ADD_TAGS:['pre'], ADD_ATTR:['class'] });
+            scrollDown();
+          } else if (ev.type === 'done') { done = ev; }
+          else if (ev.type === 'error') { throw new Error(ev.message || 'stream error'); }
+        }
+      }
+      body.querySelector('.think')?.remove();
+      if (done) { renderBot(shell, done, text); upsertConv('bot', done); }
+      else if (acc) { renderBot(shell, { answer: acc }, text); }
+      else throw new Error('empty stream');
+    } catch (e) {
+      await sendBlocking(text, shell, body);   // graceful fallback
+    } finally { busy = false; sendBtn.disabled = input.value.trim()===''; input.focus(); }
+  }
+
+  function autoGrow(){ input.style.height='auto'; input.style.height=Math.min(input.scrollHeight,170)+'px'; }
+  input.addEventListener('input', ()=>{ autoGrow(); sendBtn.disabled = busy || input.value.trim()===''; });
+  input.addEventListener('keydown', e=>{ if (e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); } });
+  sendBtn.onclick = ()=> send();
+  $('#newChat').onclick = ()=> { if (busy) return; convId=null; sessionId=crypto.randomUUID(); stream.innerHTML=''; location.reload(); };
+  const closeSidebarMobile = ()=> $('#sidebar').classList.remove('open');
+  $('#ham').onclick = ()=> $('#sidebar').classList.toggle('open');
+
+  // Scroll-to-bottom button
+  const sbBtn = $('#scrollBtn');
+  scroll.addEventListener('scroll', () => {
+    const gap = scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight;
+    sbBtn.classList.toggle('show', gap > 120);
+  });
+  sbBtn.onclick = () => scrollDown();
+
+  buildCards(); renderTools(); renderHistory(); input.focus();
+})();
+</script>
+</body>
+</html>

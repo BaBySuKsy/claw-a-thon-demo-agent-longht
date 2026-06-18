@@ -1,0 +1,30 @@
+# Secrets & credentials — never in image
+.greennode.json
+.env
+.env.*
+credentials.json
+.agentbase-state.json
+.agentbase/
+
+# Version control & IDE
+.git
+.gitignore
+.idea
+.vscode
+
+# Python artifacts
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.egg-info
+.pytest_cache
+.mypy_cache
+
+# Dev-only — not needed at runtime
+venv/
+agentbase-skills/
+docx/
+test_*.py
+GEMINI.md
+*.md

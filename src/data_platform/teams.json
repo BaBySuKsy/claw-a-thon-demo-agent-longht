@@ -1,0 +1,54 @@
+[
+  {
+    "id": "team:data-engineering",
+    "name": "Data Engineering (Data Platform)",
+    "entityType": "team",
+    "description": "Team Data Engineering thuộc Data Platform Acme. Sở hữu và vận hành toàn bộ data warehouse, curated zone, các pipeline Airflow/Spark và framework data quality. Là điểm liên hệ chính cho mọi vấn đề về dataset, lineage và pipeline.",
+    "owner": {
+      "type": "team",
+      "name": "data-engineering",
+      "slack": "#data-eng-oncall",
+      "tech_lead": "Data Platform Lead"
+    },
+    "tags": [
+      "data-engineering",
+      "data-platform",
+      "owner"
+    ],
+    "domains": [
+      "domain:lending",
+      "domain:payment",
+      "domain:identity",
+      "domain:merchant",
+      "domain:data-platform-infra"
+    ],
+    "projects": [
+      "credit-curated-etl",
+      "fund-mapping-etl",
+      "data-quality-svc",
+      "airflow-onprem",
+      "airflow-cloud",
+      "etl-lib"
+    ],
+    "metadata": {
+      "onboarding_docs": [
+        {
+          "title": "Data Platform Home",
+          "page_id": "10000009"
+        },
+        {
+          "title": "Data Platform Overview",
+          "page_id": "10000012"
+        },
+        {
+          "title": "Data Infra",
+          "page_id": "10000001"
+        },
+        {
+          "title": "Metadata Standards",
+          "page_id": "10000008"
+        }
+      ]
+    }
+  }
+]
